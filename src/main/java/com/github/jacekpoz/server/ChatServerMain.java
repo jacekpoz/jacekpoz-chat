@@ -1,16 +1,9 @@
 package com.github.jacekpoz.server;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ChatServerMain {
-
-    private static List<ChatThread> threads = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -20,20 +13,12 @@ public class ChatServerMain {
         }
 
         int port = Integer.parseInt(args[0]);
-        boolean listening = true;
 
-        ExecutorService executor = Executors.newCachedThreadPool();
-
-        SwingUtilities.invokeLater(() -> {
-            try (ServerSocket serverSocket = new ServerSocket(port)) {
-                while (listening) {
-                    ChatThread t = new ChatThread(new ChatSocket(serverSocket.accept()));
-                    threads.add(t);
-                    executor.submit(t);
-                }
-            } catch (IOException e) {
-                System.err.println("Couldn't listen on port " + port);
-            }
-        });
+        try {
+            Server s = new Server(new ServerSocket(port));
+            s.start();
+        } catch (IOException e) {
+            System.err.println("Couldn't listen on port " + port);
+        }
     }
 }

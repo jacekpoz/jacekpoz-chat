@@ -1,34 +1,32 @@
 package com.github.jacekpoz.client;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.server.ChatSocket;
+import com.github.jacekpoz.common.UserInfo;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.io.IOException;
+import java.net.Socket;
 
 public class Client {
 
-    private ChatSocket clientSocket;
-    private ChatWindow window;
-    private boolean isLoggedIn;
+    private @Getter Socket socket;
+    private @Getter ChatWindow window;
+    private @Getter @Setter UserInfo user;
 
-    public Client(ChatSocket s) {
-        clientSocket = s;
-        window = new ChatWindow(clientSocket);
-        isLoggedIn = false;
+    public Client(Socket s) {
+        socket = s;
+        window = new ChatWindow(this);
+        user = new UserInfo(-1, "dupa", "dupa dupa");
     }
 
-    public String getIP() {
-        return clientSocket.getInetAddress().getHostName();
+    public void start() {
+        window.start();
     }
 
-    public int getPort() {
-        return clientSocket.getPort();
-    }
-
-    public ChatWindow getWindow() {
-        return window;
-    }
-
-    public boolean isLoggedIn() {
-        return isLoggedIn;
+    public void stop() throws IOException {
+        socket.close();
+        window.dispose();
     }
 
 }
