@@ -2,6 +2,7 @@ package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.DatabaseConnector;
+import com.github.jacekpoz.common.GlobalStuff;
 import com.github.jacekpoz.common.UserInfo;
 
 import javax.swing.*;
@@ -40,11 +41,9 @@ public class LoginScreen extends JPanel {
 
         JLabel resultLabel = new JLabel("\t\t\t\t\t\t\t");
 
-        ActionListener al = a -> {
-            if (!isLoggingIn) resultLabel.setText(login(nicknameField.getText(), passwordField.getPassword()));
-        };
+        ActionListener al = event -> resultLabel.setText(login(nicknameField.getText(), passwordField.getPassword()));
 
-        nicknameField.addActionListener(a -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
+        nicknameField.addActionListener(event -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
         passwordField.addActionListener(al);
         loginButton.addActionListener(al);
 
@@ -100,13 +99,13 @@ public class LoginScreen extends JPanel {
         service.submit(() -> {
             try {
                 DatabaseConnector connector = new DatabaseConnector(
-                        "jdbc:mysql://localhost:3306/mydatabase",
+                        "jdbc:mysql://localhost:3306/" + GlobalStuff.DB_NAME,
                         "chat-client", "DB_Password_0123456789"
                 );
 
                 switch (connector.login(username, password)) {
                     case LOGGED_IN: {
-                        UserInfo u = connector.getUserInfo(username);
+                        UserInfo u = connector.getUser(username);
                         window.getClient().setUser(u);
                         window.getOutputStream().writeObject(u);
                         System.out.println(u + " logged in.");

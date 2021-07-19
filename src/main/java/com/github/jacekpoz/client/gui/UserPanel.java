@@ -1,14 +1,12 @@
 package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.common.DatabaseConnector;
-import com.github.jacekpoz.common.FriendException;
 import com.github.jacekpoz.common.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 
 public class UserPanel extends JPanel {
 
@@ -16,26 +14,21 @@ public class UserPanel extends JPanel {
     public static final int FRIEND = 1;
 
     private final DatabaseConnector connector;
-    private final @Getter UserInfo user;
-    private final @Getter UserInfo userToAdd;
+    private final @Getter UserInfo clientUser;
+    private final @Getter UserInfo panelUser;
     private @Getter @Setter int userPanelType;
     private JButton button;
 
     public UserPanel(DatabaseConnector con, UserInfo u, UserInfo userAdd, int type) {
         connector = con;
-        user = u;
-        userToAdd = userAdd;
+        clientUser = u;
+        panelUser = userAdd;
         userPanelType = type;
-        add(new JLabel(userToAdd.getNickname() + "(ID=" + userToAdd.getId() + ")"));
-        try {
-            changeType(userPanelType);
-        } catch (FriendException e) {
-            e.printStackTrace();
-        }
+        add(new JLabel(panelUser.getNickname() + "(ID=" + panelUser.getId() + ")"));
+        changeType(userPanelType);
     }
 
-    public void changeType(int type) throws FriendException {
-
+    public void changeType(int type) {
         if (type == NOT_FRIEND) {
             button = new JButton(new ImageIcon(
                     new ImageIcon("src/main/resources/addFriend.png")
@@ -43,7 +36,8 @@ public class UserPanel extends JPanel {
                             .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
             ));
             button.addActionListener(a -> {
-
+                clientUser.addFriend(panelUser);
+                System.out.println(connector.addFriend(clientUser, panelUser));
             });
         } else if (type == FRIEND) {
             button = new JButton(new ImageIcon(
@@ -52,7 +46,8 @@ public class UserPanel extends JPanel {
                             .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
             ));
             button.addActionListener(a -> {
-
+                clientUser.removeFriend(panelUser);
+                connector.removeFriend(clientUser, panelUser);
             });
         }
 

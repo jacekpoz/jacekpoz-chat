@@ -26,7 +26,6 @@ public class MessageTest {
     @Before
     public void initializeStreams() throws IOException {
         s = new Server(new ServerSocket(GlobalStuff.SERVER_PORT));
-//        s.start();
         c = new Client(new Socket(GlobalStuff.SERVER_HOST, GlobalStuff.SERVER_PORT));
         out = c.getWindow().getOutputStream();
         in = c.getWindow().getInputStream();

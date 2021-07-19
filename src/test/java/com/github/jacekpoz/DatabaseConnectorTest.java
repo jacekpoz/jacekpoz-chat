@@ -9,12 +9,10 @@ import static org.junit.Assert.*;
 
 public class DatabaseConnectorTest {
 
-    private DatabaseConnector connector;
-
     @Test
     public void shouldConnectToDatabase() {
         try {
-            connector = new DatabaseConnector(
+            new DatabaseConnector(
                     "jdbc:mysql://localhost:3306/mydatabase",
                     "chat-client", "DB_Password_0123456789"
             );

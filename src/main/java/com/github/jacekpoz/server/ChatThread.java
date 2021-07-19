@@ -1,6 +1,6 @@
 package com.github.jacekpoz.server;
 
-import com.github.jacekpoz.common.Conversation;
+import com.github.jacekpoz.common.Chat;
 import com.github.jacekpoz.common.Message;
 import com.github.jacekpoz.common.UserInfo;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class ChatThread extends Thread {
     private final @Getter Socket clientSocket;
     private final @Getter Server server;
     private @Getter UserInfo currentUser;
-    private @Getter Conversation currentChat;
+    private @Getter Chat currentChat;
     private final ObjectOutputStream out;
     private final ObjectInputStream in;
 
@@ -46,8 +46,8 @@ public class ChatThread extends Thread {
                     continue;
                 }
 
-                if (input instanceof Conversation) {
-                    currentChat = (Conversation) input;
+                if (input instanceof Chat) {
+                    currentChat = (Chat) input;
 
                     System.out.println(currentChat);
                     continue;
@@ -56,7 +56,8 @@ public class ChatThread extends Thread {
                 output = cp.processMessage((Message) input);
 
                 for (ChatThread ct : server.getThreads())
-                    if (!this.equals(ct)) ct.send(output);
+                    if (currentChat.getMembers().contains(ct.getCurrentUser()))
+                        ct.send(output);
 
             } catch (EOFException e) {
                 System.err.println("EOF");

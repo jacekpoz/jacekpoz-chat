@@ -1,23 +1,38 @@
 package com.github.jacekpoz.client.gui.screens;
 
+import com.github.jacekpoz.client.gui.ChatContainer;
+import com.github.jacekpoz.client.gui.ChatPanel;
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.client.gui.MessageContainer;
-import com.github.jacekpoz.common.Message;
+import com.github.jacekpoz.common.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.EOFException;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MessageScreen extends JPanel {
 
     private ChatWindow window;
+    private DatabaseConnector connector;
 
     public MessageScreen(ChatWindow w) {
         window = w;
+        try {
+            connector = new DatabaseConnector(
+                    "jdbc:mysql://localhost:3306/" + GlobalStuff.DB_NAME,
+                    "chat-client", "DB_Password_0123456789"
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         initUI();
     }
 
@@ -31,11 +46,11 @@ public class MessageScreen extends JPanel {
                 ));
         friends.addActionListener(a -> window.setScreen(window.getFriendsScreen()));
 
-        JPanel conversations = new JPanel();
+        ChatContainer chats = new ChatContainer();
 
-        JScrollPane conversationsScrollPane = new JScrollPane(conversations);
-        conversationsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        conversations.setPreferredSize(new Dimension(100, 250));
+        JScrollPane chatsScrollPane = new JScrollPane(chats);
+        chatsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        chats.setPreferredSize(new Dimension(100, 250));
 
         MessageContainer messages = new MessageContainer();
 
@@ -47,8 +62,16 @@ public class MessageScreen extends JPanel {
 
         ActionListener sendMessageAction = event -> {
             if (!messageField.getText().isEmpty()) {
-                Message m = new Message(messageField.getText(), window.getClient().getUser());
+                Chat c = window.getClient().getChat();
+                Message m = new Message(
+                        c.getMessageIDs().size(),
+                        c.getId(),
+                        window.getClient().getUser().getId(),
+                        messageField.getText(),
+                        Timestamp.valueOf(LocalDateTime.now())
+                );
                 messages.addMessage(m);
+                connector.addMessage(m);
                 sendMessage(m);
                 messageField.setText("");
                 JScrollBar bar = messagesScrollPane.getVerticalScrollBar();
@@ -61,7 +84,7 @@ public class MessageScreen extends JPanel {
         JButton button = new JButton("Wyślij");
         button.addActionListener(sendMessageAction);
 
-        createLayout(friends, conversationsScrollPane, messagesScrollPane, messageField, button);
+        createLayout(friends, chatsScrollPane, messagesScrollPane, messageField, button);
 
         ExecutorService service = Executors.newCachedThreadPool();
 
@@ -69,8 +92,6 @@ public class MessageScreen extends JPanel {
             while (true) {
                 try {
                     Message fromServer = (Message) window.getInputStream().readObject();
-
-                    if (fromServer.getLabel() == null) fromServer.initLabel();
 
                     SwingUtilities.invokeLater(() -> messages.addMessage(fromServer));
 

@@ -19,6 +19,7 @@ public class ChatServerMain {
             s.start();
         } catch (IOException e) {
             System.err.println("Couldn't listen on port " + port);
+            e.printStackTrace();
         }
     }
 }

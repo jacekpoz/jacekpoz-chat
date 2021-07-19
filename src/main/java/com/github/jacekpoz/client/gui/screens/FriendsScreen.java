@@ -3,6 +3,7 @@ package com.github.jacekpoz.client.gui.screens;
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.client.gui.UserPanel;
 import com.github.jacekpoz.common.DatabaseConnector;
+import com.github.jacekpoz.common.GlobalStuff;
 import com.github.jacekpoz.common.UserInfo;
 import com.github.jacekpoz.common.Util;
 
@@ -19,7 +20,7 @@ public class FriendsScreen extends JPanel {
         window = w;
         try {
             connector = new DatabaseConnector(
-                    "jdbc:mysql://localhost:3306/mydatabase",
+                    "jdbc:mysql://localhost:3306/" + GlobalStuff.DB_NAME,
                     "chat-client", "DB_Password_0123456789"
             );
         } catch (SQLException e) {
@@ -41,7 +42,10 @@ public class FriendsScreen extends JPanel {
 
         searchYourFriendsButton.addActionListener(a -> {
             String username = searchYourFriends.getText();
-            List<UserInfo> similarUsers = Util.compareUsernames(username, window.getClient().getUser().getFriends());
+            List<UserInfo> similarUsers = Util.compareUsernamesFromID(username, window.getClient().getUser().getFriendsIds());
+            if (similarUsers.isEmpty()) {
+                return;
+            }
 
             yourFriendsList.removeAll();
 
@@ -72,7 +76,6 @@ public class FriendsScreen extends JPanel {
         pane.addTab("Znajomi", yourFriends);
 
         pane.addTab("Dodaj znajomych", searchFriends);
-
 
         add(pane);
     }
@@ -106,7 +109,9 @@ public class FriendsScreen extends JPanel {
     }
 
     private void addFriends(JPanel p, List<UserInfo> users, int type) {
-        users.forEach(user -> p.add(new UserPanel(connector, window.getClient().getUser(), user, type)));
+        for (UserInfo u : users)
+            if (window.getClient().getUser().getId() != u.getId())
+                p.add(new UserPanel(connector, window.getClient().getUser(), u, type));
         p.revalidate();
     }
 }

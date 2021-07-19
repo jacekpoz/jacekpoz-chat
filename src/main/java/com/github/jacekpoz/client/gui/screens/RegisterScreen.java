@@ -2,8 +2,10 @@ package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.DatabaseConnector;
+import com.github.jacekpoz.common.GlobalStuff;
 
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,11 +39,11 @@ public class RegisterScreen extends JPanel {
 
         JLabel resultLabel = new JLabel("\t\t\t\t\t\t\t");
 
+        ActionListener al = event -> resultLabel.setText(register(nicknameField.getText(), passwordField.getPassword()));
 
-
-        registerButton.addActionListener(event -> {
-            if (!isRegistering) resultLabel.setText(register(nicknameField.getText(), passwordField.getPassword()));
-        });
+        nicknameField.addActionListener(event -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
+        passwordField.addActionListener(al);
+        registerButton.addActionListener(al);
 
         JButton loginLabel = new JButton("Logowanie");
         loginLabel.addActionListener(e -> window.setScreen(window.getLoginScreen()));
@@ -98,7 +100,7 @@ public class RegisterScreen extends JPanel {
         service.submit(() -> {
             try {
                 DatabaseConnector connector = new DatabaseConnector(
-                        "jdbc:mysql://localhost:3306/mydatabase",
+                        "jdbc:mysql://localhost:3306/" + GlobalStuff.DB_NAME,
                         "chat-client", "DB_Password_0123456789"
                 );
 
