@@ -22,6 +22,8 @@ public class LoginScreen implements Screen {
     private JButton loginButton;
     private JButton registerButton;
     private JLabel result;
+    private JLabel nicknameLabel;
+    private JLabel passwordLabel;
 
     public LoginScreen(ChatWindow w) {
         window = w;
