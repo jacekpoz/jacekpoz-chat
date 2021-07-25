@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.github.jacekpoz.common.DatabaseConnector.*;
+
 public class RegisterScreen implements Screen {
     private final ChatWindow window;
 
@@ -20,6 +22,8 @@ public class RegisterScreen implements Screen {
     private JButton loginButton;
     private JLabel result;
     private JPasswordField passwordField;
+    private JLabel passwordLabel;
+    private JLabel nicknameLabel;
 
     public RegisterScreen(ChatWindow w) {
         window = w;

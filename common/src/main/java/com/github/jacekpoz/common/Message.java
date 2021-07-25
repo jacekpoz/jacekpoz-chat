@@ -3,7 +3,6 @@ package com.github.jacekpoz.common;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

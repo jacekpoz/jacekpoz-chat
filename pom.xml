@@ -5,7 +5,13 @@
 
     <groupId>com.github.jacekpoz</groupId>
     <artifactId>jacekpoz-chat</artifactId>
+    <packaging>pom</packaging>
     <version>0.0.1</version>
+    <modules>
+        <module>client</module>
+        <module>common</module>
+        <module>server</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,30 +20,7 @@
     </properties>
 
     <dependencies>
-        <!--algorithm used for hashing passwords cause I know nothing about that shit-->
-        <dependency>
-            <groupId>de.mkammerer</groupId>
-            <artifactId>argon2-jvm</artifactId>
-            <version>2.10.1</version>
-        </dependency>
-        <!--algorithm used for searching up usernames-->
-        <dependency>
-            <groupId>com.github.mpkorstanje</groupId>
-            <artifactId>simmetrics-example</artifactId>
-            <version>4.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
 
 </project>

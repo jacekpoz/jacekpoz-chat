@@ -6,17 +6,9 @@ import com.github.jacekpoz.common.DatabaseConnector;
 import com.github.jacekpoz.common.User;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CreateChatsScreen implements Screen {
     private final ChatWindow window;
