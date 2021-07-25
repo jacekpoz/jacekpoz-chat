@@ -2,131 +2,99 @@ package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.DatabaseConnector;
-import com.github.jacekpoz.common.GlobalStuff;
-import com.github.jacekpoz.common.UserInfo;
+import com.github.jacekpoz.common.Constants;
+import com.github.jacekpoz.common.User;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 
-public class LoginScreen extends JPanel {
+public class LoginScreen implements Screen {
+    private final ChatWindow window;
 
-    private ChatWindow window;
-    private boolean isLoggingIn;
+    private JPanel loginScreen;
+    private JTextField nicknameField;
+    private JPasswordField passwordField;
+    private JButton loginButton;
+    private JButton registerButton;
+    private JLabel result;
 
     public LoginScreen(ChatWindow w) {
         window = w;
-        isLoggingIn = false;
-        initUI();
-    }
-
-    private void initUI() {
-        JLabel nicknameLabel = new JLabel("Nazwa:");
-
-        JTextField nicknameField = new JTextField();
-
-        nicknameLabel.setLabelFor(nicknameField);
-
-        JLabel passwordLabel = new JLabel("Hasło:");
-
-        JPasswordField passwordField = new JPasswordField();
-
-        passwordLabel.setLabelFor(passwordField);
-
-        JButton loginButton = new JButton("Zaloguj");
-
-        JLabel resultLabel = new JLabel("\t\t\t\t\t\t\t");
-
-        ActionListener al = event -> resultLabel.setText(login(nicknameField.getText(), passwordField.getPassword()));
-
-        nicknameField.addActionListener(event -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
+        nicknameField.addActionListener(e -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
+        ActionListener al = e -> result.setText(login(nicknameField.getText(), passwordField.getPassword()));
         passwordField.addActionListener(al);
         loginButton.addActionListener(al);
-
-        JButton registerLabel = new JButton("Rejestracja");
-        registerLabel.addActionListener(e -> window.setScreen(window.getRegisterScreen()));
-
-        createLayout(nicknameLabel, nicknameField, passwordLabel, passwordField, loginButton, resultLabel, registerLabel);
-
-    }
-
-    private void createLayout(JComponent... args) {
-        GroupLayout gl = new GroupLayout(this);
-        setLayout(gl);
-
-        gl.setAutoCreateGaps(true);
-        gl.setAutoCreateContainerGaps(true);
-
-        gl.setHorizontalGroup(gl.createParallelGroup()
-                .addGap(300)
-                .addComponent(args[0])
-                .addComponent(args[1])
-                .addComponent(args[2])
-                .addComponent(args[3])
-                .addComponent(args[4])
-                .addComponent(args[5])
-                .addComponent(args[6])
-                .addGap(300)
-        );
-
-        gl.setVerticalGroup(gl.createSequentialGroup()
-                .addComponent(args[0])
-                .addComponent(args[1])
-                .addComponent(args[2])
-                .addComponent(args[3])
-                .addComponent(args[4])
-                .addComponent(args[5])
-                .addComponent(args[6])
-        );
+        registerButton.addActionListener(e -> window.setScreen(window.getRegisterScreen()));
     }
 
     private String login(String username, char[] password) {
-
-        isLoggingIn = true;
 
         if (username.isEmpty() || password.length == 0) {
             return "Musisz wpisać nick i hasło";
         }
 
-        AtomicReference<String> result = new AtomicReference<>();
-
         ExecutorService service = Executors.newCachedThreadPool();
 
-        service.submit(() -> {
-            try {
-                DatabaseConnector connector = new DatabaseConnector(
-                        "jdbc:mysql://localhost:3306/" + GlobalStuff.DB_NAME,
-                        "chat-client", "DB_Password_0123456789"
-                );
-
-                switch (connector.login(username, password)) {
-                    case LOGGED_IN: {
-                        UserInfo u = connector.getUser(username);
-                        window.getClient().setUser(u);
-                        window.getOutputStream().writeObject(u);
-                        System.out.println(u + " logged in.");
-                        window.setScreen(window.getMessageScreen());
-                        break;
+        String returned;
+        try {
+            returned = service.submit(() -> {
+                String result = null;
+                try {
+                    DatabaseConnector connector = new DatabaseConnector(
+                            "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
+                            "chat-client", "DB_Password_0123456789"
+                    );
+                    DatabaseConnector.LoginResult s = connector.login(username, password);
+                    System.out.println(s);
+                    switch (s) {
+                        case LOGGED_IN: {
+                            User u = connector.getUser(username);
+                            window.getClient().setUser(u);
+                            window.getOutputStream().writeObject(u);
+                            System.out.println(u + " logged in.");
+                            window.setScreen(window.getMessageScreen());
+                            update();
+                            return "Zalogowano";
+                        }
+                        case ACCOUNT_DOESNT_EXIST : return "Konto o podanej nazwie nie istnieje" ;
+                        case WRONG_PASSWORD       : return "Złe hasło"                           ;
+                        case SQL_EXCEPTION        : return "Nie można połączyć się z serwerem"   ;
                     }
-                    case ACCOUNT_DOESNT_EXIST : result.set("Konto o podanej nazwie nie istnieje" ); break;
-                    case WRONG_PASSWORD       : result.set("Złe hasło"                           ); break;
-                    case SQL_EXCEPTION        : result.set("Nie można połączyć się z serwerem"   ); break;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    result = "SQLException";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    result = "IOException";
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                result.set("SQLException");
-            } catch (IOException e) {
-                e.printStackTrace();
-                result.set("IOException");
-            }
-        });
 
-        isLoggingIn = false;
+                return result;
+            }).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            returned = "InterruptedException";
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            returned = "ExecutionException";
+        }
 
-        return result.get();
+        return returned;
+    }
+
+    @Override
+    public JPanel getPanel() {
+        return loginScreen;
+    }
+
+    @Override
+    public void update() {
+        for (Screen s : window.getScreens())
+            if (!(s instanceof LoginScreen))
+                s.update();
     }
 }

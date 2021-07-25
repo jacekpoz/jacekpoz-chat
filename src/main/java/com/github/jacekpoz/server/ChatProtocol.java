@@ -1,16 +1,28 @@
 package com.github.jacekpoz.server;
 
+import com.github.jacekpoz.common.Chat;
 import com.github.jacekpoz.common.Message;
+import com.github.jacekpoz.common.User;
 
 import java.io.IOException;
-import java.net.Socket;
-import java.util.List;
 
 public class ChatProtocol {
 
-    public Message processMessage(Message input) throws IOException {
+    private final ChatWorker worker;
 
+    public ChatProtocol(ChatWorker w) {
+        worker = w;
+    }
 
-        return input;
+    public void processInput(Object input) throws IOException {
+        if (input instanceof User) worker.setCurrentUser((User) input);
+        if (input instanceof Chat) worker.setCurrentChat((Chat) input);
+
+        if (input instanceof Message) {
+            Message output = (Message) input;
+            for (ChatWorker ct : worker.getServer().getThreads())
+                if (worker.getCurrentChat().getMembers().contains(ct.getCurrentUser()))
+                    ct.send(output);
+        }
     }
 }

@@ -8,7 +8,7 @@ public class ChatServerMain {
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.err.println("Correct usage: java jacekpozchatserver.jar <port>");
+            System.err.println("You only need to input the port");
             System.exit(1);
         }
 
@@ -20,6 +20,7 @@ public class ChatServerMain {
         } catch (IOException e) {
             System.err.println("Couldn't listen on port " + port);
             e.printStackTrace();
+            System.exit(1);
         }
     }
 }

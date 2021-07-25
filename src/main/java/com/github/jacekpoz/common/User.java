@@ -9,16 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class UserInfo implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = -4542684939965736548L;
-    private @Getter final long id;
-    private @Getter @Setter String nickname;
-    private @Getter @Setter String hashedPassword;
-    private @Getter final List<Long> friendsIds;
-    private @Getter final Timestamp dateJoined;
+    @Getter
+    private final long id;
+    @Getter
+    @Setter
+    private String nickname;
+    @Getter
+    @Setter
+    private String hashedPassword;
+    @Getter
+    private final List<Long> friendsIds;
+    @Getter
+    private final Timestamp dateJoined;
 
-    public UserInfo(long userID, String userNickname, String userHashedPassword, Timestamp date) {
+    public User(long userID, String userNickname, String userHashedPassword, Timestamp date) {
         id = userID;
         nickname = userNickname;
         hashedPassword = userHashedPassword;
@@ -26,7 +33,7 @@ public class UserInfo implements Serializable {
         dateJoined = date;
     }
 
-    public void addFriend(UserInfo u) {
+    public void addFriend(User u) {
         if (!friendsIds.contains(u.id)) friendsIds.add(u.id);
     }
 
@@ -34,7 +41,7 @@ public class UserInfo implements Serializable {
         if (!friendsIds.contains(id)) friendsIds.add(id);
     }
 
-    public void removeFriend(UserInfo u) {
+    public void removeFriend(User u) {
         friendsIds.remove(u.id);
     }
 
@@ -50,22 +57,17 @@ public class UserInfo implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserInfo userInfo = (UserInfo) o;
+        User userInfo = (User) o;
         return id == userInfo.id &&
                 Objects.equals(nickname, userInfo.nickname);
-    }
-
-    @Override
-    public String toString() {
-        return "UserInfo{" +
-                "id=" + id +
-                ", nickname='" + nickname + '\'' +
-                ", hashedPassword='" + hashedPassword + '\'' +
-                ", dateJoined=" + dateJoined +
-                '}';
     }
     /*
      * **************************
      */
+
+    @Override
+    public String toString() {
+        return nickname + " (ID=" + id + ")";
+    }
 
 }

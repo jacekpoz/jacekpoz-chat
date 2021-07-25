@@ -11,9 +11,10 @@ import java.util.concurrent.Executors;
 
 public class Server {
 
-    private ServerSocket serverSocket;
+    private final ServerSocket serverSocket;
     private ExecutorService executor;
-    private @Getter List<ChatThread> threads;
+    @Getter
+    private final List<ChatWorker> threads;
 
     public Server(ServerSocket ss) throws IOException {
         serverSocket = ss;
@@ -26,12 +27,13 @@ public class Server {
         executor.submit(() -> {
             try {
                 while (true) {
-                    ChatThread thread = new ChatThread(serverSocket.accept(), this);
+                    ChatWorker thread = new ChatWorker(serverSocket.accept(), this);
                     threads.add(thread);
                     executor.submit(thread);
                 }
             } catch (IOException e) {
                 System.err.println("Couldn't listen on port " + serverSocket.getLocalPort());
+                e.printStackTrace();
             }
         });
     }

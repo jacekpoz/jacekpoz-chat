@@ -11,16 +11,16 @@ import java.time.LocalDateTime;
 public class Message implements Serializable {
 
     private static final long serialVersionUID = -3347591867787345026L;
-    private final @Getter
-    long messageID;
-    private final @Getter
-    long chatID;
-    private @Getter @Setter
-    String content;
-    private final @Getter
-    Timestamp sendDate;
-    private final @Getter
-    long authorID;
+    @Getter
+    private final long messageID;
+    @Getter
+    private final long chatID;
+    @Getter @Setter
+    private String content;
+    @Getter
+    private final Timestamp sendDate;
+    @Getter
+    private final long authorID;
 
     public Message(long mID, long cID, long aID, String text, Timestamp send) {
         messageID = mID;

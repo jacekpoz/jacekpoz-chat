@@ -1,7 +1,7 @@
 package com.github.jacekpoz;
 
 import com.github.jacekpoz.client.Client;
-import com.github.jacekpoz.common.GlobalStuff;
+import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.server.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -21,9 +21,9 @@ public class ClientTest {
 
     @Before
     public void startServerAndClient() throws IOException {
-        s = new Server(new ServerSocket(GlobalStuff.SERVER_PORT));
+        s = new Server(new ServerSocket(Constants.SERVER_PORT));
         s.start();
-        c = new Client(new Socket(GlobalStuff.SERVER_HOST, GlobalStuff.SERVER_PORT));
+        c = new Client(new Socket(Constants.SERVER_HOST, Constants.SERVER_PORT));
     }
 
     @After
@@ -43,6 +43,6 @@ public class ClientTest {
     public void clientShouldHaveLoginScreenAtStartup() {
         c.start();
 
-        assertEquals("Login screen should be the first screen at startup", c.getWindow().getContentPane(), c.getWindow().getLoginScreen());
+        assertEquals("Login screen should be the first screen at startup", c.getWindow().getContentPane(), c.getWindow().getLoginScreen().getPanel());
     }
 }

@@ -3,7 +3,6 @@ package com.github.jacekpoz.common;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.swing.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -12,18 +11,18 @@ import java.util.List;
 
 public class Chat implements Serializable {
     private static final long serialVersionUID = -8973712096190274407L;
-    private final @Getter
-    long id;
-    private @Getter @Setter
-    String name;
-    private @Getter
-    List<UserInfo> members;
-    private @Getter
-    List<Long> messageIDs;
-    private final @Getter
-    Timestamp dateCreated;
-    private @Getter
-    long messageCounter;
+    @Getter
+    private final long id;
+    @Getter @Setter
+    private String name;
+    @Getter
+    private final List<User> members;
+    @Getter
+    private final List<Long> messageIDs;
+    @Getter
+    private final Timestamp dateCreated;
+    @Getter
+    private final long messageCounter;
 
     public Chat(long chatID, String chatName, Timestamp created, long mCounter) {
         id = chatID;

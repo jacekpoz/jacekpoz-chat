@@ -1,31 +1,38 @@
 package com.github.jacekpoz.client.gui;
 
+import com.github.jacekpoz.client.gui.screens.MessageScreen;
 import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.DatabaseConnector;
-import com.github.jacekpoz.common.UserInfo;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class ChatPanel extends JPanel {
 
-    public ChatPanel(ChatWindow w, Chat c) {
-        add(new JLabel("dupa " + c.getId()));
-        addMouseListener(new MouseListener() {
+    private final JLabel label;
+
+    public ChatPanel(MessageScreen m, ChatContainer parent, Chat c) {
+        label = new JLabel(c.getName());
+        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
+        add(label);
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                w.getClient().setChat(c);
+                m.setChat(c);
+                for (ChatPanel cp : parent.getChats())
+                    cp.deselectChat();
+                selectChat();
             }
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
         });
+    }
+
+    public void selectChat() {
+        label.setBorder(BorderFactory.createLineBorder(Color.BLUE, 2, true));
+    }
+
+    public void deselectChat() {
+        label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
     }
 
 }

@@ -2,7 +2,7 @@ package com.github.jacekpoz.client;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.UserInfo;
+import com.github.jacekpoz.common.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,15 +13,19 @@ import java.time.LocalDateTime;
 
 public class Client {
 
-    private @Getter Socket socket;
-    private @Getter ChatWindow window;
-    private @Getter @Setter UserInfo user;
-    private @Getter @Setter Chat chat;
+    @Getter
+    private final Socket socket;
+    @Getter
+    private final ChatWindow window;
+    @Getter @Setter
+    private User user;
+    @Getter @Setter
+    private Chat chat;
 
     public Client(Socket s) {
         socket = s;
         window = new ChatWindow(this);
-        user = new UserInfo(-1, "dupa", "dupa dupa", Timestamp.valueOf(LocalDateTime.MIN));
+        user = new User(-1, "dupa", "dupa dupa", Timestamp.valueOf(LocalDateTime.MIN));
         chat = new Chat(-1, "dupa", Timestamp.valueOf(LocalDateTime.MIN), -1);
     }
 
