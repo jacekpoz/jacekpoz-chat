@@ -33,7 +33,8 @@ public class CreateChatsScreen implements Screen {
         window = w;
         try {
             connector = new DatabaseConnector(
-                    "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
+                    String.format("jdbc:mysql://%s:%d/%s",
+                            Constants.DATABASE_HOST, Constants.DB_PORT, Constants.DB_NAME),
                     "chat-client", "DB_Password_0123456789"
             );
         } catch (SQLException e) {

@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-public class Message implements Serializable {
+public class Message implements Serializable, Sendable {
 
     private static final long serialVersionUID = -3347591867787345026L;
     @Getter

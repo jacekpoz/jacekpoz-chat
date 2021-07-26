@@ -1,7 +1,6 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.DatabaseConnector;
 import com.github.jacekpoz.common.Constants;
 
 import javax.swing.*;
@@ -11,7 +10,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.github.jacekpoz.common.DatabaseConnector.*;
 
 public class RegisterScreen implements Screen {
     private final ChatWindow window;
@@ -52,10 +50,6 @@ public class RegisterScreen implements Screen {
             returned = service.submit(() -> {
                 String result = null;
                 try {
-                    DatabaseConnector connector = new DatabaseConnector(
-                            "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
-                            "chat-client", "DB_Password_0123456789"
-                    );
 
                     switch (connector.register(username, password)) {
                         case ACCOUNT_CREATED : result = "Pomyślnie utworzono konto"           ; break;

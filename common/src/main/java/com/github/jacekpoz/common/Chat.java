@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Chat implements Serializable {
+public class Chat implements Serializable, Sendable {
     private static final long serialVersionUID = -8973712096190274407L;
     @Getter
     private final long id;

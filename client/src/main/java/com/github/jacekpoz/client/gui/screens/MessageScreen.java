@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.EOFException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +14,6 @@ import java.util.concurrent.Executors;
 
 public class MessageScreen implements Screen {
     private final ChatWindow window;
-    private DatabaseConnector connector;
 
     private JPanel messageScreen;
     private JButton chatsButton;
@@ -29,14 +27,6 @@ public class MessageScreen implements Screen {
 
     public MessageScreen(ChatWindow w) {
         window = w;
-        try {
-            connector = new DatabaseConnector(
-                    "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
-                    "chat-client", "DB_Password_0123456789"
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         ActionListener sendMessageAction = e -> {
             if (!messageField.getText().isEmpty()) {
@@ -49,7 +39,6 @@ public class MessageScreen implements Screen {
                         Timestamp.valueOf(LocalDateTime.now())
                 );
                 c.getMessageIDs().add(m.getMessageID());
-                connector.addMessage(m);
                 sendMessage(m);
                 messageField.setText("");
                 JScrollBar bar = messagesScrollPane.getVerticalScrollBar();
@@ -67,10 +56,11 @@ public class MessageScreen implements Screen {
         service.submit(() -> {
             while (true) {
                 try {
-                    Message fromServer = (Message) window.getInputStream().readObject();
+                    Sendable jsonFromServer = window.getGson().fromJson(window.getIn().readLine(), Sendable.class);
+                    Message fromServer = (Message) jsonFromServer;
 
                     SwingUtilities.invokeLater(() -> messages.addMessage(
-                            new MessagePanel(connector.getUser(fromServer.getAuthorID()), fromServer)
+                            new MessagePanel(), fromServer)
                     ));
 
                 } catch (EOFException e) {
@@ -85,18 +75,16 @@ public class MessageScreen implements Screen {
     }
 
     private void sendMessage(Message message) {
-        try {
-            System.out.println("sendMessage: " + message);
-            window.getOutputStream().writeObject(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("sendMessage: " + message);
+        String json = window.getGson().toJson(message, message.getClass());
+        window.getOut().println(json);
     }
 
     public void setChat(Chat c) {
+        String jsonChat = window.getGson().toJson(c, c.getClass());
         try {
             window.getClient().setChat(c);
-            window.getOutputStream().writeObject(c);
+            window.getOut().println(jsonChat);
             messages.removeAllMessages();
             c.getMessageIDs().forEach(mID -> {
                 Message m = connector.getMessage(mID, c.getId());

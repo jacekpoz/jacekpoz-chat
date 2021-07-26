@@ -45,7 +45,8 @@ public class Util {
     public static List<User> compareUsernamesFromID(String inputUsername, List<Long> userIDs) {
         try {
             DatabaseConnector con = new DatabaseConnector(
-                    "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
+                    String.format("jdbc:mysql://%s:%d/%s",
+                            Constants.DATABASE_HOST, Constants.DB_PORT, Constants.DB_NAME),
                     "chat-client", "DB_Password_0123456789"
             );
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class User implements Serializable {
+public class User implements Serializable, Sendable {
 
     private static final long serialVersionUID = -4542684939965736548L;
     @Getter

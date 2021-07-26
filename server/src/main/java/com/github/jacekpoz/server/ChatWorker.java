@@ -6,9 +6,7 @@ import com.github.jacekpoz.common.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Objects;
@@ -23,25 +21,25 @@ public class ChatWorker extends Thread {
     private User currentUser;
     @Getter @Setter
     private Chat currentChat;
-    private final ObjectOutputStream out;
-    private final ObjectInputStream in;
+    private final PrintWriter out;
+    private final BufferedReader in;
 
     public ChatWorker(Socket so, Server se) throws IOException {
         super("ChatThread");
         clientSocket = so;
         server = se;
-        out = new ObjectOutputStream(clientSocket.getOutputStream());
-        in = new ObjectInputStream(clientSocket.getInputStream());
+        out = new PrintWriter(clientSocket.getOutputStream());
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
     }
 
     @Override
     public void run() {
-        Object input;
+        String inputJSON;
         ChatProtocol cp = new ChatProtocol(this);
         while (true) {
             try {
-                input = in.readObject();
-                cp.processInput(input);
+                inputJSON = in.readLine();
+                cp.processInput(inputJSON);
             } catch (SocketException e) {
                 System.out.println("Thread disconnected: " + this);
                 e.printStackTrace();
@@ -52,15 +50,16 @@ public class ChatWorker extends Thread {
                     ioe.printStackTrace();
                 }
                 break;
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
     }
 
-    public void send(Message m) throws IOException {
-        out.writeObject(m);
+    public void send(String json) throws IOException {
+
+        out.println();
     }
 
     /*

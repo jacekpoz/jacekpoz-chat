@@ -1,5 +1,9 @@
-package com.github.jacekpoz.common;
+package com.github.jacekpoz.server;
 
+import com.github.jacekpoz.common.Chat;
+import com.github.jacekpoz.common.Constants;
+import com.github.jacekpoz.common.Message;
+import com.github.jacekpoz.common.User;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 

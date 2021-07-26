@@ -2,19 +2,21 @@ package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.gui.screens.*;
+import com.google.gson.Gson;
 import lombok.Getter;
 
 import javax.swing.*;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class ChatWindow extends JFrame {
 
     @Getter
-    private ObjectOutputStream outputStream;
+    private PrintWriter out;
     @Getter
-    private ObjectInputStream inputStream;
+    private BufferedReader in;
+
+    @Getter
+    private final Gson gson;
 
     @Getter
     private final Screen[] screens;
@@ -37,11 +39,13 @@ public class ChatWindow extends JFrame {
         client = c;
 
         try {
-            outputStream = new ObjectOutputStream(client.getSocket().getOutputStream());
-            inputStream = new ObjectInputStream(client.getSocket().getInputStream());
+            out = new PrintWriter(client.getSocket().getOutputStream());
+            in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        gson = new Gson();
 
         messageScreen = new MessageScreen(this);
         loginScreen = new LoginScreen(this);

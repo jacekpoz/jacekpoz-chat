@@ -1,8 +1,6 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.DatabaseConnector;
-import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.User;
 
 import javax.swing.*;
@@ -47,17 +45,13 @@ public class LoginScreen implements Screen {
             returned = service.submit(() -> {
                 String result = null;
                 try {
-                    DatabaseConnector connector = new DatabaseConnector(
-                            "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
-                            "chat-client", "DB_Password_0123456789"
-                    );
-                    DatabaseConnector.LoginResult s = connector.login(username, password);
+                    LoginResult s = connector.login(username, password);
                     System.out.println(s);
                     switch (s) {
                         case LOGGED_IN: {
                             User u = connector.getUser(username);
                             window.getClient().setUser(u);
-                            window.getOutputStream().writeObject(u);
+                            window.getOut().writeObject(u);
                             System.out.println(u + " logged in.");
                             window.setScreen(window.getMessageScreen());
                             update();
