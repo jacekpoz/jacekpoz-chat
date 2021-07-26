@@ -1,7 +1,7 @@
 package com.github.jacekpoz.common.database.queries;
 
-public interface Query<T> {
+import com.github.jacekpoz.common.Sendable;
 
-    String getQuery();
+public interface Query<T> extends Sendable {
 
 }

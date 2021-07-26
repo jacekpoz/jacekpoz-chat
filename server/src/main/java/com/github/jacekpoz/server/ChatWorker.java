@@ -1,8 +1,11 @@
 package com.github.jacekpoz.server;
 
 import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.Message;
+import com.github.jacekpoz.common.Sendable;
 import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.database.queries.Query;
+import com.github.jacekpoz.common.database.results.Result;
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,22 +27,32 @@ public class ChatWorker extends Thread {
     private final PrintWriter out;
     private final BufferedReader in;
 
+    private final Gson gson;
+
     public ChatWorker(Socket so, Server se) throws IOException {
         super("ChatThread");
         clientSocket = so;
         server = se;
         out = new PrintWriter(clientSocket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        gson = new Gson();
     }
 
     @Override
     public void run() {
         String inputJSON;
-        ChatProtocol cp = new ChatProtocol(this);
+        Result output;
+        InputHandler ih = new InputHandler(this);
         while (true) {
             try {
                 inputJSON = in.readLine();
-                cp.processInput(inputJSON);
+                Sendable input = gson.fromJson(inputJSON, Sendable.class);
+
+                if (input instanceof Query) {
+                    output = ih.handleQuery((Query) input);
+                    out.println(gson.toJson(output, output.getClass()));
+                } else ih.handleInput(input);
+
             } catch (SocketException e) {
                 System.out.println("Thread disconnected: " + this);
                 e.printStackTrace();
@@ -57,9 +70,8 @@ public class ChatWorker extends Thread {
 
     }
 
-    public void send(String json) throws IOException {
-
-        out.println();
+    public void send(String json) {
+        out.println(json);
     }
 
     /*

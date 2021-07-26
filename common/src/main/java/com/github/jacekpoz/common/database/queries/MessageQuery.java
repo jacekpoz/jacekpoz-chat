@@ -2,14 +2,19 @@ package com.github.jacekpoz.common.database.queries;
 
 import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.Message;
+import lombok.Getter;
 
 import java.util.Optional;
 
 public class MessageQuery implements Query<Message> {
 
+    @Getter
     private final long chatID;
+    @Getter
     private final long messageLimit;
+    @Getter
     private final long offset;
+    @Getter
     private Optional<Long> authorID;
 
     public MessageQuery(long cID) {
@@ -30,14 +35,5 @@ public class MessageQuery implements Query<Message> {
     public MessageQuery(long cID, long limit, long off, long aID) {
         this(cID, limit, off);
         authorID = Optional.of(aID);
-    }
-
-    @Override
-    public String getQuery() {
-        return "SELECT * FROM " +
-                Constants.MESSAGES_TABLE +
-                " WHERE chat_id = " + chatID +
-                (authorID.map(aLong -> " AND authorID = " + aLong).orElse("")) +
-                " LIMIT " + offset + ", " + messageLimit + ";";
     }
 }

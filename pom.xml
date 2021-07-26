@@ -6,7 +6,7 @@
     <groupId>com.github.jacekpoz</groupId>
     <artifactId>jacekpoz-chat</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <modules>
         <module>client</module>
         <module>common</module>

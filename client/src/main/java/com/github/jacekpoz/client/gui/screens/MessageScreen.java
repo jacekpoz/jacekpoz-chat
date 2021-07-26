@@ -60,7 +60,7 @@ public class MessageScreen implements Screen {
                     Message fromServer = (Message) jsonFromServer;
 
                     SwingUtilities.invokeLater(() -> messages.addMessage(
-                            new MessagePanel(), fromServer)
+                            new MessagePanel(, fromServer)
                     ));
 
                 } catch (EOFException e) {

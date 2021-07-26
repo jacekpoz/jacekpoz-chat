@@ -11,6 +11,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
 ****************************
@@ -355,6 +356,13 @@ public class DatabaseConnector {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    public List<Message> getMessagesFromChat(long chatID, long offset, long limit, long authorID) {
+        return getMessagesFromChat(chatID, offset, limit)
+                .stream()
+                .filter(m -> m.getAuthorID() == authorID)
+                .collect(Collectors.toList());
     }
 
     public List<User> getUsersInChat(long chatID) {
