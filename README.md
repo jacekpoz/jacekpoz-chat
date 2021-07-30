@@ -9,7 +9,7 @@ the app overall is very bare bones, you can only add friends, create chats and s
 
 I'll write down the roadmap here so I won't forget
 
-- massive redesign
+- massive redesign (by redesign I mean the ui)
 - add profile pictures
 - overall add sending images and support for opening shit like images and videos in the app
 - add markdown support maybe idk
