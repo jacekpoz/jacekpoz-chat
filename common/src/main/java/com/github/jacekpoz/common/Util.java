@@ -43,25 +43,6 @@ public class Util {
         return sb.toString();
     }
 
-    public static List<User> compareUsernamesFromID(String inputUsername, List<Long> userIDs) {
-        try {
-            DatabaseConnector con = new DatabaseConnector(
-                    String.format("jdbc:mysql://%s:%d/%s",
-                            Constants.DATABASE_HOST, Constants.DB_PORT, Constants.DB_NAME),
-                    "chat-client", "DB_Password_0123456789"
-            );
-
-            return compareUsernames(inputUsername,
-                    userIDs.stream()
-                            .map(con::getUser)
-                            .collect(Collectors.toList())
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
     public static List<User> compareUsernames(String inputUsername, List<User> userInfos) {
         StringMetric metric = StringMetrics.damerauLevenshtein();
 

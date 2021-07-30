@@ -7,7 +7,6 @@ import lombok.Getter;
 
 public abstract class ModifyQuery<T extends Sendable> implements Query<T> {
 
-    @Getter
     protected final long typeID;
     @Getter
     protected final String columnToModify;

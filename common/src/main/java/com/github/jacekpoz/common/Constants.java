@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common;
 
-public class Constants {
+public final class Constants {
+
+    private Constants() {/*nah*/}
 
     public static final String SERVER_HOST = "localhost";
     public static final String DATABASE_HOST = "127.0.0.1";
