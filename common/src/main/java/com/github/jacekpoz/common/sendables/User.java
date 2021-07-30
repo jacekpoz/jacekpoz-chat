@@ -1,4 +1,4 @@
-package com.github.jacekpoz.common;
+package com.github.jacekpoz.common.sendables;
 
 import lombok.Getter;
 import lombok.Setter;

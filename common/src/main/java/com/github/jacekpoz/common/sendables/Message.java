@@ -1,4 +1,4 @@
-package com.github.jacekpoz.common;
+package com.github.jacekpoz.common.sendables;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,9 +7,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-public class Message implements Serializable, Sendable {
+public class Message implements Sendable {
 
-    private static final long serialVersionUID = -3347591867787345026L;
     @Getter
     private final long messageID;
     @Getter

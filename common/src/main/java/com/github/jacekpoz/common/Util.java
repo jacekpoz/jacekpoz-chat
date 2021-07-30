@@ -1,5 +1,6 @@
 package com.github.jacekpoz.common;
 
+import com.github.jacekpoz.common.sendables.User;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.StringMetrics;
 

@@ -1,7 +1,6 @@
 package com.github.jacekpoz.common.exceptions;
 
-import com.github.jacekpoz.common.database.queries.Query;
-import com.github.jacekpoz.common.exceptions.UnknownSendableException;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
 
 public class UnknownQueryException extends UnknownSendableException {
 

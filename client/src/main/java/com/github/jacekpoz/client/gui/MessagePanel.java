@@ -1,7 +1,7 @@
 package com.github.jacekpoz.client.gui;
 
-import com.github.jacekpoz.common.Message;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.sendables.Message;
+import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.Util;
 
 import javax.swing.*;

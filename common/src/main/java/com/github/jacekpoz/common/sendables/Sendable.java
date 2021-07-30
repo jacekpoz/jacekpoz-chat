@@ -1,4 +1,4 @@
-package com.github.jacekpoz.common;
+package com.github.jacekpoz.common.sendables;
 
 /**
  * Marker interface implemented by classes that can be sent between the server and client as JSON.
@@ -7,4 +7,5 @@ package com.github.jacekpoz.common;
  * @version 0.0.1
  * @since   0.0.2
  */
+
 public interface Sendable {}

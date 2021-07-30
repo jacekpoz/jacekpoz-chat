@@ -1,14 +1,20 @@
 package com.github.jacekpoz.server;
 
-import com.github.jacekpoz.common.*;
-import com.github.jacekpoz.common.database.queries.MessageQuery;
-import com.github.jacekpoz.common.database.queries.Query;
+import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.exceptions.UnknownQueryException;
-import com.github.jacekpoz.common.database.queries.UserQuery;
-import com.github.jacekpoz.common.database.results.MessageResult;
-import com.github.jacekpoz.common.database.results.Result;
-import com.github.jacekpoz.common.database.results.UserResult;
 import com.github.jacekpoz.common.exceptions.UnknownSendableException;
+import com.github.jacekpoz.common.sendables.Chat;
+import com.github.jacekpoz.common.sendables.Message;
+import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.github.jacekpoz.common.sendables.database.results.ChatResult;
+import com.github.jacekpoz.common.sendables.database.results.MessageResult;
+import com.github.jacekpoz.common.sendables.database.results.Result;
+import com.github.jacekpoz.common.sendables.database.results.UserResult;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -58,12 +64,13 @@ public class InputHandler {
     public Result handleQuery(Query q) {
         if (q instanceof MessageQuery) return handleMessageQuery((MessageQuery) q);
         if (q instanceof UserQuery) return handleUserQuery((UserQuery) q);
+        if (q instanceof ChatQuery) return handleChatQuery((ChatQuery) q);
 
         throw new UnknownQueryException(q);
     }
 
     public MessageResult handleMessageQuery(MessageQuery mq) {
-        MessageResult mr = new MessageResult();
+        MessageResult mr = new MessageResult(mq);
         if (mq.getAuthorID().isPresent()) {
             connector.getMessagesFromChat(
                     mq.getChatID(), mq.getOffset(), mq.getMessageLimit(), mq.getAuthorID().get()
@@ -77,16 +84,16 @@ public class InputHandler {
     }
 
     public UserResult handleUserQuery(UserQuery uq) {
-        UserResult ur = new UserResult();
+        UserResult ur = new UserResult(uq);
         switch (uq.getType()) {
-            case UserQuery.SINGLE_USER:
+            case UserQuery.GET_USER:
                 ur.add(connector.getUser(uq.getId()));
                 break;
-            case UserQuery.USERS_FRIENDS:
+            case UserQuery.GET_USERS_FRIENDS:
                 connector.getFriends(connector.getUser(uq.getId()))
                         .forEach(ur::add);
                 break;
-            case UserQuery.USERS_IN_CHAT:
+            case UserQuery.GET_USERS_IN_CHAT:
                 connector.getUsersInChat(uq.getId())
                         .forEach(ur::add);
                 break;
@@ -94,5 +101,11 @@ public class InputHandler {
                 throw new IllegalArgumentException("Invalid UserQuery type: " + uq.getType());
         }
         return ur;
+    }
+
+    public ChatResult handleChatQuery(ChatQuery cq) {
+        ChatResult cr = new ChatResult(cq);
+        cr.add(connector.getChat(cq.getChatID()));
+        return cr;
     }
 }

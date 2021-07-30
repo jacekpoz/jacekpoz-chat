@@ -1,7 +1,7 @@
 package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.client.gui.screens.MessageScreen;
-import com.github.jacekpoz.common.Chat;
+import com.github.jacekpoz.common.sendables.Chat;
 
 import javax.swing.*;
 import java.awt.*;

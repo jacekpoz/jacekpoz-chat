@@ -2,6 +2,10 @@ package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.*;
 import com.github.jacekpoz.common.*;
+import com.github.jacekpoz.common.sendables.Chat;
+import com.github.jacekpoz.common.sendables.Message;
+import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.User;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -99,6 +103,10 @@ public class MessageScreen implements Screen {
         }
     }
 
+    public void addMessage(Message m) {
+        messages.addMessage(new MessagePanel());
+    }
+
     @Override
     public JPanel getPanel() {
         return messageScreen;
@@ -113,5 +121,10 @@ public class MessageScreen implements Screen {
             chats.addChat(cp);
             System.out.println("added chat: " + c);
         }
+    }
+
+    @Override
+    public void handleSendable(Sendable s) {
+
     }
 }

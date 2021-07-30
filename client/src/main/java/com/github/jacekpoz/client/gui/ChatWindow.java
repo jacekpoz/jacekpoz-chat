@@ -1,12 +1,18 @@
 package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.client.Client;
+import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
+import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.common.sendables.Sendable;
 import com.google.gson.Gson;
 import lombok.Getter;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 
 public class ChatWindow extends JFrame {
 
@@ -17,6 +23,8 @@ public class ChatWindow extends JFrame {
 
     @Getter
     private final Gson gson;
+    @Getter
+    private final InputHandler handler;
 
     @Getter
     private final Screen[] screens;
@@ -46,6 +54,7 @@ public class ChatWindow extends JFrame {
         }
 
         gson = new Gson();
+        handler = new InputHandler(this);
 
         messageScreen = new MessageScreen(this);
         loginScreen = new LoginScreen(this);
@@ -70,5 +79,13 @@ public class ChatWindow extends JFrame {
     public void setScreen(Screen screen) {
         setContentPane(screen.getPanel());
         pack();
+    }
+
+    public void send(Sendable s) {
+        out.println(gson.toJson(s));
+    }
+
+    public Sendable read() throws IOException {
+        return gson.fromJson(in.readLine(), Sendable.class);
     }
 }

@@ -1,8 +1,8 @@
 package com.github.jacekpoz.client;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.sendables.Chat;
+import com.github.jacekpoz.common.sendables.User;
 import lombok.Getter;
 import lombok.Setter;
 

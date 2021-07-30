@@ -1,7 +1,7 @@
 package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.common.DatabaseConnector;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.sendables.User;
 import lombok.Getter;
 import lombok.Setter;
 

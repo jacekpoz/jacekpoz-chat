@@ -1,6 +1,6 @@
 package com.github.jacekpoz.common.exceptions;
 
-import com.github.jacekpoz.common.Sendable;
+import com.github.jacekpoz.common.sendables.Sendable;
 
 public class UnknownSendableException extends RuntimeException {
 

@@ -1,10 +1,10 @@
 package com.github.jacekpoz.server;
 
-import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.Sendable;
-import com.github.jacekpoz.common.User;
-import com.github.jacekpoz.common.database.queries.Query;
-import com.github.jacekpoz.common.database.results.Result;
+import com.github.jacekpoz.common.sendables.Chat;
+import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
+import com.github.jacekpoz.common.sendables.database.results.Result;
 import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;

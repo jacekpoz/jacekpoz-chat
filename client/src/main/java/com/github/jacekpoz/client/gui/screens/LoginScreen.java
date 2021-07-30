@@ -1,7 +1,9 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.User;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -92,5 +94,10 @@ public class LoginScreen implements Screen {
         for (Screen s : window.getScreens())
             if (!(s instanceof LoginScreen))
                 s.update();
+    }
+
+    @Override
+    public void handleSendable(Sendable s) {
+
     }
 }

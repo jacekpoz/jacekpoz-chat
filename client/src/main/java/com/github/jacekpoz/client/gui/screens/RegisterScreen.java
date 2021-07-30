@@ -1,7 +1,8 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.Constants;
+import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.common.sendables.Sendable;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -81,6 +82,11 @@ public class RegisterScreen implements Screen {
 
     @Override
     public void update() {
+
+    }
+
+    @Override
+    public void handleSendable(Sendable s) {
 
     }
 }
