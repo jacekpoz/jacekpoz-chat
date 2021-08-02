@@ -15,8 +15,8 @@ public abstract class ModifyQuery<T extends Sendable> implements Query<T> {
 
     protected final Screen caller;
 
-    public ModifyQuery(long id, String columnToModify, String newValue, Screen caller) {
-        this.typeID = id;
+    public ModifyQuery(long typeID, String columnToModify, String newValue, Screen caller) {
+        this.typeID = typeID;
         this.columnToModify = columnToModify;
         this.newValue = newValue;
         this.caller = caller;
