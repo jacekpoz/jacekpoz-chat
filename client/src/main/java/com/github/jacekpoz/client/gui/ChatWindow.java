@@ -57,9 +57,9 @@ public class ChatWindow extends JFrame {
             e.printStackTrace();
         }
 
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Sendable.class, new SendableAdapter());
-        gson = builder.create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Sendable.class, new SendableAdapter())
+                .create();
 
         handler = new InputHandler(this);
 
@@ -89,8 +89,8 @@ public class ChatWindow extends JFrame {
     }
 
     public void send(Sendable s) {
-        String json = gson.toJson(s);
-        System.out.println(json);
+        String json = gson.toJson(s, Sendable.class);
+        System.out.println("ChatWindow Sendable json:\n" + json);
         out.println(json);
     }
 

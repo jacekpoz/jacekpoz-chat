@@ -31,7 +31,7 @@ public class DatabaseConnector {
     private final Connection con;
 
     public DatabaseConnector(String url, String dbUsername, String dbPassword) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         con = DriverManager.getConnection(url, dbUsername, dbPassword);
     }
 

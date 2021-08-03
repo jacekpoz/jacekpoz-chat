@@ -22,9 +22,11 @@ public class ChatWorker extends Thread {
     private final Socket clientSocket;
     @Getter
     private final Server server;
-    @Getter @Setter
+    @Getter
+    @Setter
     private User currentUser;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Chat currentChat;
     private final PrintWriter out;
     private final BufferedReader in;
@@ -37,9 +39,9 @@ public class ChatWorker extends Thread {
         server = se;
         out = new PrintWriter(clientSocket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Sendable.class, new SendableAdapter());
-        gson = builder.create();
+        gson = new GsonBuilder()
+                .registerTypeAdapter(Sendable.class, new SendableAdapter())
+                .create();
     }
 
     @Override
@@ -48,30 +50,34 @@ public class ChatWorker extends Thread {
         Result<?> output;
         InputHandler ih = new InputHandler(this);
         QueryHandler qh = new QueryHandler();
-        while (true) {
-            try {
-                inputJSON = in.readLine();
+
+        try {
+            while ((inputJSON = in.readLine()) != null) {
+                System.out.println("server ChatWorker inputJSON:\n" + inputJSON);
                 Sendable input = gson.fromJson(inputJSON, Sendable.class);
 
                 if (input instanceof Query) {
                     output = qh.handleQuery((Query<?>) input);
-                    out.println(gson.toJson(output, output.getClass()));
+                    String json = gson.toJson(output, Result.class);
+                    System.out.println("server result json:\n" + json);
+                    out.println(json);
                 } else ih.handleInput(input);
-
-            } catch (SocketException e) {
-                System.out.println("Thread disconnected: " + this);
-                e.printStackTrace();
-                server.getThreads().remove(this);
-                try {
-                    clientSocket.close();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (SocketException e) {
+            System.out.println("Thread disconnected: " + this);
+            server.getThreads().remove(this);
+            try {
+                out.close();
+                in.close();
+                clientSocket.close();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
     }
 

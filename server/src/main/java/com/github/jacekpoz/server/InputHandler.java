@@ -20,8 +20,6 @@ public class InputHandler {
     }
 
     public void handleInput(Sendable input) throws IOException {
-        System.out.println("input: " + input);
-
         if (input instanceof User) handleUser((User) input);
         if (input instanceof Chat) handleChat((Chat) input);
         if (input instanceof Message) handleMessage((Message) input);

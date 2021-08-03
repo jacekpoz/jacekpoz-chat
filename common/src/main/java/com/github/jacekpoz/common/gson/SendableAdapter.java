@@ -35,6 +35,7 @@ public class SendableAdapter implements JsonSerializer<Sendable>, JsonDeserializ
             e.printStackTrace();
             throw new JsonParseException(e.getMessage());
         }
+
         return context.deserialize(jsonObject.get(INSTANCE), klass);
     }
 }

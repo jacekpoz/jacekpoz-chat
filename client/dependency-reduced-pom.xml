@@ -22,7 +22,6 @@
           </execution>
         </executions>
         <configuration>
-          <minimizeJar>true</minimizeJar>
           <transformers>
             <transformer>
               <mainClass>com.github.jacekpoz.client.ChatClientMain</mainClass>

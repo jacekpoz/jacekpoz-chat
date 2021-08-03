@@ -27,7 +27,9 @@ public class InputHandler {
         service.submit(() -> {
             while (true) {
                 try {
-                    Sendable input = window.getGson().fromJson(window.getIn().readLine(), Sendable.class);
+                    String json = window.getIn().readLine();
+                    System.out.println("client InputHandler json:\n" + json);
+                    Sendable input = window.getGson().fromJson(json, Sendable.class);
                     handleSendable(input);
                 } catch (EOFException e) {
                     System.err.println("EOF");

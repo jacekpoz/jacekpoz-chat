@@ -18,10 +18,9 @@ public class SendableAdapterTest {
 
     @Test
     public void shouldSerializeAndDeserializeSendables() {
-        Gson gson;
-        GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(Sendable.class, new SendableAdapter());
-        gson = builder.create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Sendable.class, new SendableAdapter())
+                .create();
 
         Sendable[] input = {
                 new Message("dupa"),
