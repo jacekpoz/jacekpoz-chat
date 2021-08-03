@@ -3,76 +3,54 @@ package com.github.jacekpoz.client.gui.screens;
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.database.queries.user.RegisterQuery;
+import com.github.jacekpoz.common.sendables.database.results.RegisterResult;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 
 public class RegisterScreen implements Screen {
-    private final ChatWindow window;
 
-    private JPanel registerScreen;
-    private JTextField nicknameField;
-    private JButton registerButton;
-    private JButton loginButton;
-    private JLabel result;
-    private JPasswordField passwordField;
-    private JLabel passwordLabel;
-    private JLabel nicknameLabel;
+    public static final int ID = 1;
+
+    private transient final ChatWindow window;
+
+    private transient JPanel registerScreen;
+    private transient JTextField nicknameField;
+    private transient JButton registerButton;
+    private transient JButton loginButton;
+    private transient JLabel result;
+    private transient JPasswordField passwordField;
+    private transient JLabel passwordLabel;
+    private transient JLabel nicknameLabel;
+
+    private transient final Argon2 argon2;
 
     public RegisterScreen(ChatWindow w) {
         window = w;
+        argon2 = Argon2Factory.create();
+
         nicknameField.addActionListener(e -> SwingUtilities.invokeLater(passwordField::requestFocusInWindow));
-        ActionListener al = e -> result.setText(register(nicknameField.getText(), passwordField.getPassword()));
+        ActionListener al = e -> register(nicknameField.getText(), passwordField.getPassword());
         passwordField.addActionListener(al);
         registerButton.addActionListener(al);
         loginButton.addActionListener(e -> window.setScreen(window.getLoginScreen()));
     }
 
-    private String register(String username, char[] password) {
+    private void register(String username, char[] password) {
 
         if (username.isEmpty() || password.length == 0) {
-            return "Musisz wpisać nick i hasło";
+            result.setText("Musisz wpisać nick i hasło");
         }
 
         if (username.contains(" ")) {
-            return "Nick nie może zawierać spacji";
+            result.setText("Nick nie może zawierać spacji");
         }
 
-
-        ExecutorService service = Executors.newCachedThreadPool();
-
-        String returned;
-        try {
-            returned = service.submit(() -> {
-                String result = null;
-                try {
-
-                    switch (connector.register(username, password)) {
-                        case ACCOUNT_CREATED : result = "Pomyślnie utworzono konto"           ; break;
-                        case USERNAME_TAKEN  : result = "Istnieje użytkownik o takiej nazwie" ; break;
-                        case SQL_EXCEPTION   : result = "Nie można połączyć się z serwerem"   ; break;
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    result = "SQLException";
-                }
-
-                return result;
-            }).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            returned = "InterruptedException";
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-            returned = "ExecutionException";
-        }
-
-        return returned;
+        String hash = argon2.hash(10, 65536, 1, password);
+        window.send(new RegisterQuery(username, hash, getScreenID()));
     }
 
     @Override
@@ -87,6 +65,26 @@ public class RegisterScreen implements Screen {
 
     @Override
     public void handleSendable(Sendable s) {
+        if (s instanceof RegisterResult) {
+            RegisterResult rr = (RegisterResult) s;
+            switch (rr.getResult()) {
+                case ACCOUNT_CREATED:
+                    result.setText("Pomyślnie utworzono konto");
+                    break;
+                case USERNAME_TAKEN:
+                    result.setText("Istnieje już użytkownik o takim nicku");
+                    break;
+                case SQL_EXCEPTION:
+                    result.setText("Nie można połączyć się z serwerem");
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+        }
+    }
 
+    @Override
+    public long getScreenID() {
+        return ID;
     }
 }

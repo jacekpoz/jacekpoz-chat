@@ -11,6 +11,7 @@ public class MessageResult implements Result<Message> {
 
     private final MessageQuery query;
     private final List<Message> messages;
+    private boolean success;
 
     public MessageResult(MessageQuery mq) {
         query = mq;
@@ -28,7 +29,22 @@ public class MessageResult implements Result<Message> {
     }
 
     @Override
+    public void add(List<Message> messages) {
+        this.messages.addAll(messages);
+    }
+
+    @Override
     public Query<Message> getQuery() {
         return query;
+    }
+
+    @Override
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    @Override
+    public boolean success() {
+        return success;
     }
 }

@@ -1,15 +1,12 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
 
-public class DeleteUserQuery implements UserQuery {
+public class GetAllUsersQuery implements UserQuery {
 
-    private final long userID;
     private final long callerID;
 
-    public DeleteUserQuery(long userID, long callerID) {
-        this.userID = userID;
+    public GetAllUsersQuery(long callerID) {
         this.callerID = callerID;
     }
 
@@ -20,6 +17,6 @@ public class DeleteUserQuery implements UserQuery {
 
     @Override
     public long getUserID() {
-        return userID;
+        return -1;
     }
 }

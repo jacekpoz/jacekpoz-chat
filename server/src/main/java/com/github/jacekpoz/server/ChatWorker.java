@@ -1,11 +1,13 @@
 package com.github.jacekpoz.server;
 
+import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
 import com.github.jacekpoz.common.sendables.database.results.Result;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,21 +37,24 @@ public class ChatWorker extends Thread {
         server = se;
         out = new PrintWriter(clientSocket.getOutputStream());
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Sendable.class, new SendableAdapter());
+        gson = builder.create();
     }
 
     @Override
     public void run() {
         String inputJSON;
-        Result output;
+        Result<?> output;
         InputHandler ih = new InputHandler(this);
+        QueryHandler qh = new QueryHandler();
         while (true) {
             try {
                 inputJSON = in.readLine();
                 Sendable input = gson.fromJson(inputJSON, Sendable.class);
 
                 if (input instanceof Query) {
-                    output = ih.handleQuery((Query) input);
+                    output = qh.handleQuery((Query<?>) input);
                     out.println(gson.toJson(output, output.getClass()));
                 } else ih.handleInput(input);
 

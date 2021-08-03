@@ -1,15 +1,17 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import lombok.Getter;
 
-public class DeleteUserQuery implements UserQuery {
+public class GetFriendRequestsQuery implements UserQuery {
 
-    private final long userID;
+    @Getter
+    private final User user;
     private final long callerID;
 
-    public DeleteUserQuery(long userID, long callerID) {
-        this.userID = userID;
+    public GetFriendRequestsQuery(User user, long callerID) {
+        this.user = user;
         this.callerID = callerID;
     }
 
@@ -20,6 +22,6 @@ public class DeleteUserQuery implements UserQuery {
 
     @Override
     public long getUserID() {
-        return userID;
+        return user.getId();
     }
 }

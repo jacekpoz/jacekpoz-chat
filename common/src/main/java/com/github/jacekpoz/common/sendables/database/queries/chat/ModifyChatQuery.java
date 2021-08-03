@@ -1,19 +1,32 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
 import com.github.jacekpoz.common.Screen;
-import com.github.jacekpoz.common.sendables.Chat;
-import com.github.jacekpoz.common.sendables.database.queries.abstracts.ModifyQuery;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import lombok.Getter;
 
-public class ModifyChatQuery extends ModifyQuery<Chat> implements ChatQuery {
+public class ModifyChatQuery implements ChatQuery {
 
-    public ModifyChatQuery(long id, String columnToModify, String newValue, Screen caller) {
-        super(id, columnToModify, newValue, caller);
+    private final long chatID;
+    @Getter
+    private final String columnToModify;
+    @Getter
+    private final String newValue;
+    private final long callerID;
+
+    public ModifyChatQuery(long chatID, String columnToModify, String newValue, long callerID) {
+        this.chatID = chatID;
+        this.columnToModify = columnToModify;
+        this.newValue = newValue;
+        this.callerID = callerID;
     }
 
     @Override
     public long getChatID() {
-        return typeID;
+        return chatID;
     }
 
+    @Override
+    public long getCallerID() {
+        return callerID;
+    }
 }

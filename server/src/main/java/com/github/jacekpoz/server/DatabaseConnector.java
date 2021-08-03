@@ -4,6 +4,7 @@ import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.EnumResults.*;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 
@@ -34,13 +35,7 @@ public class DatabaseConnector {
         con = DriverManager.getConnection(url, dbUsername, dbPassword);
     }
 
-    public enum RegisterResult {
-        USERNAME_TAKEN,
-        ACCOUNT_CREATED,
-        SQL_EXCEPTION
-    }
-
-    public RegisterResult register(String username, char[] password) {
+    public RegisterResult register(String username, String hash) {
         try (PreparedStatement checkUsername = con.prepareStatement(
                 "SELECT username " +
                     "FROM " + Constants.USERS_TABLE +
@@ -54,10 +49,6 @@ public class DatabaseConnector {
             }
             rs.close();
 
-            Argon2 argon2 = Argon2Factory.create();
-            String hash = argon2.hash(10, 65536, 1, password);
-            argon2.wipeArray(password);
-
             createUser(username, hash);
 
             return RegisterResult.ACCOUNT_CREATED;
@@ -65,13 +56,6 @@ public class DatabaseConnector {
             e.printStackTrace();
             return RegisterResult.SQL_EXCEPTION;
         }
-    }
-
-    public enum LoginResult {
-        LOGGED_IN,
-        ACCOUNT_DOESNT_EXIST,
-        WRONG_PASSWORD,
-        SQL_EXCEPTION
     }
 
     public LoginResult login(String username, char[] password) {
@@ -101,13 +85,6 @@ public class DatabaseConnector {
             e.printStackTrace();
             return LoginResult.SQL_EXCEPTION;
         }
-    }
-
-    public enum AddFriendResult {
-        ADDED_FRIEND,
-        ALREADY_FRIEND,
-        SAME_USER,
-        SQL_EXCEPTION
     }
 
     public AddFriendResult addFriend(User user, User friend) {
@@ -149,12 +126,6 @@ public class DatabaseConnector {
         }
     }
 
-    public enum RemoveFriendResult {
-        REMOVED_FRIEND,
-        SAME_USER,
-        SQL_EXCEPTION
-    }
-
     public RemoveFriendResult removeFriend(User user, User friend) {
         if (user.equals(friend)) return RemoveFriendResult.SAME_USER;
 
@@ -186,14 +157,6 @@ public class DatabaseConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public enum SendFriendRequestResult {
-        SENT_SUCCESSFULLY,
-        ALREADY_SENT,
-        ALREADY_FRIENDS,
-        SAME_USER,
-        SQL_EXCEPTION
     }
 
     public SendFriendRequestResult sendFriendRequest(User sender, User friend) {
@@ -359,7 +322,7 @@ public class DatabaseConnector {
         }
     }
 
-    public void createUser(String username, String hash) {
+    public User createUser(String username, String hash) {
         try (PreparedStatement insertUser = con.prepareStatement(
                 "INSERT INTO " + Constants.USERS_TABLE + "(username, password_hash)" +
                 " VALUES (?, ?);"
@@ -367,8 +330,11 @@ public class DatabaseConnector {
             insertUser.setString(1, username);
             insertUser.setString(2, hash);
             insertUser.execute();
+
+            return getUser(username);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -468,7 +434,7 @@ public class DatabaseConnector {
             Chat c = new Chat(chatID, name, created, getChatMessageCounter(chatID));
 
             getMessagesFromChat(chatID, 0, Constants.DEFAULT_MESSAGES_LIMIT)
-                    .forEach(message -> c.getMessageIDs().add(message.getMessageID()));
+                    .forEach(message -> c.getMessages().add(message));
 
             getUsersInChat(chatID)
                     .forEach(user -> c.getMembers().add(user));

@@ -11,6 +11,12 @@ public interface Result<T extends Sendable> extends Sendable {
 
     void add(T t);
 
+    void add(List<T> ts);
+
     Query<T> getQuery();
+
+    void setSuccess(boolean success);
+
+    boolean success();
 
 }

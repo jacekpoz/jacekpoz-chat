@@ -3,19 +3,17 @@ package com.github.jacekpoz.common.sendables.database.queries.user;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
 import lombok.Getter;
 
-public class ModifyUserQuery implements UserQuery {
+public class RegisterQuery implements UserQuery {
 
-    private final long userID;
     @Getter
-    private final String columnToModify;
+    private final String username;
     @Getter
-    private final String newValue;
+    private final String hash;
     private final long callerID;
 
-    public ModifyUserQuery(long userID, String columnToModify, String newValue, long callerID) {
-        this.userID = userID;
-        this.columnToModify = columnToModify;
-        this.newValue = newValue;
+    public RegisterQuery(String username, String hash, long callerID) {
+        this.username = username;
+        this.hash = hash;
         this.callerID = callerID;
     }
 
@@ -26,6 +24,6 @@ public class ModifyUserQuery implements UserQuery {
 
     @Override
     public long getUserID() {
-        return userID;
+        return -1;
     }
 }

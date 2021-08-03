@@ -4,31 +4,40 @@ import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.queries.chat.InsertChatQuery;
+import com.github.jacekpoz.common.sendables.database.results.UserResult;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CreateChatsScreen implements Screen {
-    private final ChatWindow window;
 
-    private JPanel createChatsScreen;
-    private JButton backToMessagesButton;
-    private JScrollPane friendsScrollPane;
-    private JScrollPane addedFriendsScrollPane;
-    private JList<User> friendsList;
-    private JList<User> addedFriendsList;
-    private JButton addButton;
-    private JButton deleteButton;
-    private JButton createChatButton;
-    private JTextField chatNameTextField;
-    private JLabel chatNameLabel;
+    public static final int ID = 4;
 
-    private final DefaultListModel<User> friendsListModel;
-    private final DefaultListModel<User> addedFriendsListModel;
+    private transient final ChatWindow window;
+
+    private List<User> friends;
+
+    private transient JPanel createChatsScreen;
+    private transient JButton backToMessagesButton;
+    private transient JScrollPane friendsScrollPane;
+    private transient JScrollPane addedFriendsScrollPane;
+    private transient JList<User> friendsList;
+    private transient JList<User> addedFriendsList;
+    private transient JButton addButton;
+    private transient JButton deleteButton;
+    private transient JButton createChatButton;
+    private transient JTextField chatNameTextField;
+    private transient JLabel chatNameLabel;
+
+    private transient final DefaultListModel<User> friendsListModel;
+    private transient final DefaultListModel<User> addedFriendsListModel;
 
     public CreateChatsScreen(ChatWindow w) {
         window = w;
+
+        friends = new ArrayList<>();
 
         friendsListModel = new DefaultListModel<>();
         friendsList.setModel(friendsListModel);
@@ -85,6 +94,7 @@ public class CreateChatsScreen implements Screen {
                 chatName = sb.toString();
             }
 
+            window.send(new InsertChatQuery(chatName, users, getScreenID()));
 
             window.setScreen(window.getMessageScreen());
             update();
@@ -101,13 +111,23 @@ public class CreateChatsScreen implements Screen {
         friendsListModel.clear();
         addedFriendsListModel.clear();
         chatNameTextField.setText("");
-        for (User u : connector.getFriends(window.getClient().getUser()))
+        for (User u : friends)
             friendsListModel.addElement(u);
         window.getMessageScreen().update();
     }
 
     @Override
     public void handleSendable(Sendable s) {
+        if (s instanceof UserResult) {
+            UserResult ur = (UserResult) s;
+            friends = ur.get();
+        }
 
+        update();
+    }
+
+    @Override
+    public long getScreenID() {
+        return ID;
     }
 }

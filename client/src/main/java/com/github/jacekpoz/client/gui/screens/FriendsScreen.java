@@ -6,41 +6,56 @@ import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.Util;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.queries.user.GetAllUsersQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendRequestsQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendsQuery;
+import com.github.jacekpoz.common.sendables.database.results.UserResult;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsScreen implements Screen {
-    private final ChatWindow window;
 
-    private JPanel friendsScreen;
-    private JTabbedPane pane;
-    private JPanel friendsPane;
-    private JPanel addFriendsPane;
-    private JPanel friendRequestsPane;
-    private JTextField searchFriends;
-    private JButton searchFriendsButton;
-    private JTextField searchNewFriends;
-    private JButton searchNewFriendsButton;
-    private JPanel newFriendsList;
-    private JPanel friendsList;
-    private JScrollPane friendsScrollPane;
-    private JScrollPane newFriendsScrollPane;
-    private JButton backToMessages;
+    public static final int ID = 3;
+
+    private transient final ChatWindow window;
+
+    private transient JPanel friendsScreen;
+    private transient JTabbedPane pane;
+    private transient JPanel friendsPane;
+    private transient JPanel addFriendsPane;
+    private transient JPanel friendRequestsPane;
+    private transient JTextField searchFriends;
+    private transient JButton searchFriendsButton;
+    private transient JTextField searchNewFriends;
+    private transient JButton searchNewFriendsButton;
+    private transient JPanel newFriendsList;
+    private transient JPanel friendsList;
+    private transient JScrollPane friendsScrollPane;
+    private transient JScrollPane newFriendsScrollPane;
+    private transient JButton backToMessages;
+
+    private List<User> friends;
+    private List<User> friendRequests;
+    private List<User> allUsers;
 
     public FriendsScreen(ChatWindow w) {
         window = w;
+        friends = new ArrayList<>();
+        friendRequests = new ArrayList<>();
+        allUsers = new ArrayList<>();
 
         ActionListener searchFriendsAction = e -> {
             String username = searchFriends.getText();
             if (username.isEmpty()) {
-                addUsersToPanel(friendsList, connector.getFriends(window.getClient().getUser()), UserPanel.FRIEND);
+                addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
                 return;
             }
-            List<User> similarUsers = Util.compareUsernamesFromID(username, window.getClient().getUser().getFriendsIds());
+            List<User> similarUsers = Util.compareUsernames(username, friends);
             if (similarUsers.isEmpty()) {
                 return;
             }
@@ -56,7 +71,7 @@ public class FriendsScreen implements Screen {
         ActionListener searchNewFriendsAction = e -> {
             String username = searchNewFriends.getText();
             if (username.isEmpty()) return;
-            List<User> similarUsers = Util.compareUsernames(username, connector.getAllUsers());
+            List<User> similarUsers = Util.compareUsernames(username, allUsers);
 
             newFriendsList.removeAll();
 
@@ -71,7 +86,7 @@ public class FriendsScreen implements Screen {
         friendRequestsPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                addUsersToPanel(friendRequestsPane, connector.getFriendRequests(window.getClient().getUser()), UserPanel.REQUEST);
+                addUsersToPanel(friendRequestsPane, friendRequests, UserPanel.REQUEST);
             }
         });
     }
@@ -80,7 +95,7 @@ public class FriendsScreen implements Screen {
         p.removeAll();
         for (User u : users)
             if (window.getClient().getUser().getId() != u.getId())
-                p.add(new UserPanel(connector, window.getClient().getUser(), u, type));
+                p.add(new UserPanel(window, window.getClient().getUser(), u, type));
         p.revalidate();
     }
 
@@ -91,14 +106,27 @@ public class FriendsScreen implements Screen {
 
     @Override
     public void update() {
+        window.send(new GetFriendsQuery(window.getClient().getUser(), getScreenID()));
+        window.send(new GetFriendRequestsQuery(window.getClient().getUser(), getScreenID()));
+        window.send(new GetAllUsersQuery(getScreenID()));
         friendsList.removeAll();
         friendRequestsPane.removeAll();
-        addUsersToPanel(friendsList, connector.getFriends(window.getClient().getUser()), UserPanel.FRIEND);
-        addUsersToPanel(friendRequestsPane, connector.getFriendRequests(window.getClient().getUser()), UserPanel.REQUEST);
+        addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
+        addUsersToPanel(friendRequestsPane, friendRequests, UserPanel.REQUEST);
     }
 
     @Override
     public void handleSendable(Sendable s) {
+        if (s instanceof UserResult) {
+            UserResult ur = (UserResult) s;
+            if (ur.getQuery() instanceof GetFriendsQuery) friends = ur.get();
+            else if (ur.getQuery() instanceof GetFriendRequestsQuery) friendRequests = ur.get();
+            else if (ur.getQuery() instanceof GetAllUsersQuery) allUsers = ur.get();
+        }
+    }
 
+    @Override
+    public long getScreenID() {
+        return ID;
     }
 }

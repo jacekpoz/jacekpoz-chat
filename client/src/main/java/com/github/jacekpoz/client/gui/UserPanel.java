@@ -1,7 +1,10 @@
 package com.github.jacekpoz.client.gui;
 
-import com.github.jacekpoz.common.DatabaseConnector;
 import com.github.jacekpoz.common.sendables.User;
+import com.github.jacekpoz.common.sendables.database.queries.user.AcceptFriendRequestQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.DenyFriendRequestQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.RemoveFriendQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.SendFriendRequestQuery;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +17,7 @@ public class UserPanel extends JPanel {
     public static final int FRIEND = 1;
     public static final int REQUEST = 2;
 
-    private final DatabaseConnector connector;
+    private final ChatWindow window;
     @Getter
     private final User clientUser;
     @Getter
@@ -24,8 +27,8 @@ public class UserPanel extends JPanel {
     private JButton button1;
     private JButton button2;
 
-    public UserPanel(DatabaseConnector con, User u, User pU, int type) {
-        connector = con;
+    public UserPanel(ChatWindow w, User u, User pU, int type) {
+        window = w;
         clientUser = u;
         panelUser = pU;
         userPanelType = type;
@@ -49,7 +52,8 @@ public class UserPanel extends JPanel {
                                 .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
                 ));
                 button1.addActionListener(a -> {
-                    System.out.println(connector.sendFriendRequest(clientUser, panelUser));
+                    window.send(new SendFriendRequestQuery(clientUser, panelUser, window.getFriendsScreen().getScreenID()));
+                    removeThis();
                 });
                 break;
             case FRIEND:
@@ -60,22 +64,21 @@ public class UserPanel extends JPanel {
                 ));
                 button1.addActionListener(a -> {
                     clientUser.removeFriend(panelUser);
-                    System.out.println(connector.removeFriend(clientUser, panelUser));
+                    window.send(new RemoveFriendQuery(clientUser, panelUser, window.getFriendsScreen().getScreenID()));
+                    removeThis();
                 });
                 break;
             case REQUEST:
                 button1 = new JButton("A");
                 button1.addActionListener(a -> {
-                    connector.acceptFriendRequest(panelUser, clientUser);
+                    window.send(new AcceptFriendRequestQuery(panelUser, clientUser, window.getFriendsScreen().getScreenID()));
                     clientUser.addFriend(panelUser);
-                    System.out.println("Friend request accepted");
+                    removeThis();
                 });
                 button2 = new JButton("D");
                 button2.addActionListener(a -> {
-                    connector.denyFriendRequest(panelUser, clientUser);
-                    remove(button1);
-                    remove(button2);
-                    System.out.println("Friend request denied");
+                    window.send(new DenyFriendRequestQuery(panelUser, clientUser, window.getFriendsScreen().getScreenID()));
+                    removeThis();
                 });
                 break;
             default:
@@ -86,5 +89,10 @@ public class UserPanel extends JPanel {
         if (button2 != null) add(button2);
 
         revalidate();
+    }
+
+    private void removeThis() {
+        window.getFriendsScreen().getPanel().remove(this);
+        window.getFriendsScreen().getPanel().revalidate();
     }
 }

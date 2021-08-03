@@ -4,8 +4,12 @@ import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
 import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Sendable;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -53,7 +57,10 @@ public class ChatWindow extends JFrame {
             e.printStackTrace();
         }
 
-        gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Sendable.class, new SendableAdapter());
+        gson = builder.create();
+
         handler = new InputHandler(this);
 
         messageScreen = new MessageScreen(this);
@@ -82,10 +89,15 @@ public class ChatWindow extends JFrame {
     }
 
     public void send(Sendable s) {
-        out.println(gson.toJson(s));
+        String json = gson.toJson(s);
+        System.out.println(json);
+        out.println(json);
     }
 
-    public Sendable read() throws IOException {
-        return gson.fromJson(in.readLine(), Sendable.class);
+    public Screen getScreen(long id) {
+        for (Screen s : screens)
+            if (s.getScreenID() == id)
+                return s;
+        return null;
     }
 }

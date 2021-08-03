@@ -1,21 +1,21 @@
 package com.github.jacekpoz.common.sendables.database.queries.message;
 
-import com.github.jacekpoz.common.Screen;
-import com.github.jacekpoz.common.sendables.Message;
-import com.github.jacekpoz.common.sendables.database.queries.abstracts.DeleteQuery;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
 
-public class DeleteMessageQuery extends DeleteQuery<Message> implements MessageQuery {
+public class DeleteMessageQuery implements MessageQuery {
 
+    private final long messageID;
     private final long chatID;
+    private final long callerID;
 
-    public DeleteMessageQuery(long messageID, long chatID, Screen caller) {
-        super(messageID, caller);
+    public DeleteMessageQuery(long messageID, long chatID, long callerID) {
+        this.messageID = messageID;
         this.chatID = chatID;
+        this.callerID = callerID;
     }
 
-    public DeleteMessageQuery(long chatID, Screen caller) {
-        this(-1, chatID, caller);
+    public DeleteMessageQuery(long chatID, long callerID) {
+        this(-1, chatID, callerID);
     }
 
     @Override
@@ -23,7 +23,13 @@ public class DeleteMessageQuery extends DeleteQuery<Message> implements MessageQ
         return chatID;
     }
 
+    @Override
     public long getMessageID() {
-        return typeID;
+        return messageID;
+    }
+
+    @Override
+    public long getCallerID() {
+        return callerID;
     }
 }

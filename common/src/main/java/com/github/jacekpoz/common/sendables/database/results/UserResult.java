@@ -11,6 +11,7 @@ public class UserResult implements Result<User> {
 
     private final UserQuery query;
     private final List<User> users;
+    private boolean success;
 
     public UserResult(UserQuery uq) {
         query = uq;
@@ -28,7 +29,22 @@ public class UserResult implements Result<User> {
     }
 
     @Override
+    public void add(List<User> users) {
+        this.users.addAll(users);
+    }
+
+    @Override
     public Query<User> getQuery() {
         return query;
+    }
+
+    @Override
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    @Override
+    public boolean success() {
+        return success;
     }
 }

@@ -39,4 +39,13 @@ public interface Screen {
      */
     void handleSendable(Sendable s);
 
+    /**
+     * ID is used to identify the screens instead of passing them to methods.
+     *
+     * @return screen ID
+     * @author jacekpoz
+     * @since  0.0.3
+     */
+    long getScreenID();
+
 }

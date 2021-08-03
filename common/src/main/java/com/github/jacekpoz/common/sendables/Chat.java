@@ -18,7 +18,7 @@ public class Chat implements Serializable, Sendable {
     @Getter
     private final List<User> members;
     @Getter
-    private final List<Long> messageIDs;
+    private final List<Message> messages;
     @Getter
     private final Timestamp dateCreated;
     @Getter
@@ -28,13 +28,13 @@ public class Chat implements Serializable, Sendable {
         id = chatID;
         name = chatName;
         members = new ArrayList<>();
-        messageIDs = new ArrayList<>();
+        messages = new ArrayList<>();
         dateCreated = created;
         messageCounter = mCounter;
     }
 
     public void sortMessages() {
-        messageIDs.sort(Comparator.naturalOrder());
+        messages.sort(Comparator.comparingLong(Message::getMessageID));
     }
 
     /*

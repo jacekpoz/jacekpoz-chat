@@ -11,6 +11,7 @@ public class ChatResult implements Result<Chat> {
 
     private final ChatQuery query;
     private final List<Chat> chats;
+    private boolean success;
 
     public ChatResult(ChatQuery cq) {
         query = cq;
@@ -28,7 +29,22 @@ public class ChatResult implements Result<Chat> {
     }
 
     @Override
+    public void add(List<Chat> chats) {
+        this.chats.addAll(chats);
+    }
+
+    @Override
     public Query<Chat> getQuery() {
         return query;
+    }
+
+    @Override
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    @Override
+    public boolean success() {
+        return success;
     }
 }

@@ -1,21 +1,33 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
 import com.github.jacekpoz.common.Screen;
-import com.github.jacekpoz.common.sendables.Chat;
-import com.github.jacekpoz.common.sendables.database.queries.abstracts.InsertQuery;
+import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import lombok.Getter;
 
-public class InsertChatQuery extends InsertQuery<Chat> implements ChatQuery {
+import java.util.List;
 
+public class InsertChatQuery implements ChatQuery {
+
+    @Getter
     private final String chatName;
+    @Getter
+    private final List<User> members;
+    private final long callerID;
 
-    public InsertChatQuery(String chatName, Screen caller) {
-        super(caller);
+    public InsertChatQuery(String chatName, List<User> members, long callerID) {
         this.chatName = chatName;
+        this.members = members;
+        this.callerID = callerID;
     }
 
     @Override
     public long getChatID() {
         return -1;
+    }
+
+    @Override
+    public long getCallerID() {
+        return callerID;
     }
 }

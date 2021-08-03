@@ -13,12 +13,12 @@ public class Message implements Sendable {
     private final long messageID;
     @Getter
     private final long chatID;
+    @Getter
+    private final long authorID;
     @Getter @Setter
     private String content;
     @Getter
     private final Timestamp sendDate;
-    @Getter
-    private final long authorID;
 
     public Message(long mID, long cID, long aID, String text, Timestamp send) {
         messageID = mID;
