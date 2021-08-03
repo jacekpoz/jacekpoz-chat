@@ -1,12 +1,11 @@
 package com.github.jacekpoz.server;
 
-import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.Constants;
+import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.EnumResults.*;
-import de.mkammerer.argon2.Argon2;
-import de.mkammerer.argon2.Argon2Factory;
+import com.kosprov.jargon2.api.Jargon2;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -31,7 +30,8 @@ public class DatabaseConnector {
 
     private final Connection con;
 
-    public DatabaseConnector(String url, String dbUsername, String dbPassword) throws SQLException {
+    public DatabaseConnector(String url, String dbUsername, String dbPassword) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
         con = DriverManager.getConnection(url, dbUsername, dbPassword);
     }
 
@@ -58,7 +58,7 @@ public class DatabaseConnector {
         }
     }
 
-    public LoginResult login(String username, char[] password) {
+    public LoginResult login(String username, byte[] password) {
         try (PreparedStatement checkUsername = con.prepareStatement(
                 "SELECT * " +
                     "FROM " + Constants.USERS_TABLE +
@@ -72,11 +72,10 @@ public class DatabaseConnector {
             }
             rs.close();
 
-            Argon2 argon2 = Argon2Factory.create();
             String dbHash = rs.getString("password_hash");
 
-            if (argon2.verify(dbHash, password)) {
-                argon2.wipeArray(password);
+            Jargon2.Verifier v = Jargon2.jargon2Verifier();
+            if (v.hash(dbHash).password(password).verifyEncoded()) {
                 return LoginResult.LOGGED_IN;
             }
 

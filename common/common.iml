@@ -11,9 +11,12 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: de.mkammerer:argon2-jvm:2.10.1" level="project" />
-    <orderEntry type="library" name="Maven: de.mkammerer:argon2-jvm-nolibs:2.10.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: net.java.dev.jna:jna:5.8.0" level="project" />
+    <orderEntry type="library" name="Maven: com.kosprov.jargon2:jargon2-api:1.1.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.kosprov.jargon2:jargon2-native-ri-backend:1.1.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.nativelibs4java:jnaerator-runtime:0.12" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.nativelibs4java:ochafik-util:0.12" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: net.java.dev.jna:jna:4.1.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: com.kosprov.jargon2:jargon2-native-ri-binaries-generic:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.mpkorstanje:simmetrics-core:4.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:19.0" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />

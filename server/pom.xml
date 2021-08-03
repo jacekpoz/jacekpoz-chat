@@ -4,11 +4,12 @@
     <parent>
         <artifactId>jacekpoz-chat</artifactId>
         <groupId>com.github.jacekpoz</groupId>
-        <version>0.0.2</version>
+        <version>0.0.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>server</artifactId>
+    <version>0.0.3</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
@@ -19,7 +20,7 @@
         <dependency>
             <groupId>com.github.jacekpoz</groupId>
             <artifactId>common</artifactId>
-            <version>0.0.2</version>
+            <version>0.0.3</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -36,13 +37,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.25</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.protobuf</groupId>
-                    <artifactId>protobuf-java</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>8.0.26</version>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>com.google.protobuf</groupId>-->
+<!--                    <artifactId>protobuf-java</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
     </dependencies>
 
@@ -51,7 +52,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.3.0-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -72,6 +73,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
                     <source>16</source>
                     <target>16</target>
@@ -79,5 +81,14 @@
             </plugin>
         </plugins>
     </build>
+
+<!--    <pluginRepositories>-->
+<!--        <pluginRepository>-->
+<!--            <id>maven-snapshots</id>-->
+<!--            <url>https://repository.apache.org/content/repositories/snapshots/</url>-->
+<!--        </pluginRepository>-->
+<!--    </pluginRepositories>-->
+
+
 
 </project>

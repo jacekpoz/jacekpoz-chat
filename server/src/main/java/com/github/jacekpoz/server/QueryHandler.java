@@ -25,7 +25,7 @@ public class QueryHandler {
         try {
             connector = new DatabaseConnector("jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
                     "chat-client", System.getenv("DB_PASSWORD"));
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
