@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Util {
+public final class Util {
 
     private Util() {/*nope*/}
 

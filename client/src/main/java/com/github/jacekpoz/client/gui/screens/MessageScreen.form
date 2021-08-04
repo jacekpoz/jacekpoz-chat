@@ -42,7 +42,7 @@
           <background color="-12829636"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <text value="Wyślij"/>
+          <text resource-bundle="lang" key="send"/>
         </properties>
       </component>
       <scrollpane id="24110" binding="messagesScrollPane">

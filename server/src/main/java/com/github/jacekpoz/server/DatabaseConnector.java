@@ -70,9 +70,9 @@ public class DatabaseConnector {
                 rs.close();
                 return LoginResult.ACCOUNT_DOESNT_EXIST;
             }
-            rs.close();
 
             String dbHash = rs.getString("password_hash");
+            rs.close();
 
             Jargon2.Verifier v = Jargon2.jargon2Verifier();
             if (v.hash(dbHash).password(password).verifyEncoded()) {

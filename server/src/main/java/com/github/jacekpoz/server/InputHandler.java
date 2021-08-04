@@ -38,6 +38,6 @@ public class InputHandler {
     private void handleMessage(Message m) {
         for (ChatWorker ct : worker.getServer().getThreads())
             if (worker.getCurrentChat().getMembers().contains(ct.getCurrentUser()))
-                ct.send(gson.toJson(m, m.getClass()));
+                ct.send(gson.toJson(m, Sendable.class));
     }
 }

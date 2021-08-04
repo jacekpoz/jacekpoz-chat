@@ -37,7 +37,7 @@ public class ChatWorker extends Thread {
         super("ChatThread");
         clientSocket = so;
         server = se;
-        out = new PrintWriter(clientSocket.getOutputStream());
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         gson = new GsonBuilder()
                 .registerTypeAdapter(Sendable.class, new SendableAdapter())
@@ -53,14 +53,12 @@ public class ChatWorker extends Thread {
 
         try {
             while ((inputJSON = in.readLine()) != null) {
-                System.out.println("server ChatWorker inputJSON:\n" + inputJSON);
                 Sendable input = gson.fromJson(inputJSON, Sendable.class);
 
                 if (input instanceof Query) {
                     output = qh.handleQuery((Query<?>) input);
-                    String json = gson.toJson(output, Result.class);
-                    System.out.println("server result json:\n" + json);
-                    out.println(json);
+                    String json = gson.toJson(output, Sendable.class);
+                    send(json);
                 } else ih.handleInput(input);
             }
         } catch (SocketException e) {
@@ -77,8 +75,6 @@ public class ChatWorker extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     public void send(String json) {

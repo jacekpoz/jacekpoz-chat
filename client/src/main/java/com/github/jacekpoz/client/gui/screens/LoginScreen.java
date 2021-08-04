@@ -63,6 +63,7 @@ public class LoginScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof LoginResult) {
+            System.out.println("LoginScreen LoginResult");
             LoginResult lr = (LoginResult) s;
             switch (lr.getResult()) {
                 case LOGGED_IN: {
@@ -76,12 +77,15 @@ public class LoginScreen implements Screen {
                     break;
                 }
                 case ACCOUNT_DOESNT_EXIST:
+                    System.out.println("LoginScreen ACCOUNT_DOESNT_EXIST");
                     result.setText("Konto o podanej nazwie nie istnieje");
                     break;
                 case WRONG_PASSWORD:
+                    System.out.println("LoginScreen WRONG_PASSWORD");
                     result.setText("Złe hasło");
                     break;
                 case SQL_EXCEPTION:
+                    System.out.println("LoginScreen SQL_EXCEPTION");
                     result.setText("Nie można połączyć się z serwerem");
                     break;
                 default:

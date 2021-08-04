@@ -7,12 +7,12 @@ import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.results.Result;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class InputHandler {
+
 
     private final ChatWindow window;
 
@@ -20,40 +20,50 @@ public class InputHandler {
         window = w;
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
     public void start() {
         ExecutorService service = Executors.newCachedThreadPool();
 
         service.submit(() -> {
-            while (true) {
-                try {
-                    String json = window.getIn().readLine();
-                    System.out.println("client InputHandler json:\n" + json);
-                    Sendable input = window.getGson().fromJson(json, Sendable.class);
+            String inputJSON;
+            try {
+                while ((inputJSON = window.getIn().readLine()) != null) {
+                    System.out.println(inputJSON);
+                    /* TODO
+                    java.lang.RuntimeException: Unable to invoke no-args constructor for interface
+                    com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery.
+                    Registering an InstanceCreator with Gson for this type may fix this problem.
+
+                    this motherfucker and also add logging (probably just plain java logger or log4j
+                     */
+                    Sendable input = window.getGson().fromJson(inputJSON, Sendable.class);
+                    System.out.println(input);
                     handleSendable(input);
-                } catch (EOFException e) {
-                    System.err.println("EOF");
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
 
     private void handleSendable(Sendable input) {
+        System.out.println(input.getClass().getSimpleName());
         if (input instanceof Message) {
+            System.out.println("m");
             window.getMessageScreen().handleSendable(input);
         } else if (input instanceof User) {
+            System.out.println("u");
             window.getClient().setUser((User) input);
         } else if (input instanceof Chat) {
+            System.out.println("c");
             window.getClient().setChat((Chat) input);
         } else if (input instanceof Result) {
+            System.out.println("r");
             Result<?> r = (Result<?>) input;
+            System.out.println(r);
             long screenID = r.getQuery().getCallerID();
-            window.getScreen(screenID).handleSendable(input);
+            System.out.println(screenID);
+            window.getScreen(screenID).handleSendable(r);
         }
-
     }
 
 }

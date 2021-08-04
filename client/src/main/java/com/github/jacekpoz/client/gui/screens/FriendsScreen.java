@@ -119,6 +119,7 @@ public class FriendsScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
+            System.out.println("FriendsScreen UserResult");
             UserResult ur = (UserResult) s;
             if (ur.getQuery() instanceof GetFriendsQuery) friends = ur.get();
             else if (ur.getQuery() instanceof GetFriendRequestsQuery) friendRequests = ur.get();

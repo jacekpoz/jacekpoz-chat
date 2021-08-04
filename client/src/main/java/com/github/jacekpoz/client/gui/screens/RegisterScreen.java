@@ -77,15 +77,19 @@ public class RegisterScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof RegisterResult) {
+            System.out.println("RegisterScreen RegisterResult");
             RegisterResult rr = (RegisterResult) s;
             switch (rr.getResult()) {
                 case ACCOUNT_CREATED:
+                    System.out.println("RegisterScreen ACCOUNT_CREATED");
                     result.setText("Pomyślnie utworzono konto");
                     break;
                 case USERNAME_TAKEN:
+                    System.out.println("RegisterScreen USERNAME_TAKEN");
                     result.setText("Istnieje już użytkownik o takim nicku");
                     break;
                 case SQL_EXCEPTION:
+                    System.out.println("RegisterScreen SQL_EXCEPTION");
                     result.setText("Nie można połączyć się z serwerem");
                     break;
                 default:

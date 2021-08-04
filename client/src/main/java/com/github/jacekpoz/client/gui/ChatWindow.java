@@ -6,8 +6,6 @@ import com.github.jacekpoz.client.gui.screens.*;
 import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Sendable;
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -43,6 +41,8 @@ public class ChatWindow extends JFrame {
     private final FriendsScreen friendsScreen;
     @Getter
     private final CreateChatsScreen createChatsScreen;
+    @Getter
+    private final SettingsScreen settingsScreen;
 
     @Getter
     private final Client client;
@@ -51,7 +51,7 @@ public class ChatWindow extends JFrame {
         client = c;
 
         try {
-            out = new PrintWriter(client.getSocket().getOutputStream());
+            out = new PrintWriter(client.getSocket().getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,14 +68,17 @@ public class ChatWindow extends JFrame {
         registerScreen = new RegisterScreen(this);
         friendsScreen = new FriendsScreen(this);
         createChatsScreen = new CreateChatsScreen(this);
+        settingsScreen = new SettingsScreen(this);
 
-        screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen};
+        screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
 
         // TODO change this after I figure out the name
         setTitle("chat");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setDefaultLookAndFeelDecorated(true);
+
+        handler.start();
     }
 
     public void start() {
@@ -90,7 +93,6 @@ public class ChatWindow extends JFrame {
 
     public void send(Sendable s) {
         String json = gson.toJson(s, Sendable.class);
-        System.out.println("ChatWindow Sendable json:\n" + json);
         out.println(json);
     }
 

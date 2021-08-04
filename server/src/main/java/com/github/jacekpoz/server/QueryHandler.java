@@ -4,6 +4,7 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.exceptions.UnknownQueryException;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
+import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.EnumResults;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetUsersChatsQuery;

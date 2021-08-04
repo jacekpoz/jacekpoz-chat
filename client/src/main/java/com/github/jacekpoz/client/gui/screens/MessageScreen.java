@@ -113,17 +113,20 @@ public class MessageScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof ChatResult) {
+            System.out.println("MessageScreen ChatResult");
             ChatResult cr = (ChatResult) s;
             if (cr.getQuery() instanceof GetUsersChatsQuery) {
                 usersChats = cr.get();
             }
         } else if (s instanceof UserResult) {
+            System.out.println("MessageScreen UserResult");
             UserResult ur = (UserResult) s;
             if (ur.getQuery() instanceof GetMessageAuthorQuery) {
                 GetMessageAuthorQuery gmaq = (GetMessageAuthorQuery) ur.getQuery();
                 messageAuthors.put(gmaq.getMessage(), ur.get().get(0));
             }
         } else if (s instanceof Message) {
+            System.out.println("MessageScreen Message");
             Message m = (Message) s;
             SwingUtilities.invokeLater(() ->
                     messages.addMessage(new MessagePanel(messageAuthors.get(m), m)));

@@ -120,10 +120,10 @@ public class CreateChatsScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
+            System.out.println("CreateChatsScreen UserResult");
             UserResult ur = (UserResult) s;
             friends = ur.get();
         }
-
         update();
     }
 
