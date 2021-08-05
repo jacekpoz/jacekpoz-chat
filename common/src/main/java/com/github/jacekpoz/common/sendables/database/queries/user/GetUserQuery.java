@@ -1,20 +1,16 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
 import lombok.Getter;
 
-public class GetUserQuery implements UserQuery {
+public class GetUserQuery extends UserQuery {
 
-    private final long userID;
     @Getter
     private final String username;
-    private final long callerID;
 
     protected GetUserQuery(long userID, String username, long callerID) {
-        this.userID = userID;
+        super(userID, callerID);
         this.username = username;
-        this.callerID = callerID;
     }
 
     public GetUserQuery(long userID, long callerID) {
@@ -25,13 +21,4 @@ public class GetUserQuery implements UserQuery {
         this(-1, username, callerID);
     }
 
-    @Override
-    public long getUserID() {
-        return userID;
-    }
-
-    @Override
-    public long getCallerID() {
-        return callerID;
-    }
 }

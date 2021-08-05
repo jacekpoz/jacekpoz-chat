@@ -86,8 +86,8 @@ public class DatabaseConnector {
         }
     }
 
-    public AddFriendResult addFriend(User user, User friend) {
-        if (user.equals(friend)) return AddFriendResult.SAME_USER;
+    public AddFriendResult addFriend(long userID, long friendID) {
+        if (userID == friendID) return AddFriendResult.SAME_USER;
 
         PreparedStatement insertFriend = null;
         try (PreparedStatement checkFriend = con.prepareStatement(
@@ -95,8 +95,8 @@ public class DatabaseConnector {
                     "FROM " + Constants.FRIENDS_TABLE +
                     " WHERE user_id = ? AND friend_id = ?;"
         )) {
-            checkFriend.setLong(1, user.getId());
-            checkFriend.setLong(2, friend.getId());
+            checkFriend.setLong(1, userID);
+            checkFriend.setLong(2, friendID);
             ResultSet rs = checkFriend.executeQuery();
             if (rs.next()) {
                 rs.close();
@@ -108,8 +108,8 @@ public class DatabaseConnector {
                     "INSERT INTO " + Constants.FRIENDS_TABLE +
                         " VALUES (?, ?);"
             );
-            insertFriend.setLong(1, user.getId());
-            insertFriend.setLong(2, friend.getId());
+            insertFriend.setLong(1, userID);
+            insertFriend.setLong(2, friendID);
             insertFriend.execute();
 
             return AddFriendResult.ADDED_FRIEND;
@@ -125,15 +125,15 @@ public class DatabaseConnector {
         }
     }
 
-    public RemoveFriendResult removeFriend(User user, User friend) {
-        if (user.equals(friend)) return RemoveFriendResult.SAME_USER;
+    public RemoveFriendResult removeFriend(long userID, long friendID) {
+        if (userID == friendID) return RemoveFriendResult.SAME_USER;
 
         try (PreparedStatement removeFriend = con.prepareStatement(
                 "DELETE FROM " + Constants.FRIENDS_TABLE +
                 " WHERE user_id = ? AND friend_id = ?;"
         )) {
-            removeFriend.setLong(1, user.getId());
-            removeFriend.setLong(2, friend.getId());
+            removeFriend.setLong(1, userID);
+            removeFriend.setLong(2, friendID);
             removeFriend.execute();
 
             return RemoveFriendResult.REMOVED_FRIEND;
@@ -143,24 +143,24 @@ public class DatabaseConnector {
         }
     }
 
-    public void addMessage(Message m) {
+    public void addMessage(long messageID, long chatID, long authorID, String content) {
         try (PreparedStatement addMessage = con.prepareStatement(
                 "INSERT INTO " + Constants.MESSAGES_TABLE + "(message_id, chat_id, author_id, content)" +
                     "VALUES (?, ?, ?, ?);"
         )) {
-            addMessage.setLong(1, m.getMessageID());
-            addMessage.setLong(2, m.getChatID());
-            addMessage.setLong(3, m.getAuthorID());
-            addMessage.setString(4, m.getContent());
+            addMessage.setLong(1, messageID);
+            addMessage.setLong(2, chatID);
+            addMessage.setLong(3, authorID);
+            addMessage.setString(4, content);
             addMessage.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public SendFriendRequestResult sendFriendRequest(User sender, User friend) {
-        if (sender.equals(friend)) return SendFriendRequestResult.SAME_USER;
-        if (isFriend(sender, friend)) return SendFriendRequestResult.ALREADY_FRIENDS;
+    public SendFriendRequestResult sendFriendRequest(long senderID, long friendID) {
+        if (senderID == friendID) return SendFriendRequestResult.SAME_USER;
+        if (isFriend(senderID, friendID)) return SendFriendRequestResult.ALREADY_FRIENDS;
 
         PreparedStatement insertRequest = null;
         try (PreparedStatement checkRequest = con.prepareStatement(
@@ -168,8 +168,8 @@ public class DatabaseConnector {
                     "FROM " + Constants.FRIEND_REQUESTS_TABLE +
                     " WHERE sender_id = ? AND friend_id = ?;"
         )) {
-            checkRequest.setLong(1, sender.getId());
-            checkRequest.setLong(2, friend.getId());
+            checkRequest.setLong(1, senderID);
+            checkRequest.setLong(2, friendID);
             ResultSet rs = checkRequest.executeQuery();
             if (rs.next()) {
                 rs.close();
@@ -181,8 +181,8 @@ public class DatabaseConnector {
                     "INSERT INTO " + Constants.FRIEND_REQUESTS_TABLE +
                         " VALUES (?, ?);"
             );
-            insertRequest.setLong(1, sender.getId());
-            insertRequest.setLong(2, friend.getId());
+            insertRequest.setLong(1, senderID);
+            insertRequest.setLong(2, friendID);
             insertRequest.execute();
 
             return SendFriendRequestResult.SENT_SUCCESSFULLY;
@@ -198,8 +198,8 @@ public class DatabaseConnector {
         }
     }
 
-    public void acceptFriendRequest(User sender, User friend) {
-        if (sender.equals(friend)) return;
+    public void acceptFriendRequest(long senderID, long friendID) {
+        if (senderID == friendID) return;
 
         PreparedStatement deleteRequest = null;
         try (PreparedStatement checkRequest = con.prepareStatement(
@@ -207,8 +207,8 @@ public class DatabaseConnector {
                     "FROM " + Constants.FRIEND_REQUESTS_TABLE +
                     " WHERE sender_id = ? AND friend_id = ?;"
         )) {
-            checkRequest.setLong(1, sender.getId());
-            checkRequest.setLong(2, friend.getId());
+            checkRequest.setLong(1, senderID);
+            checkRequest.setLong(2, friendID);
 
             ResultSet rs = checkRequest.executeQuery();
             if (!rs.next()) {
@@ -221,11 +221,11 @@ public class DatabaseConnector {
                     "DELETE FROM " + Constants.FRIEND_REQUESTS_TABLE +
                         " WHERE sender_id = ? AND friend_id = ?;"
             );
-            deleteRequest.setLong(1, sender.getId());
-            deleteRequest.setLong(2, friend.getId());
+            deleteRequest.setLong(1, senderID);
+            deleteRequest.setLong(2, friendID);
             deleteRequest.execute();
 
-            addFriend(sender, friend);
+            addFriend(senderID, friendID);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -237,8 +237,8 @@ public class DatabaseConnector {
         }
     }
 
-    public void denyFriendRequest(User sender, User friend) {
-        if (sender.equals(friend)) return;
+    public void denyFriendRequest(long senderID, long friendID) {
+        if (senderID == friendID) return;
 
         PreparedStatement deleteRequest = null;
         try (PreparedStatement checkRequest = con.prepareStatement(
@@ -246,8 +246,8 @@ public class DatabaseConnector {
                     "FROM " + Constants.FRIEND_REQUESTS_TABLE +
                     " WHERE sender_id = ? AND friend_id = ?;"
         )) {
-            checkRequest.setLong(1, sender.getId());
-            checkRequest.setLong(2, friend.getId());
+            checkRequest.setLong(1, senderID);
+            checkRequest.setLong(2, friendID);
             ResultSet rs = checkRequest.executeQuery();
             if (!rs.next()) {
                 rs.close();
@@ -259,8 +259,8 @@ public class DatabaseConnector {
                     "DELETE FROM " + Constants.FRIEND_REQUESTS_TABLE +
                         " WHERE sender_id = ? AND friend_id = ?;"
             );
-            deleteRequest.setLong(1, sender.getId());
-            deleteRequest.setLong(2, friend.getId());
+            deleteRequest.setLong(1, senderID);
+            deleteRequest.setLong(2, friendID);
             deleteRequest.execute();
 
         } catch (SQLException e) {
@@ -363,7 +363,7 @@ public class DatabaseConnector {
 
             User returned = new User(id, nickname, hashedPassword, joined);
 
-            List<User> friends = getFriends(returned);
+            List<User> friends = getFriends(id);
             friends.forEach(returned::addFriend);
 
             return returned;
@@ -569,17 +569,17 @@ public class DatabaseConnector {
         }
     }
 
-    public boolean isFriend(User user, User friend) {
+    public boolean isFriend(long userID, long friendID) {
         try (PreparedStatement getFriendIDs = con.prepareStatement(
                 "SELECT friend_id " +
                     "FROM " + Constants.FRIENDS_TABLE +
                     " WHERE user_id = ?;"
         )) {
-            getFriendIDs.setLong(1, user.getId());
+            getFriendIDs.setLong(1, userID);
             ResultSet rs = getFriendIDs.executeQuery();
             while (rs.next()) {
-                long friendID = rs.getLong("friend_id");
-                if (friend.getId() == friendID) return true;
+                long dbFriendID = rs.getLong("friend_id");
+                if (friendID == dbFriendID) return true;
             }
             rs.close();
 
@@ -590,13 +590,13 @@ public class DatabaseConnector {
         }
     }
 
-    public List<User> getFriends(User user) {
+    public List<User> getFriends(long userID) {
         try (PreparedStatement getFriendIDs = con.prepareStatement(
                 "SELECT friend_id " +
                     "FROM " + Constants.FRIENDS_TABLE +
                     " WHERE user_id = ?;"
         )) {
-            getFriendIDs.setLong(1, user.getId());
+            getFriendIDs.setLong(1, userID);
             List<User> friends = new ArrayList<>();
 
             ResultSet rs = getFriendIDs.executeQuery();
@@ -614,13 +614,13 @@ public class DatabaseConnector {
         }
     }
 
-    public List<User> getFriendRequests(User user) {
+    public List<User> getFriendRequests(long userID) {
         try (PreparedStatement st = con.prepareStatement(
                 "SELECT sender_id " +
                     "FROM " + Constants.FRIEND_REQUESTS_TABLE +
                     " WHERE friend_id = ?;"
         )) {
-            st.setLong(1, user.getId());
+            st.setLong(1, userID);
             List<User> friendRequests = new ArrayList<>();
 
             ResultSet rs = st.executeQuery();

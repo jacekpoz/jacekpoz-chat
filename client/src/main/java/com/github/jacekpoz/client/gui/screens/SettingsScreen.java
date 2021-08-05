@@ -1,22 +1,39 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Method;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class SettingsScreen implements Screen {
 
     private final ChatWindow window;
 
     private JPanel settingsScreen;
-    private JComboBox languageComboBox;
+    private JComboBox<Locale> languageComboBox;
     private JLabel languageLabel;
+
+    private Locale lang;
 
     public SettingsScreen(ChatWindow w) {
         window = w;
+        languageComboBox.addItem(Locale.ENGLISH);
+        languageComboBox.addItem(new Locale("pl", "PL"));
+
+        lang = Locale.US;
+
+        languageComboBox.addItemListener(itemEvent -> updateLanguage());
+    }
+
+    private void updateLanguage() {
+        lang = languageComboBox.getItemAt(languageComboBox.getSelectedIndex());
+        window.setLanguageBundle(ResourceBundle.getBundle("lang", lang));
+        window.changeLanguage();
     }
 
     @Override
@@ -26,7 +43,7 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void update() {
-
+        updateLanguage();
     }
 
     @Override
@@ -37,6 +54,11 @@ public class SettingsScreen implements Screen {
     @Override
     public long getScreenID() {
         return 5;
+    }
+
+    @Override
+    public void changeLanguage() {
+        languageLabel.setText(window.getLanguageBundle().getString("language"));
     }
 
     {
@@ -54,7 +76,64 @@ public class SettingsScreen implements Screen {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        settingsScreen = new JPanel();
+        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        languageLabel = new JLabel();
+        this.$$$loadLabelText$$$(languageLabel, this.$$$getMessageFromBundle$$$("lang", "language"));
+        settingsScreen.add(languageLabel, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        languageComboBox = new JComboBox();
+        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        languageLabel.setLabelFor(languageComboBox);
+    }
+
+    private static Method $$$cachedGetBundleMethod$$$ = null;
+
+    private String $$$getMessageFromBundle$$$(String path, String key) {
+        ResourceBundle bundle;
+        try {
+            Class<?> thisClass = this.getClass();
+            if ($$$cachedGetBundleMethod$$$ == null) {
+                Class<?> dynamicBundleClass = thisClass.getClassLoader().loadClass("com.intellij.DynamicBundle");
+                $$$cachedGetBundleMethod$$$ = dynamicBundleClass.getMethod("getBundle", String.class, Class.class);
+            }
+            bundle = (ResourceBundle) $$$cachedGetBundleMethod$$$.invoke(null, path, thisClass);
+        } catch (Exception e) {
+            bundle = ResourceBundle.getBundle(path);
+        }
+        return bundle.getString(key);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadLabelText$$$(JLabel component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setDisplayedMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return settingsScreen;
     }
 }

@@ -1,8 +1,9 @@
-package com.github.jacekpoz.common;
+package com.github.jacekpoz.client.gui;
 
 import com.github.jacekpoz.common.sendables.Sendable;
 
 import javax.swing.*;
+import java.util.Locale;
 
 /**
  * Base interface implemented by all screens in the desktop client.
@@ -47,5 +48,13 @@ public interface Screen {
      * @since  0.0.3
      */
     long getScreenID();
+
+    /**
+     * Changes the language using ChatWindow's ResourceBundle.
+     *
+     * @author jacekpoz
+     * @since 0.0.4
+     */
+    void changeLanguage();
 
 }

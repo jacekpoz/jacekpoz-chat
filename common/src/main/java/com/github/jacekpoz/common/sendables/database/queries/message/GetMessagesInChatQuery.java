@@ -4,20 +4,17 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
 import lombok.Getter;
 
-public class GetMessagesInChatQuery implements MessageQuery {
+public class GetMessagesInChatQuery extends MessageQuery {
 
-    private final long chatID;
     @Getter
     private final long offset;
     @Getter
     private final long limit;
-    private final long callerID;
 
     public GetMessagesInChatQuery(long chatID, long offset, long limit, long callerID) {
-        this.chatID = chatID;
+        super(-1, chatID, callerID);
         this.offset = offset;
         this.limit = limit;
-        this.callerID = callerID;
     }
 
     public GetMessagesInChatQuery(long chatID, long limit, long callerID) {
@@ -33,13 +30,4 @@ public class GetMessagesInChatQuery implements MessageQuery {
         return -1;
     }
 
-    @Override
-    public long getChatID() {
-        return chatID;
-    }
-
-    @Override
-    public long getCallerID() {
-        return callerID;
-    }
 }

@@ -4,7 +4,6 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.exceptions.UnknownQueryException;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
-import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.EnumResults;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetUsersChatsQuery;
@@ -45,7 +44,12 @@ public class QueryHandler {
             mr.setSuccess(!messages.isEmpty());
             mr.add(messages);
         } else if (mq instanceof InsertMessageQuery imq) {
-            connector.addMessage(imq.getMessage());
+            connector.addMessage(
+                    imq.getMessageID(),
+                    imq.getChatID(),
+                    imq.getAuthorID(),
+                    imq.getContent()
+            );
             mr.setSuccess(true);
         } else {
             throw new UnknownQueryException(mq);
@@ -109,23 +113,23 @@ public class QueryHandler {
             rr.add(connector.getUser(rq.getUsername()));
             return rr;
         } else if (uq instanceof SendFriendRequestQuery sfrq) {
-            switch (connector.sendFriendRequest(sfrq.getSender(), sfrq.getFriend())) {
+            switch (connector.sendFriendRequest(sfrq.getUserID(), sfrq.getFriendID())) {
                 case SENT_SUCCESSFULLY -> ur.setSuccess(true);
                 case SAME_USER, ALREADY_SENT, ALREADY_FRIENDS, SQL_EXCEPTION -> ur.setSuccess(false);
             }
         } else if (uq instanceof AcceptFriendRequestQuery afrq) {
-            connector.acceptFriendRequest(afrq.getSender(), afrq.getFriend());
+            connector.acceptFriendRequest(afrq.getUserID(), afrq.getFriendID());
         } else if (uq instanceof DenyFriendRequestQuery dfrq) {
-            connector.denyFriendRequest(dfrq.getSender(), dfrq.getFriend());
+            connector.denyFriendRequest(dfrq.getUserID(), dfrq.getFriendID());
         } else if (uq instanceof RemoveFriendQuery rfq) {
-            switch (connector.removeFriend(rfq.getUser(), rfq.getFriend())) {
+            switch (connector.removeFriend(rfq.getUserID(), rfq.getFriendID())) {
                 case REMOVED_FRIEND -> ur.setSuccess(true);
                 case SAME_USER, SQL_EXCEPTION -> ur.setSuccess(false);
             }
         } else if (uq instanceof GetFriendsQuery gfq) {
-            ur.add(connector.getFriends(gfq.getUser()));
+            ur.add(connector.getFriends(gfq.getUserID()));
         } else if (uq instanceof GetFriendRequestsQuery gfrq) {
-            ur.add(connector.getFriendRequests(gfrq.getUser()));
+            ur.add(connector.getFriendRequests(gfrq.getUserID()));
         } else if (uq instanceof GetAllUsersQuery) {
             ur.add(connector.getAllUsers());
         } else {

@@ -3,18 +3,20 @@ package com.github.jacekpoz.client.gui;
 import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
-import com.github.jacekpoz.common.Screen;
 import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class ChatWindow extends JFrame {
 
@@ -47,8 +49,14 @@ public class ChatWindow extends JFrame {
     @Getter
     private final Client client;
 
+    @Getter
+    @Setter
+    private ResourceBundle languageBundle;
+
     public ChatWindow(Client c) {
         client = c;
+
+        languageBundle = ResourceBundle.getBundle("lang");
 
         try {
             out = new PrintWriter(client.getSocket().getOutputStream(), true);
@@ -73,7 +81,7 @@ public class ChatWindow extends JFrame {
         screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
 
         // TODO change this after I figure out the name
-        setTitle("chat");
+        changeLanguage();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setDefaultLookAndFeelDecorated(true);
@@ -101,5 +109,11 @@ public class ChatWindow extends JFrame {
             if (s.getScreenID() == id)
                 return s;
         return null;
+    }
+
+    public void changeLanguage() {
+        setTitle(languageBundle.getString("application.title"));
+        for (Screen s : screens)
+            s.changeLanguage();
     }
 }

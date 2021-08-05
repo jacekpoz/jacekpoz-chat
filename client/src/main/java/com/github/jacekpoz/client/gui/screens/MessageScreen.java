@@ -1,13 +1,14 @@
 package com.github.jacekpoz.client.gui.screens;
 
 import com.github.jacekpoz.client.gui.*;
-import com.github.jacekpoz.common.Screen;
+import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.Util;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetUsersChatsQuery;
+import com.github.jacekpoz.common.sendables.database.queries.message.InsertMessageQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.GetMessageAuthorQuery;
 import com.github.jacekpoz.common.sendables.database.results.ChatResult;
 import com.github.jacekpoz.common.sendables.database.results.UserResult;
@@ -15,12 +16,11 @@ import com.github.jacekpoz.common.sendables.database.results.UserResult;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class MessageScreen implements Screen {
 
@@ -39,7 +39,7 @@ public class MessageScreen implements Screen {
     private transient JScrollPane chatsScrollPane;
 
     private List<Chat> usersChats;
-    private Map<Message, User> messageAuthors;
+    private Map<Long, User> messageAuthors;
 
     public MessageScreen(ChatWindow w) {
         window = w;
@@ -72,17 +72,22 @@ public class MessageScreen implements Screen {
 
     private void sendMessage(Message message) {
         System.out.println("sendMessage: " + message);
-        String json = window.getGson().toJson(message, message.getClass());
-        window.getOut().println(json);
+        window.send(message);
+        window.send(new InsertMessageQuery(
+                message.getMessageID(),
+                message.getChatID(),
+                message.getAuthorID(),
+                message.getContent(),
+                getScreenID()
+        ));
     }
 
     public void setChat(Chat c) {
-        String jsonChat = window.getGson().toJson(c, c.getClass());
         window.getClient().setChat(c);
-        window.getOut().println(jsonChat);
+        window.send(c);
         messages.removeAllMessages();
         c.getMessages().forEach(message ->
-                messages.addMessage(new MessagePanel(messageAuthors.get(message), message)));
+                messages.addMessage(new MessagePanel(messageAuthors.get(message.getMessageID()), message)));
         messageField.setEnabled(true);
         sendMessageButton.setEnabled(true);
         messages.revalidate();
@@ -100,7 +105,7 @@ public class MessageScreen implements Screen {
         chats.removeAllChats();
         for (Chat c : usersChats) {
             for (Message m : c.getMessages()) {
-                window.send(new GetMessageAuthorQuery(m, getScreenID()));
+                window.send(new GetMessageAuthorQuery(m.getMessageID(), m.getAuthorID(), getScreenID()));
             }
 
             ChatPanel cp = new ChatPanel(this, chats, c);
@@ -123,13 +128,13 @@ public class MessageScreen implements Screen {
             UserResult ur = (UserResult) s;
             if (ur.getQuery() instanceof GetMessageAuthorQuery) {
                 GetMessageAuthorQuery gmaq = (GetMessageAuthorQuery) ur.getQuery();
-                messageAuthors.put(gmaq.getMessage(), ur.get().get(0));
+                messageAuthors.put(gmaq.getMessageID(), ur.get().get(0));
             }
         } else if (s instanceof Message) {
             System.out.println("MessageScreen Message");
             Message m = (Message) s;
             SwingUtilities.invokeLater(() ->
-                    messages.addMessage(new MessagePanel(messageAuthors.get(m), m)));
+                    messages.addMessage(new MessagePanel(messageAuthors.get(m.getMessageID()), m)));
         }
 
     }
@@ -137,6 +142,12 @@ public class MessageScreen implements Screen {
     @Override
     public long getScreenID() {
         return ID;
+    }
+
+    @Override
+    public void changeLanguage() {
+        ResourceBundle lang = window.getLanguageBundle();
+        sendMessageButton.setText(lang.getString("send"));
     }
 
     {
@@ -173,7 +184,7 @@ public class MessageScreen implements Screen {
         sendMessageButton.setBackground(new Color(-12829636));
         sendMessageButton.setEnabled(false);
         sendMessageButton.setForeground(new Color(-1));
-        sendMessageButton.setText("Wyślij");
+        this.$$$loadButtonText$$$(sendMessageButton, this.$$$getMessageFromBundle$$$("lang", "send"));
         messageScreen.add(sendMessageButton, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         messagesScrollPane = new JScrollPane();
         messagesScrollPane.setBackground(new Color(-12829636));
@@ -200,10 +211,55 @@ public class MessageScreen implements Screen {
         messageScreen.add(friendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
+    private static Method $$$cachedGetBundleMethod$$$ = null;
+
+    private String $$$getMessageFromBundle$$$(String path, String key) {
+        ResourceBundle bundle;
+        try {
+            Class<?> thisClass = this.getClass();
+            if ($$$cachedGetBundleMethod$$$ == null) {
+                Class<?> dynamicBundleClass = thisClass.getClassLoader().loadClass("com.intellij.DynamicBundle");
+                $$$cachedGetBundleMethod$$$ = dynamicBundleClass.getMethod("getBundle", String.class, Class.class);
+            }
+            bundle = (ResourceBundle) $$$cachedGetBundleMethod$$$.invoke(null, path, thisClass);
+        } catch (Exception e) {
+            bundle = ResourceBundle.getBundle(path);
+        }
+        return bundle.getString(key);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
     /**
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return messageScreen;
     }
+
 }

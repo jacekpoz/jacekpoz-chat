@@ -1,16 +1,14 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.Screen;
-import com.github.jacekpoz.common.sendables.Message;
 import lombok.Getter;
 
 public class GetMessageAuthorQuery extends GetUserQuery {
 
     @Getter
-    private final Message message;
+    private final long messageID;
 
-    public GetMessageAuthorQuery(Message message, long callerID) {
-        super(message.getAuthorID(), callerID);
-        this.message = message;
+    public GetMessageAuthorQuery(long messageID, long authorID, long callerID) {
+        super(authorID, callerID);
+        this.messageID = messageID;
     }
 }

@@ -1,30 +1,16 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
 import lombok.Getter;
 
-public class AcceptFriendRequestQuery implements UserQuery {
+public class AcceptFriendRequestQuery extends UserQuery {
 
     @Getter
-    private final User sender;
-    @Getter
-    private final User friend;
-    private final long callerID;
+    private final long friendID;
 
-    public AcceptFriendRequestQuery(User sender, User friend, long callerID) {
-        this.sender = sender;
-        this.friend = friend;
-        this.callerID = callerID;
+    public AcceptFriendRequestQuery(long senderID, long friendID, long callerID) {
+        super(senderID, callerID);
+        this.friendID = friendID;
     }
 
-    @Override
-    public long getCallerID() {
-        return callerID;
-    }
-
-    @Override
-    public long getUserID() {
-        return sender.getId();
-    }
 }

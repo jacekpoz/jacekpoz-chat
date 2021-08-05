@@ -52,7 +52,11 @@ public class UserPanel extends JPanel {
                                 .getScaledInstance(25, 25, Image.SCALE_SMOOTH)
                 ));
                 button1.addActionListener(a -> {
-                    window.send(new SendFriendRequestQuery(clientUser, panelUser, window.getFriendsScreen().getScreenID()));
+                    window.send(new SendFriendRequestQuery(
+                            clientUser.getId(),
+                            panelUser.getId(),
+                            window.getFriendsScreen().getScreenID())
+                    );
                     removeThis();
                 });
                 break;
@@ -64,20 +68,32 @@ public class UserPanel extends JPanel {
                 ));
                 button1.addActionListener(a -> {
                     clientUser.removeFriend(panelUser);
-                    window.send(new RemoveFriendQuery(clientUser, panelUser, window.getFriendsScreen().getScreenID()));
+                    window.send(new RemoveFriendQuery(
+                            clientUser.getId(),
+                            panelUser.getId(),
+                            window.getFriendsScreen().getScreenID())
+                    );
                     removeThis();
                 });
                 break;
             case REQUEST:
                 button1 = new JButton("A");
                 button1.addActionListener(a -> {
-                    window.send(new AcceptFriendRequestQuery(panelUser, clientUser, window.getFriendsScreen().getScreenID()));
+                    window.send(new AcceptFriendRequestQuery(
+                            panelUser.getId(),
+                            clientUser.getId(),
+                            window.getFriendsScreen().getScreenID())
+                    );
                     clientUser.addFriend(panelUser);
                     removeThis();
                 });
                 button2 = new JButton("D");
                 button2.addActionListener(a -> {
-                    window.send(new DenyFriendRequestQuery(panelUser, clientUser, window.getFriendsScreen().getScreenID()));
+                    window.send(new DenyFriendRequestQuery(
+                            panelUser.getId(),
+                            clientUser.getId(),
+                            window.getFriendsScreen().getScreenID())
+                    );
                     removeThis();
                 });
                 break;

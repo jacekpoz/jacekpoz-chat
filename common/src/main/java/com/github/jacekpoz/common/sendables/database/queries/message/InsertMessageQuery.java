@@ -1,32 +1,19 @@
 package com.github.jacekpoz.common.sendables.database.queries.message;
 
-import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
 import lombok.Getter;
 
-public class InsertMessageQuery implements MessageQuery {
+public class InsertMessageQuery extends MessageQuery {
 
     @Getter
-    private final Message message;
-    private final long callerID;
+    private final long authorID;
+    @Getter
+    private final String content;
 
-    public InsertMessageQuery(Message message, long callerID) {
-        this.message = message;
-        this.callerID = callerID;
+    public InsertMessageQuery(long messageID, long chatID, long authorID, String content, long callerID) {
+        super(messageID, chatID, callerID);
+        this.authorID = authorID;
+        this.content = content;
     }
 
-    @Override
-    public long getMessageID() {
-        return message.getMessageID();
-    }
-
-    @Override
-    public long getChatID() {
-        return message.getChatID();
-    }
-
-    @Override
-    public long getCallerID() {
-        return callerID;
-    }
 }
