@@ -10,6 +10,7 @@ import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetUsersChatsQuery;
 import com.github.jacekpoz.common.sendables.database.queries.message.InsertMessageQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.GetMessageAuthorQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.GetUsersInChatQuery;
 import com.github.jacekpoz.common.sendables.database.results.ChatResult;
 import com.github.jacekpoz.common.sendables.database.results.UserResult;
 
@@ -37,11 +38,13 @@ public class MessageScreen implements Screen {
     private transient JButton settingsButton;
 
     private List<Chat> usersChats;
+    private Map<Chat, List<User>> usersInChats;
     private Map<Long, User> messageAuthors;
 
     public MessageScreen(ChatWindow w) {
         window = w;
         usersChats = new ArrayList<>();
+        usersInChats = new HashMap<>();
         messageAuthors = new HashMap<>();
 
         ActionListener sendMessageAction = e -> {
@@ -102,16 +105,19 @@ public class MessageScreen implements Screen {
 
     @Override
     public void update() {
+        chats.removeAllChats();
+        usersInChats.forEach((c, lu) -> usersInChats.remove(c, lu));
+
         window.send(new GetUsersChatsQuery(window.getClient().getUser().getId(), getScreenID()));
 
-        chats.removeAllChats();
         for (Chat c : usersChats) {
+            window.send(new GetUsersInChatQuery(c.getId(), getScreenID()));
             for (Message m : c.getMessages()) {
                 window.send(new GetMessageAuthorQuery(m.getMessageID(), m.getAuthorID(), getScreenID()));
             }
 
             ChatPanel cp = new ChatPanel(this, chats, c);
-            cp.setToolTipText(Util.userListToString(c.getMembers()));
+            cp.setToolTipText(Util.userListToString(usersInChats.get(c)));
             chats.addChat(cp);
             System.out.println("added chat: " + c);
         }
@@ -131,6 +137,13 @@ public class MessageScreen implements Screen {
             if (ur.getQuery() instanceof GetMessageAuthorQuery) {
                 GetMessageAuthorQuery gmaq = (GetMessageAuthorQuery) ur.getQuery();
                 messageAuthors.put(gmaq.getMessageID(), ur.get().get(0));
+            } else if (ur.getQuery() instanceof GetUsersInChatQuery) {
+                GetUsersInChatQuery guicq = (GetUsersInChatQuery) ur.getQuery();
+                for (Chat c : usersChats) {
+                    if (c.getId() == guicq.getChatID()) {
+                        usersInChats.put(c, ur.get());
+                    }
+                }
             }
         } else if (s instanceof Message) {
             System.out.println("MessageScreen Message");

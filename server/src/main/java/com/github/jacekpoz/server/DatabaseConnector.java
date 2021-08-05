@@ -274,7 +274,7 @@ public class DatabaseConnector {
         }
     }
 
-    public Chat createChat(String name, List<User> members) {
+    public Chat createChat(String name, List<Long> memberIDs) {
         PreparedStatement selectMissingInfo = null;
 
         try (PreparedStatement insertChat = con.prepareStatement(
@@ -296,16 +296,16 @@ public class DatabaseConnector {
             rs.close();
             Chat c = new Chat(chatID, name, dateCreated.toLocalDateTime(), 0);
 
-            for (User u : members) {
+            for (long id : memberIDs) {
                 PreparedStatement insertMember = con.prepareStatement(
                         "INSERT INTO " + Constants.USERS_IN_CHATS_TABLE +
                             " VALUES (?, ?);"
                 );
                 insertMember.setLong(1, chatID);
-                insertMember.setLong(2, u.getId());
+                insertMember.setLong(2, id);
                 insertMember.execute();
                 insertMember.close();
-                c.getMembers().add(u);
+                c.getMemberIDs().add(id);
             }
 
             return c;
@@ -436,7 +436,7 @@ public class DatabaseConnector {
                     .forEach(message -> c.getMessages().add(message));
 
             getUsersInChat(chatID)
-                    .forEach(user -> c.getMembers().add(user));
+                    .forEach(user -> c.getMemberIDs().add(user.getId()));
 
             return c;
         } catch (SQLException e) {

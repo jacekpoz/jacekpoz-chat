@@ -4,20 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class Chat implements Serializable, Sendable {
-    private static final long serialVersionUID = -8973712096190274407L;
+public class Chat implements Sendable {
     @Getter
     private final long id;
     @Getter @Setter
     private String name;
     @Getter
-    private final List<User> members;
+    private final List<Long> memberIDs;
     @Getter
     private final List<Message> messages;
     @Getter
@@ -28,7 +26,7 @@ public class Chat implements Serializable, Sendable {
     public Chat(long chatID, String chatName, LocalDateTime created, long mCounter) {
         id = chatID;
         name = chatName;
-        members = new ArrayList<>();
+        memberIDs = new ArrayList<>();
         messages = new ArrayList<>();
         dateCreated = created;
         messageCounter = mCounter;

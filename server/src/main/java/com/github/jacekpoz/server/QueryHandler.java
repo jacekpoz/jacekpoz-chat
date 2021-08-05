@@ -135,6 +135,9 @@ public class QueryHandler {
         } else if (uq instanceof GetAllUsersQuery gauq) {
             System.out.println(gauq);
             ur.add(connector.getAllUsers());
+        } else if (uq instanceof GetUsersInChatQuery guicq) {
+            System.out.println(guicq);
+            ur.add(connector.getUsersInChat(guicq.getChatID()));
         } else {
             throw new UnknownQueryException(uq);
         }

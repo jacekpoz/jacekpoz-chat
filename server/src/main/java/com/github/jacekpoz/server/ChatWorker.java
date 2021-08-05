@@ -17,6 +17,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChatWorker extends Thread {
 
@@ -49,35 +51,40 @@ public class ChatWorker extends Thread {
 
     @Override
     public void run() {
-        String inputJSON;
-        Result<?> output;
-        InputHandler ih = new InputHandler(this);
-        QueryHandler qh = new QueryHandler();
+        ExecutorService executor = Executors.newCachedThreadPool();
 
-        try {
-            while ((inputJSON = in.readLine()) != null) {
-                Sendable input = gson.fromJson(inputJSON, Sendable.class);
+        executor.submit(() -> {
+            String inputJSON;
+            Result<?> output;
+            InputHandler ih = new InputHandler(this);
+            QueryHandler qh = new QueryHandler();
 
-                if (input instanceof Query) {
-                    output = qh.handleQuery((Query<?>) input);
-                    String json = gson.toJson(output, Sendable.class);
-                    send(json);
-                } else ih.handleInput(input);
-            }
-        } catch (SocketException e) {
-            System.out.println("Thread disconnected: " + this);
-            server.getThreads().remove(this);
             try {
-                out.close();
-                in.close();
-                clientSocket.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
+                while ((inputJSON = in.readLine()) != null) {
+                    Sendable input = gson.fromJson(inputJSON, Sendable.class);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    if (input instanceof Query) {
+                        output = qh.handleQuery((Query<?>) input);
+                        String json = gson.toJson(output, Sendable.class);
+                        send(json);
+                    } else ih.handleInput(input);
+                }
+            } catch (SocketException e) {
+                e.printStackTrace();
+                System.out.println("Thread disconnected: " + this);
+                server.getThreads().remove(this);
+                try {
+                    out.close();
+                    in.close();
+                    clientSocket.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void send(String json) {
