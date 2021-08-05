@@ -6,6 +6,7 @@ import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MessageResult implements Result<Message> {
 
@@ -46,5 +47,22 @@ public class MessageResult implements Result<Message> {
     @Override
     public boolean success() {
         return success;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MessageResult that = (MessageResult) o;
+        return success == that.success && Objects.equals(query, that.query) && Objects.equals(messages, that.messages);
+    }
+
+    @Override
+    public String toString() {
+        return "MessageResult{" +
+                "query=" + query +
+                ", messages=" + messages +
+                ", success=" + success +
+                '}';
     }
 }

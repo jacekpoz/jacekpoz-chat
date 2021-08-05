@@ -25,8 +25,8 @@ public class Client {
     public Client(Socket s) {
         socket = s;
         window = new ChatWindow(this);
-        user = new User(-1, "dupa", "dupa dupa", Timestamp.valueOf(LocalDateTime.MIN));
-        chat = new Chat(-1, "dupa", Timestamp.valueOf(LocalDateTime.MIN), -1);
+        user = new User(-1, "dupa", "dupa dupa", LocalDateTime.MIN);
+        chat = new Chat(-1, "dupa", LocalDateTime.MIN, -1);
     }
 
     public void start() {

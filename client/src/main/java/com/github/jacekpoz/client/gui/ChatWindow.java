@@ -3,6 +3,7 @@ package com.github.jacekpoz.client.gui;
 import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
+import com.github.jacekpoz.common.gson.LocalDateTimeAdapter;
 import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.google.gson.Gson;
@@ -15,7 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.Locale;
+import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class ChatWindow extends JFrame {
@@ -67,6 +68,7 @@ public class ChatWindow extends JFrame {
 
         gson = new GsonBuilder()
                 .registerTypeAdapter(Sendable.class, new SendableAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
 
         handler = new InputHandler(this);

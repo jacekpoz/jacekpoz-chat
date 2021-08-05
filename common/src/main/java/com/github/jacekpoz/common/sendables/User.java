@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,9 +24,9 @@ public class User implements Serializable, Sendable {
     @Getter
     private final List<Long> friendsIds;
     @Getter
-    private final Timestamp dateJoined;
+    private final LocalDateTime dateJoined;
 
-    public User(long userID, String userNickname, String userHashedPassword, Timestamp date) {
+    public User(long userID, String userNickname, String userHashedPassword, LocalDateTime date) {
         id = userID;
         nickname = userNickname;
         hashedPassword = userHashedPassword;

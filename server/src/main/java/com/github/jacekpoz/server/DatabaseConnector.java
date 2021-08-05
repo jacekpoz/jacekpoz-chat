@@ -294,7 +294,7 @@ public class DatabaseConnector {
             long chatID = rs.getLong("chat_id");
             Timestamp dateCreated = rs.getTimestamp("date_created");
             rs.close();
-            Chat c = new Chat(chatID, name, dateCreated, 0);
+            Chat c = new Chat(chatID, name, dateCreated.toLocalDateTime(), 0);
 
             for (User u : members) {
                 PreparedStatement insertMember = con.prepareStatement(
@@ -311,7 +311,7 @@ public class DatabaseConnector {
             return c;
         } catch (SQLException e) {
             e.printStackTrace();
-            return new Chat(-1, "dupa", Timestamp.valueOf(LocalDateTime.MIN), -1);
+            return new Chat(-1, "dupa", LocalDateTime.MIN, -1);
         } finally {
             try {
                 if (selectMissingInfo != null) selectMissingInfo.close();
@@ -361,7 +361,7 @@ public class DatabaseConnector {
             Timestamp joined = rs.getTimestamp("date_joined");
             rs.close();
 
-            User returned = new User(id, nickname, hashedPassword, joined);
+            User returned = new User(id, nickname, hashedPassword, joined.toLocalDateTime());
 
             List<User> friends = getFriends(id);
             friends.forEach(returned::addFriend);
@@ -386,7 +386,7 @@ public class DatabaseConnector {
                 String hashedPassword = rs.getString("password_hash");
                 Timestamp joined = rs.getTimestamp("date_joined");
 
-                allUsers.add(new User(id, nickname, hashedPassword, joined));
+                allUsers.add(new User(id, nickname, hashedPassword, joined.toLocalDateTime()));
             }
             rs.close();
 
@@ -430,7 +430,7 @@ public class DatabaseConnector {
             Timestamp created = rs.getTimestamp("date_created");
             rs.close();
 
-            Chat c = new Chat(chatID, name, created, getChatMessageCounter(chatID));
+            Chat c = new Chat(chatID, name, created.toLocalDateTime(), getChatMessageCounter(chatID));
 
             getMessagesFromChat(chatID, 0, Constants.DEFAULT_MESSAGES_LIMIT)
                     .forEach(message -> c.getMessages().add(message));
@@ -462,7 +462,7 @@ public class DatabaseConnector {
             Timestamp sendDate = rs.getTimestamp("date_sent");
             rs.close();
 
-            return new Message(messageID, chatID, authorID, content, sendDate);
+            return new Message(messageID, chatID, authorID, content, sendDate.toLocalDateTime());
         } catch (SQLException e) {
             e.printStackTrace();
             return new Message("getMessage() failed");

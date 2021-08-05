@@ -1,5 +1,6 @@
 package com.github.jacekpoz.server;
 
+import com.github.jacekpoz.common.gson.LocalDateTimeAdapter;
 import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Sendable;
@@ -14,6 +15,7 @@ import lombok.Setter;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ChatWorker extends Thread {
@@ -41,6 +43,7 @@ public class ChatWorker extends Thread {
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         gson = new GsonBuilder()
                 .registerTypeAdapter(Sendable.class, new SendableAdapter())
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .create();
     }
 

@@ -3,7 +3,7 @@ package com.github.jacekpoz.common.sendables.database.queries.interfaces;
 import com.github.jacekpoz.common.sendables.Chat;
 import lombok.Getter;
 
-public abstract class ChatQuery implements Query<Chat> {
+public class ChatQuery implements Query<Chat> {
 
     @Getter
     private final long chatID;
@@ -14,9 +14,28 @@ public abstract class ChatQuery implements Query<Chat> {
         this.callerID = callerID;
     }
 
+    public ChatQuery() {
+        this(-1, -1);
+    }
+
     @Override
     public long getCallerID() {
         return callerID;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatQuery chatQuery = (ChatQuery) o;
+        return chatID == chatQuery.chatID && callerID == chatQuery.callerID;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatQuery{" +
+                "chatID=" + chatID +
+                ", callerID=" + callerID +
+                '}';
+    }
 }

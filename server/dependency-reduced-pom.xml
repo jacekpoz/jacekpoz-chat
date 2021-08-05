@@ -3,11 +3,11 @@
   <parent>
     <artifactId>jacekpoz-chat</artifactId>
     <groupId>com.github.jacekpoz</groupId>
-    <version>0.0.3</version>
+    <version>0.4.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>0.0.3</version>
+  <version>0.4.0</version>
   <build>
     <plugins>
       <plugin>

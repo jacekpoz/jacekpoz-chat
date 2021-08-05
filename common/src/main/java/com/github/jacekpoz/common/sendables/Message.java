@@ -18,9 +18,9 @@ public class Message implements Sendable {
     @Getter @Setter
     private String content;
     @Getter
-    private final Timestamp sendDate;
+    private final LocalDateTime sendDate;
 
-    public Message(long mID, long cID, long aID, String text, Timestamp send) {
+    public Message(long mID, long cID, long aID, String text, LocalDateTime send) {
         messageID = mID;
         chatID = cID;
         authorID = aID;
@@ -29,9 +29,7 @@ public class Message implements Sendable {
     }
 
     public Message(String text) {
-        this(-1, -1, -1, text,
-                Timestamp.valueOf(LocalDateTime.MIN)
-        );
+        this(-1, -1, -1, text, LocalDateTime.MIN);
     }
 
     /*

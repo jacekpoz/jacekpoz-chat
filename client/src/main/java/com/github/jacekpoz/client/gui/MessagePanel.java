@@ -13,7 +13,7 @@ public class MessagePanel extends JPanel {
 
     public MessagePanel(User author, Message m) {
         label = new JLabel(author.getNickname() + ": " + m.getContent());
-        label.setToolTipText(Util.timestampToString(m.getSendDate()));
+        label.setToolTipText(Util.localDateTimeToString(m.getSendDate()));
         label.setForeground(Color.WHITE);
         setBackground(new Color(60, 60, 60));
         add(label);

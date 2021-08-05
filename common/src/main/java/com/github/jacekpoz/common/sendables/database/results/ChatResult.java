@@ -6,6 +6,7 @@ import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChatResult implements Result<Chat> {
 
@@ -17,7 +18,7 @@ public class ChatResult implements Result<Chat> {
         query = cq;
         chats = new ArrayList<>();
     }
-    
+
     @Override
     public List<Chat> get() {
         return chats;
@@ -46,5 +47,22 @@ public class ChatResult implements Result<Chat> {
     @Override
     public boolean success() {
         return success;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ChatResult that = (ChatResult) o;
+        return success == that.success && Objects.equals(query, that.query) && Objects.equals(chats, that.chats);
+    }
+
+    @Override
+    public String toString() {
+        return "ChatResult{" +
+                "query=" + query +
+                ", chats=" + chats +
+                ", success=" + success +
+                '}';
     }
 }

@@ -6,6 +6,7 @@ import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuer
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserResult implements Result<User> {
 
@@ -46,5 +47,22 @@ public class UserResult implements Result<User> {
     @Override
     public boolean success() {
         return success;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserResult that = (UserResult) o;
+        return success == that.success && Objects.equals(query, that.query) && Objects.equals(users, that.users);
+    }
+
+    @Override
+    public String toString() {
+        return "UserResult{" +
+                "query=" + query +
+                ", users=" + users +
+                ", success=" + success +
+                '}';
     }
 }

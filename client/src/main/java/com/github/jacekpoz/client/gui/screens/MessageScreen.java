@@ -54,7 +54,7 @@ public class MessageScreen implements Screen {
                         c.getId(),
                         window.getClient().getUser().getId(),
                         messageField.getText(),
-                        Timestamp.valueOf(LocalDateTime.now())
+                        LocalDateTime.now()
                 );
                 c.getMessages().add(m);
                 sendMessage(m);

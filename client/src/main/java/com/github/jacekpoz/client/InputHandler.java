@@ -39,7 +39,7 @@ public class InputHandler {
                     System.out.println(input);
                     handleSendable(input);
                 }
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         });

@@ -15,11 +15,10 @@ public final class Util {
 
     private Util() {/*nope*/}
 
-    public static String timestampToString(Timestamp date) {
-        LocalDateTime d = date.toLocalDateTime();
+    public static String localDateTimeToString(LocalDateTime date) {
         return String.format("<html> %02d:%02d:%02d<br>%02d-%02d-%04d</html>",
-                d.getHour(), d.getMinute(), d.getSecond(),
-                d.getDayOfMonth(), d.getMonthValue(), d.getYear());
+                date.getHour(), date.getMinute(), date.getSecond(),
+                date.getDayOfMonth(), date.getMonthValue(), date.getYear());
     }
 
     public static String userListToString(List<User> users) {

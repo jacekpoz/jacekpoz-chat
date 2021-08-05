@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,11 +21,11 @@ public class Chat implements Serializable, Sendable {
     @Getter
     private final List<Message> messages;
     @Getter
-    private final Timestamp dateCreated;
+    private final LocalDateTime dateCreated;
     @Getter
     private final long messageCounter;
 
-    public Chat(long chatID, String chatName, Timestamp created, long mCounter) {
+    public Chat(long chatID, String chatName, LocalDateTime created, long mCounter) {
         id = chatID;
         name = chatName;
         members = new ArrayList<>();
