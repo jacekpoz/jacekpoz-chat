@@ -18,7 +18,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="go_back"/>
+          <text resource-bundle="lang" key="app.go_back"/>
         </properties>
       </component>
       <scrollpane id="a90" binding="friendsScrollPane">
@@ -68,7 +68,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="add"/>
+          <text resource-bundle="lang" key="app.add"/>
         </properties>
       </component>
       <component id="19b37" class="javax.swing.JButton" binding="deleteButton">
@@ -79,7 +79,7 @@
           <background color="-12829636"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="delete"/>
+          <text resource-bundle="lang" key="app.delete"/>
         </properties>
       </component>
       <component id="fb938" class="javax.swing.JButton" binding="createChatButton">
@@ -90,7 +90,7 @@
           <background color="-12829636"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="create_chat"/>
+          <text resource-bundle="lang" key="app.create_chat"/>
         </properties>
       </component>
       <component id="ed4d6" class="javax.swing.JTextField" binding="chatNameTextField">
@@ -113,7 +113,7 @@
           <background color="-12829636"/>
           <foreground color="-1"/>
           <labelFor value="ed4d6"/>
-          <text resource-bundle="lang" key="chat_name"/>
+          <text resource-bundle="lang" key="app.chat_name"/>
         </properties>
       </component>
     </children>

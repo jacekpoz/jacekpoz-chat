@@ -10,8 +10,12 @@ import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserPanel extends JPanel {
+
+    private final static Logger LOGGER = Logger.getLogger(UserPanel.class.getName());
 
     public static final int NOT_FRIEND = 0;
     public static final int FRIEND = 1;
@@ -57,6 +61,7 @@ public class UserPanel extends JPanel {
                             panelUser.getId(),
                             window.getFriendsScreen().getScreenID())
                     );
+                    LOGGER.log(Level.INFO, "Sent friend request", panelUser);
                     removeThis();
                 });
                 break;
@@ -73,18 +78,20 @@ public class UserPanel extends JPanel {
                             panelUser.getId(),
                             window.getFriendsScreen().getScreenID())
                     );
+                    LOGGER.log(Level.INFO, "Removed friend", panelUser);
                     removeThis();
                 });
                 break;
             case REQUEST:
                 button1 = new JButton("A");
                 button1.addActionListener(a -> {
+                    clientUser.addFriend(panelUser);
                     window.send(new AcceptFriendRequestQuery(
                             panelUser.getId(),
                             clientUser.getId(),
                             window.getFriendsScreen().getScreenID())
                     );
-                    clientUser.addFriend(panelUser);
+                    LOGGER.log(Level.INFO, "Accepted friend request", panelUser);
                     removeThis();
                 });
                 button2 = new JButton("D");
@@ -94,6 +101,7 @@ public class UserPanel extends JPanel {
                             clientUser.getId(),
                             window.getFriendsScreen().getScreenID())
                     );
+                    LOGGER.log(Level.INFO, "Denied friend request", panelUser);
                     removeThis();
                 });
                 break;

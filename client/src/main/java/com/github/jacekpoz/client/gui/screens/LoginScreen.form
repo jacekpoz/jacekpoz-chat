@@ -23,7 +23,7 @@
           <enabled value="true"/>
           <foreground color="-1"/>
           <labelFor value="37be"/>
-          <text resource-bundle="lang" key="nickname"/>
+          <text resource-bundle="lang" key="app.nickname"/>
         </properties>
       </component>
       <component id="c74c1" class="javax.swing.JLabel" binding="passwordLabel">
@@ -35,7 +35,7 @@
           <enabled value="true"/>
           <foreground color="-1"/>
           <labelFor value="3f595"/>
-          <text resource-bundle="lang" key="password"/>
+          <text resource-bundle="lang" key="app.password"/>
         </properties>
       </component>
       <component id="3f595" class="javax.swing.JPasswordField" binding="passwordField">
@@ -56,7 +56,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="login"/>
+          <text resource-bundle="lang" key="app.login"/>
         </properties>
       </component>
       <component id="956e6" class="javax.swing.JButton" binding="registerButton">
@@ -66,7 +66,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="go_to_register"/>
+          <text resource-bundle="lang" key="app.go_to_register"/>
         </properties>
       </component>
       <component id="37be" class="javax.swing.JTextField" binding="nicknameField">

@@ -19,7 +19,7 @@
           <background color="-12829636"/>
           <foreground color="-1"/>
           <labelFor value="fefb7"/>
-          <text resource-bundle="lang" key="nickname"/>
+          <text resource-bundle="lang" key="app.nickname"/>
         </properties>
       </component>
       <component id="fefb7" class="javax.swing.JTextField" binding="nicknameField">
@@ -41,7 +41,7 @@
           <background color="-12829636"/>
           <foreground color="-1"/>
           <labelFor value="7a6c4"/>
-          <text resource-bundle="lang" key="password"/>
+          <text resource-bundle="lang" key="app.password"/>
         </properties>
       </component>
       <component id="47e0e" class="javax.swing.JButton" binding="registerButton">
@@ -51,7 +51,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="register"/>
+          <text resource-bundle="lang" key="app.register"/>
         </properties>
       </component>
       <component id="5a8c0" class="javax.swing.JButton" binding="loginButton">
@@ -61,7 +61,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="go_to_login"/>
+          <text resource-bundle="lang" key="app.go_to_login"/>
         </properties>
       </component>
       <component id="80648" class="javax.swing.JLabel" binding="result">

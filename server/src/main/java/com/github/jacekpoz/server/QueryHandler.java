@@ -82,15 +82,7 @@ public class QueryHandler {
         UserResult ur = new UserResult(uq);
         if (uq instanceof GetUserQuery guq) {
             if (guq instanceof LoginQuery lq) {
-                LoginResult lr = new LoginResult(lq);
-                EnumResults.LoginResult result = connector.login(lq.getUsername(), lq.getPassword());
-                lr.setResult(result);
-                switch (result) {
-                    case LOGGED_IN -> lr.setSuccess(true);
-                    case ACCOUNT_DOESNT_EXIST, WRONG_PASSWORD, SQL_EXCEPTION -> lr.setSuccess(false);
-                }
-                lr.add(connector.getUser(lq.getUsername()));
-                return lr;
+                return connector.login(lq);
             } else if (guq instanceof GetMessageAuthorQuery gmaq) {
                 ur.add(connector.getUser(gmaq.getUserID()));
                 ur.setSuccess(true);
@@ -103,15 +95,7 @@ public class QueryHandler {
                 ur.setSuccess(true);
             }
         } else if (uq instanceof RegisterQuery rq) {
-            RegisterResult rr = new RegisterResult(rq);
-            EnumResults.RegisterResult result = connector.register(rq.getUsername(), rq.getHash());
-            rr.setResult(result);
-            switch (result) {
-                case ACCOUNT_CREATED -> rr.setSuccess(true);
-                case USERNAME_TAKEN, SQL_EXCEPTION -> rr.setSuccess(false);
-            }
-            rr.add(connector.getUser(rq.getUsername()));
-            return rr;
+            return connector.register(rq);
         } else if (uq instanceof SendFriendRequestQuery sfrq) {
             switch (connector.sendFriendRequest(sfrq.getUserID(), sfrq.getFriendID())) {
                 case SENT_SUCCESSFULLY -> ur.setSuccess(true);

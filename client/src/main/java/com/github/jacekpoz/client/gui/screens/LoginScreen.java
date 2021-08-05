@@ -13,8 +13,12 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LoginScreen implements Screen {
+
+    private final static Logger LOGGER = Logger.getLogger(LoginScreen.class.getName());
 
     private transient final ChatWindow window;
 
@@ -67,30 +71,30 @@ public class LoginScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof LoginResult) {
-            System.out.println("LoginScreen LoginResult");
             LoginResult lr = (LoginResult) s;
+
             switch (lr.getResult()) {
                 case LOGGED_IN: {
                     User u = lr.get().get(0);
                     window.getClient().setUser(u);
                     window.send(u);
-                    System.out.println(u + " logged in.");
                     window.setScreen(window.getMessageScreen());
                     update();
-                    result.setText("Zalogowano");
+                    result.setText(window.getLanguageBundle().getString("app.logged_in"));
+                    LOGGER.log(Level.INFO, "Logged in", u);
                     break;
                 }
                 case ACCOUNT_DOESNT_EXIST:
-                    System.out.println("LoginScreen ACCOUNT_DOESNT_EXIST");
-                    result.setText("Konto o podanej nazwie nie istnieje");
+                    LOGGER.log(Level.INFO, "Account doesn't exist");
+                    result.setText(window.getLanguageBundle().getString("app.account_doesnt_exist"));
                     break;
                 case WRONG_PASSWORD:
-                    System.out.println("LoginScreen WRONG_PASSWORD");
-                    result.setText("Złe hasło");
+                    LOGGER.log(Level.INFO, "Wrong password");
+                    result.setText(window.getLanguageBundle().getString("app.wrong_password"));
                     break;
                 case SQL_EXCEPTION:
-                    System.out.println("LoginScreen SQL_EXCEPTION");
-                    result.setText("Nie można połączyć się z serwerem");
+                    LOGGER.log(Level.SEVERE, "An SQLException occured while logging in ", lr.getEx());
+                    result.setText(window.getLanguageBundle().getString("app.sql_exception"));
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -105,11 +109,10 @@ public class LoginScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        ResourceBundle lang = window.getLanguageBundle();
-        nicknameLabel.setText(lang.getString("nickname"));
-        passwordLabel.setText(lang.getString("password"));
-        loginButton.setText(lang.getString("login"));
-        registerButton.setText(lang.getString("go_to_register"));
+        nicknameLabel.setText(window.getLangString("app.nickname"));
+        passwordLabel.setText(window.getLangString("app.password"));
+        loginButton.setText(window.getLangString("app.login"));
+        registerButton.setText(window.getLangString("app.go_to_register"));
     }
 
     {
@@ -135,13 +138,13 @@ public class LoginScreen implements Screen {
         nicknameLabel.setBackground(new Color(-12829636));
         nicknameLabel.setEnabled(true);
         nicknameLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(nicknameLabel, this.$$$getMessageFromBundle$$$("lang", "nickname"));
+        this.$$$loadLabelText$$$(nicknameLabel, this.$$$getMessageFromBundle$$$("lang", "app.nickname"));
         loginScreen.add(nicknameLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordLabel = new JLabel();
         passwordLabel.setBackground(new Color(-12829636));
         passwordLabel.setEnabled(true);
         passwordLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(passwordLabel, this.$$$getMessageFromBundle$$$("lang", "password"));
+        this.$$$loadLabelText$$$(passwordLabel, this.$$$getMessageFromBundle$$$("lang", "app.password"));
         loginScreen.add(passwordLabel, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordField = new JPasswordField();
         passwordField.setBackground(new Color(-12829636));
@@ -150,12 +153,12 @@ public class LoginScreen implements Screen {
         loginButton = new JButton();
         loginButton.setBackground(new Color(-12829636));
         loginButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "login"));
+        this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "app.login"));
         loginScreen.add(loginButton, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         registerButton = new JButton();
         registerButton.setBackground(new Color(-12829636));
         registerButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "go_to_register"));
+        this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "app.go_to_register"));
         loginScreen.add(registerButton, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();
         nicknameField.setBackground(new Color(-12829636));

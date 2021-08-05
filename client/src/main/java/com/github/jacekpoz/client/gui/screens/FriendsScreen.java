@@ -20,8 +20,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class FriendsScreen implements Screen {
+
+    private final static Logger LOGGER = Logger.getLogger(FriendsScreen.class.getName());
 
     private transient final ChatWindow window;
 
@@ -141,13 +144,12 @@ public class FriendsScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        ResourceBundle lang = window.getLanguageBundle();
-        backToMessagesButton.setText(lang.getString("go_back"));
-        pane.setTitleAt(0, lang.getString("friends"));
-        pane.setTitleAt(1, lang.getString("add_friends"));
-        pane.setTitleAt(2, lang.getString("friend_requests"));
-        searchFriendsButton.setText(lang.getString("search"));
-        searchNewFriendsButton.setText(lang.getString("search"));
+        backToMessagesButton.setText(window.getLangString("app.go_back"));
+        pane.setTitleAt(0, window.getLangString("app.friends"));
+        pane.setTitleAt(1, window.getLangString("app.add_friends"));
+        pane.setTitleAt(2, window.getLangString("app.friend_requests"));
+        searchFriendsButton.setText(window.getLangString("app.search"));
+        searchNewFriendsButton.setText(window.getLangString("app.search"));
     }
 
     {
@@ -177,7 +179,7 @@ public class FriendsScreen implements Screen {
         friendsPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         friendsPane.setBackground(new Color(-12829636));
         friendsPane.setForeground(new Color(-1));
-        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "friends"), friendsPane);
+        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.friends"), friendsPane);
         searchFriends = new JTextField();
         searchFriends.setBackground(new Color(-12829636));
         searchFriends.setForeground(new Color(-1));
@@ -185,7 +187,7 @@ public class FriendsScreen implements Screen {
         searchFriendsButton = new JButton();
         searchFriendsButton.setBackground(new Color(-12829636));
         searchFriendsButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(searchFriendsButton, this.$$$getMessageFromBundle$$$("lang", "search"));
+        this.$$$loadButtonText$$$(searchFriendsButton, this.$$$getMessageFromBundle$$$("lang", "app.search"));
         friendsPane.add(searchFriendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         friendsScrollPane = new JScrollPane();
         friendsScrollPane.setBackground(new Color(-12829636));
@@ -201,7 +203,7 @@ public class FriendsScreen implements Screen {
         addFriendsPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         addFriendsPane.setBackground(new Color(-12829636));
         addFriendsPane.setForeground(new Color(-1));
-        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "add_friends"), addFriendsPane);
+        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.add_friends"), addFriendsPane);
         searchNewFriends = new JTextField();
         searchNewFriends.setBackground(new Color(-12829636));
         searchNewFriends.setForeground(new Color(-1));
@@ -225,11 +227,11 @@ public class FriendsScreen implements Screen {
         friendRequestsPane.setLayout(new GridBagLayout());
         friendRequestsPane.setBackground(new Color(-12829636));
         friendRequestsPane.setForeground(new Color(-1));
-        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "friend_requests"), friendRequestsPane);
+        pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.friend_requests"), friendRequestsPane);
         backToMessagesButton = new JButton();
         backToMessagesButton.setBackground(new Color(-12829636));
         backToMessagesButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "go_back"));
+        this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
         friendsScreen.add(backToMessagesButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 

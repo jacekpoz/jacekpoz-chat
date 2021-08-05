@@ -58,16 +58,4 @@ public interface Screen {
      */
     void changeLanguage();
 
-    /**
-     *
-     * @author jacekpoz
-     * @since  0.4.0
-     */
-    default void revalidate() {
-        for (Component c : getPanel().getComponents()) {
-            c.revalidate();
-        }
-        getPanel().revalidate();
-    }
-
 }

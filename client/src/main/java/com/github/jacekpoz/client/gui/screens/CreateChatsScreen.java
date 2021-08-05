@@ -13,9 +13,13 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class CreateChatsScreen implements Screen {
+
+    private final static Logger LOGGER = Logger.getLogger(CreateChatsScreen.class.getName());
 
     private transient final ChatWindow window;
 
@@ -104,6 +108,8 @@ public class CreateChatsScreen implements Screen {
                     getScreenID())
             );
 
+            LOGGER.log(Level.INFO, "Created chat", chatName);
+
             window.setScreen(window.getMessageScreen());
             update();
         });
@@ -127,7 +133,6 @@ public class CreateChatsScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
-            System.out.println("CreateChatsScreen UserResult");
             UserResult ur = (UserResult) s;
             friends = ur.get();
         }
@@ -141,12 +146,11 @@ public class CreateChatsScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        ResourceBundle lang = window.getLanguageBundle();
-        backToMessagesButton.setText(lang.getString("go_back"));
-        chatNameLabel.setText(lang.getString("chat_name"));
-        addButton.setText(lang.getString("add"));
-        deleteButton.setText(lang.getString("delete"));
-        createChatButton.setText(lang.getString("create_chat"));
+        backToMessagesButton.setText(window.getLangString("app.go_back"));
+        chatNameLabel.setText(window.getLangString("app.chat_name"));
+        addButton.setText(window.getLangString("app.add"));
+        deleteButton.setText(window.getLangString("app.delete"));
+        createChatButton.setText(window.getLangString("app.create_chat"));
     }
 
     {
@@ -171,7 +175,7 @@ public class CreateChatsScreen implements Screen {
         backToMessagesButton = new JButton();
         backToMessagesButton.setBackground(new Color(-12829636));
         backToMessagesButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "go_back"));
+        this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
         createChatsScreen.add(backToMessagesButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         friendsScrollPane = new JScrollPane();
         friendsScrollPane.setBackground(new Color(-12829636));
@@ -194,19 +198,19 @@ public class CreateChatsScreen implements Screen {
         addButton = new JButton();
         addButton.setBackground(new Color(-12829636));
         addButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(addButton, this.$$$getMessageFromBundle$$$("lang", "add"));
+        this.$$$loadButtonText$$$(addButton, this.$$$getMessageFromBundle$$$("lang", "app.add"));
         createChatsScreen.add(addButton, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteButton = new JButton();
         deleteButton.setBackground(new Color(-12829636));
         deleteButton.setEnabled(false);
         deleteButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(deleteButton, this.$$$getMessageFromBundle$$$("lang", "delete"));
+        this.$$$loadButtonText$$$(deleteButton, this.$$$getMessageFromBundle$$$("lang", "app.delete"));
         createChatsScreen.add(deleteButton, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         createChatButton = new JButton();
         createChatButton.setBackground(new Color(-12829636));
         createChatButton.setEnabled(false);
         createChatButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(createChatButton, this.$$$getMessageFromBundle$$$("lang", "create_chat"));
+        this.$$$loadButtonText$$$(createChatButton, this.$$$getMessageFromBundle$$$("lang", "app.create_chat"));
         createChatsScreen.add(createChatButton, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         chatNameTextField = new JTextField();
         chatNameTextField.setBackground(new Color(-12829636));
@@ -216,7 +220,7 @@ public class CreateChatsScreen implements Screen {
         chatNameLabel = new JLabel();
         chatNameLabel.setBackground(new Color(-12829636));
         chatNameLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(chatNameLabel, this.$$$getMessageFromBundle$$$("lang", "chat_name"));
+        this.$$$loadLabelText$$$(chatNameLabel, this.$$$getMessageFromBundle$$$("lang", "app.chat_name"));
         createChatsScreen.add(chatNameLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         chatNameLabel.setLabelFor(chatNameTextField);
     }

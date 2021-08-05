@@ -7,11 +7,18 @@ import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SettingsScreen implements Screen {
+
+    private final static Logger LOGGER = Logger.getLogger(SettingsScreen.class.getName());
 
     private final ChatWindow window;
 
@@ -19,6 +26,13 @@ public class SettingsScreen implements Screen {
     private JComboBox<Locale> languageComboBox;
     private JLabel languageLabel;
     private JButton goBackButton;
+    private JTextField logFilesTextField;
+    private JButton chooseDirectoryButton;
+    private JLabel logFilesLabel;
+    private JLabel resultLabel;
+    private JButton saveLogPathButton;
+
+    private JFileChooser chooser;
 
     private Locale lang;
 
@@ -35,12 +49,38 @@ public class SettingsScreen implements Screen {
 
         languageComboBox.addItemListener(itemEvent -> updateLanguage());
 
+        chooseDirectoryButton.addActionListener(e -> {
+            chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new File("."));
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            chooser.setDialogTitle(window.getLanguageBundle().getString("app.log_location_chooser_title"));
+            if (chooser.showOpenDialog(getPanel()) == JFileChooser.APPROVE_OPTION) {
+                logFilesTextField.setText(chooser.getCurrentDirectory().toPath().toString());
+            }
+        });
+
+        saveLogPathButton.addActionListener(e -> {
+            Path logDirectoryPath = new File(logFilesTextField.getText()).toPath();
+
+
+            if (Files.isDirectory(logDirectoryPath)) {
+                LOGGER.log(Level.INFO, "Changed log directory", logDirectoryPath);
+                window.changeLogDirectory(logDirectoryPath.toString());
+            } else {
+                resultLabel.setText(window.getLanguageBundle().getString("app.invalid_path"));
+            }
+        });
+
         goBackButton.addActionListener(e -> window.setScreen(lastScreen));
     }
 
     private void updateLanguage() {
-        lang = languageComboBox.getItemAt(languageComboBox.getSelectedIndex());
+        Locale newLang = languageComboBox.getItemAt(languageComboBox.getSelectedIndex());
+        if (lang.equals(newLang)) return;
+        lang = newLang;
         window.changeLanguage(lang);
+        LOGGER.log(Level.INFO, "Changed app language", lang);
     }
 
     @Override
@@ -65,9 +105,12 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        ResourceBundle lang = window.getLanguageBundle();
-        languageLabel.setText(lang.getString("language"));
-        goBackButton.setText(lang.getString("go_back"));
+        languageLabel.setText(window.getLangString("app.language"));
+        System.out.println(languageLabel.getText());
+        goBackButton.setText(window.getLangString("app.go_back"));
+        chooseDirectoryButton.setText(window.getLangString("app.choose_directory"));
+        logFilesLabel.setText(window.getLangString("app.log_file_location"));
+        saveLogPathButton.setText(window.getLangString("app.save_path"));
     }
 
     {
@@ -86,26 +129,52 @@ public class SettingsScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         settingsScreen = new JPanel();
-        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
         settingsScreen.setBackground(new Color(-12829636));
         settingsScreen.setForeground(new Color(-1));
         languageLabel = new JLabel();
         languageLabel.setBackground(new Color(-12829636));
         languageLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(languageLabel, this.$$$getMessageFromBundle$$$("lang", "language"));
+        this.$$$loadLabelText$$$(languageLabel, this.$$$getMessageFromBundle$$$("lang", "app.language"));
         settingsScreen.add(languageLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageComboBox = new JComboBox();
         languageComboBox.setBackground(new Color(-12829636));
         languageComboBox.setForeground(new Color(-1));
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         languageComboBox.setModel(defaultComboBoxModel1);
-        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         goBackButton = new JButton();
         goBackButton.setBackground(new Color(-12829636));
         goBackButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(goBackButton, this.$$$getMessageFromBundle$$$("lang", "go_back"));
-        settingsScreen.add(goBackButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        this.$$$loadButtonText$$$(goBackButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
+        settingsScreen.add(goBackButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        logFilesLabel = new JLabel();
+        logFilesLabel.setBackground(new Color(-12829636));
+        logFilesLabel.setForeground(new Color(-1));
+        this.$$$loadLabelText$$$(logFilesLabel, this.$$$getMessageFromBundle$$$("lang", "app.log_file_location"));
+        settingsScreen.add(logFilesLabel, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        logFilesTextField = new JTextField();
+        logFilesTextField.setBackground(new Color(-12829636));
+        logFilesTextField.setForeground(new Color(-1));
+        settingsScreen.add(logFilesTextField, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        chooseDirectoryButton = new JButton();
+        chooseDirectoryButton.setBackground(new Color(-12829636));
+        chooseDirectoryButton.setForeground(new Color(-1));
+        chooseDirectoryButton.setHideActionText(true);
+        this.$$$loadButtonText$$$(chooseDirectoryButton, this.$$$getMessageFromBundle$$$("lang", "app.choose_directory"));
+        settingsScreen.add(chooseDirectoryButton, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        resultLabel = new JLabel();
+        resultLabel.setBackground(new Color(-12829636));
+        resultLabel.setForeground(new Color(-1));
+        resultLabel.setText("");
+        settingsScreen.add(resultLabel, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        saveLogPathButton = new JButton();
+        saveLogPathButton.setBackground(new Color(-12829636));
+        saveLogPathButton.setForeground(new Color(-1));
+        this.$$$loadButtonText$$$(saveLogPathButton, this.$$$getMessageFromBundle$$$("lang", "app.save_path"));
+        settingsScreen.add(saveLogPathButton, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageLabel.setLabelFor(languageComboBox);
+        logFilesLabel.setLabelFor(logFilesTextField);
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

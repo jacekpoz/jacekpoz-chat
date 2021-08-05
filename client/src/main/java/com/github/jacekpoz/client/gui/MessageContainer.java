@@ -10,17 +10,20 @@ import java.util.List;
 
 public class MessageContainer extends JPanel {
 
+    private final ChatWindow window;
+
     @Getter
     private final List<MessagePanel> messages;
 
     @Getter
     private final JLabel noMessages;
 
-    public MessageContainer() {
+    public MessageContainer(ChatWindow w) {
+        window = w;
         BoxLayout bl = new BoxLayout(this, BoxLayout.Y_AXIS);
         setLayout(bl);
         messages = new ArrayList<>();
-        noMessages = new JLabel("W tym czacie nie ma jeszcze wiadomości");
+        noMessages = new JLabel(window.getLanguageBundle().getString("app.no_messages_in_chat"));
         noMessages.setForeground(Color.WHITE);
     }
 

@@ -53,7 +53,6 @@ public class Chat implements Sendable {
         return "Chat{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", dateCreated=" + dateCreated +
                 '}';
     }
     /*

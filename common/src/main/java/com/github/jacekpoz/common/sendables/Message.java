@@ -3,8 +3,6 @@ package com.github.jacekpoz.common.sendables;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Message implements Sendable {
@@ -18,14 +16,14 @@ public class Message implements Sendable {
     @Getter @Setter
     private String content;
     @Getter
-    private final LocalDateTime sendDate;
+    private final LocalDateTime dateSent;
 
     public Message(long mID, long cID, long aID, String text, LocalDateTime send) {
         messageID = mID;
         chatID = cID;
         authorID = aID;
         content = text;
-        sendDate = send;
+        dateSent = send;
     }
 
     public Message(String text) {
@@ -50,7 +48,7 @@ public class Message implements Sendable {
                 "messageID=" + messageID +
                 ", chatID=" + chatID +
                 ", content='" + content + "'" +
-                ", sendDate=" + sendDate +
+                ", sendDate=" + dateSent +
                 ", author=" + authorID +
                 "}";
     }

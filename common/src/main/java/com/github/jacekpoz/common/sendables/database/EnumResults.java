@@ -2,37 +2,37 @@ package com.github.jacekpoz.common.sendables.database;
 
 public class EnumResults {
 
-    public enum LoginResult {
+    public enum Login {
         LOGGED_IN,
         ACCOUNT_DOESNT_EXIST,
         WRONG_PASSWORD,
-        SQL_EXCEPTION
+        SQL_EXCEPTION,
     }
 
-    public enum RegisterResult {
-        USERNAME_TAKEN,
+    public enum Register {
         ACCOUNT_CREATED,
-        SQL_EXCEPTION
+        USERNAME_TAKEN,
+        SQL_EXCEPTION,
     }
 
-    public enum AddFriendResult {
+    public enum AddFriend {
         ADDED_FRIEND,
         ALREADY_FRIEND,
         SAME_USER,
-        SQL_EXCEPTION
+        SQL_EXCEPTION,
     }
 
-    public enum RemoveFriendResult {
+    public enum RemoveFriend {
         REMOVED_FRIEND,
         SAME_USER,
-        SQL_EXCEPTION
+        SQL_EXCEPTION,
     }
 
-    public enum SendFriendRequestResult {
+    public enum SendFriendRequest {
         SENT_SUCCESSFULLY,
         ALREADY_SENT,
         ALREADY_FRIENDS,
         SAME_USER,
-        SQL_EXCEPTION
+        SQL_EXCEPTION,
     }
 }

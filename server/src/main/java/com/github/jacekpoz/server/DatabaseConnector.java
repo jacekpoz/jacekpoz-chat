@@ -4,7 +4,11 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.User;
-import com.github.jacekpoz.common.sendables.database.EnumResults.*;
+import com.github.jacekpoz.common.sendables.database.EnumResults;
+import com.github.jacekpoz.common.sendables.database.queries.user.LoginQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.RegisterQuery;
+import com.github.jacekpoz.common.sendables.database.results.LoginResult;
+import com.github.jacekpoz.common.sendables.database.results.RegisterResult;
 import com.kosprov.jargon2.api.Jargon2;
 
 import java.sql.*;
@@ -35,59 +39,74 @@ public class DatabaseConnector {
         con = DriverManager.getConnection(url, dbUsername, dbPassword);
     }
 
-    public RegisterResult register(String username, String hash) {
+    public RegisterResult register(RegisterQuery rq) {
+        RegisterResult returned = new RegisterResult(rq);
+        returned.setSuccess(false);
         try (PreparedStatement checkUsername = con.prepareStatement(
                 "SELECT username " +
                     "FROM " + Constants.USERS_TABLE +
                     " WHERE username = ?;"
         )) {
-            checkUsername.setString(1, username);
+            checkUsername.setString(1, rq.getUsername());
             ResultSet rs = checkUsername.executeQuery();
             if (rs.next()) {
                 rs.close();
-                return RegisterResult.USERNAME_TAKEN;
+                returned.setResult(EnumResults.Register.USERNAME_TAKEN);
+                return returned;
             }
             rs.close();
 
-            createUser(username, hash);
-
-            return RegisterResult.ACCOUNT_CREATED;
+            returned.add(createUser(rq.getUsername(), rq.getHash()));
+            returned.setSuccess(true);
+            returned.setResult(EnumResults.Register.ACCOUNT_CREATED);
+            return returned;
         } catch (SQLException e) {
             e.printStackTrace();
-            return RegisterResult.SQL_EXCEPTION;
+            returned.setResult(EnumResults.Register.SQL_EXCEPTION);
+            returned.setEx(e);
+            return returned;
         }
     }
 
-    public LoginResult login(String username, byte[] password) {
+    public LoginResult login(LoginQuery lq) {
+        LoginResult returned = new LoginResult(lq);
+        returned.setSuccess(false);
         try (PreparedStatement checkUsername = con.prepareStatement(
                 "SELECT * " +
                     "FROM " + Constants.USERS_TABLE +
                     " WHERE username = ?;"
         )) {
-            checkUsername.setString(1, username);
+            checkUsername.setString(1, lq.getUsername());
             ResultSet rs = checkUsername.executeQuery();
             if (!rs.next()) {
                 rs.close();
-                return LoginResult.ACCOUNT_DOESNT_EXIST;
+                returned.setResult(EnumResults.Login.ACCOUNT_DOESNT_EXIST);
+                return returned;
             }
 
             String dbHash = rs.getString("password_hash");
             rs.close();
 
             Jargon2.Verifier v = Jargon2.jargon2Verifier();
-            if (v.hash(dbHash).password(password).verifyEncoded()) {
-                return LoginResult.LOGGED_IN;
+            if (v.hash(dbHash).password(lq.getPassword()).verifyEncoded()) {
+                returned.setSuccess(true);
+                returned.setResult(EnumResults.Login.LOGGED_IN);
+                returned.add(getUser(lq.getUsername()));
+                return returned;
             }
 
-            return LoginResult.WRONG_PASSWORD;
+            returned.setResult(EnumResults.Login.WRONG_PASSWORD);
+            return returned;
         } catch (SQLException e) {
             e.printStackTrace();
-            return LoginResult.SQL_EXCEPTION;
+            returned.setResult(EnumResults.Login.SQL_EXCEPTION);
+            returned.setEx(e);
+            return returned;
         }
     }
 
-    public AddFriendResult addFriend(long userID, long friendID) {
-        if (userID == friendID) return AddFriendResult.SAME_USER;
+    public EnumResults.AddFriend addFriend(long userID, long friendID) {
+        if (userID == friendID) return EnumResults.AddFriend.SAME_USER;
 
         PreparedStatement insertFriend = null;
         try (PreparedStatement checkFriend = con.prepareStatement(
@@ -100,7 +119,7 @@ public class DatabaseConnector {
             ResultSet rs = checkFriend.executeQuery();
             if (rs.next()) {
                 rs.close();
-                return AddFriendResult.ALREADY_FRIEND;
+                return EnumResults.AddFriend.ALREADY_FRIEND;
             }
             rs.close();
 
@@ -112,10 +131,10 @@ public class DatabaseConnector {
             insertFriend.setLong(2, friendID);
             insertFriend.execute();
 
-            return AddFriendResult.ADDED_FRIEND;
+            return EnumResults.AddFriend.ADDED_FRIEND;
         } catch (SQLException e) {
             e.printStackTrace();
-            return AddFriendResult.SQL_EXCEPTION;
+            return EnumResults.AddFriend.SQL_EXCEPTION;
         } finally {
             try {
                 if (insertFriend != null) insertFriend.close();
@@ -125,8 +144,8 @@ public class DatabaseConnector {
         }
     }
 
-    public RemoveFriendResult removeFriend(long userID, long friendID) {
-        if (userID == friendID) return RemoveFriendResult.SAME_USER;
+    public EnumResults.RemoveFriend removeFriend(long userID, long friendID) {
+        if (userID == friendID) return EnumResults.RemoveFriend.SAME_USER;
 
         try (PreparedStatement removeFriend = con.prepareStatement(
                 "DELETE FROM " + Constants.FRIENDS_TABLE +
@@ -136,10 +155,10 @@ public class DatabaseConnector {
             removeFriend.setLong(2, friendID);
             removeFriend.execute();
 
-            return RemoveFriendResult.REMOVED_FRIEND;
+            return EnumResults.RemoveFriend.REMOVED_FRIEND;
         } catch (SQLException e) {
             e.printStackTrace();
-            return RemoveFriendResult.SQL_EXCEPTION;
+            return EnumResults.RemoveFriend.SQL_EXCEPTION;
         }
     }
 
@@ -158,9 +177,9 @@ public class DatabaseConnector {
         }
     }
 
-    public SendFriendRequestResult sendFriendRequest(long senderID, long friendID) {
-        if (senderID == friendID) return SendFriendRequestResult.SAME_USER;
-        if (isFriend(senderID, friendID)) return SendFriendRequestResult.ALREADY_FRIENDS;
+    public EnumResults.SendFriendRequest sendFriendRequest(long senderID, long friendID) {
+        if (senderID == friendID) return EnumResults.SendFriendRequest.SAME_USER;
+        if (isFriend(senderID, friendID)) return EnumResults.SendFriendRequest.ALREADY_FRIENDS;
 
         PreparedStatement insertRequest = null;
         try (PreparedStatement checkRequest = con.prepareStatement(
@@ -173,7 +192,7 @@ public class DatabaseConnector {
             ResultSet rs = checkRequest.executeQuery();
             if (rs.next()) {
                 rs.close();
-                return SendFriendRequestResult.ALREADY_SENT;
+                return EnumResults.SendFriendRequest.ALREADY_SENT;
             }
             rs.close();
 
@@ -185,10 +204,10 @@ public class DatabaseConnector {
             insertRequest.setLong(2, friendID);
             insertRequest.execute();
 
-            return SendFriendRequestResult.SENT_SUCCESSFULLY;
+            return EnumResults.SendFriendRequest.SENT_SUCCESSFULLY;
         } catch (SQLException e) {
             e.printStackTrace();
-            return SendFriendRequestResult.SQL_EXCEPTION;
+            return EnumResults.SendFriendRequest.SQL_EXCEPTION;
         } finally {
             try {
                 if (insertRequest != null) insertRequest.close();

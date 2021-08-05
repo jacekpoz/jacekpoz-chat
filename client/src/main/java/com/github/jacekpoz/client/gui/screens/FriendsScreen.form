@@ -26,7 +26,7 @@
           <grid id="23f01" binding="friendsPane" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <tabbedpane title-resource-bundle="lang" title-key="friends"/>
+              <tabbedpane title-resource-bundle="lang" title-key="app.friends"/>
             </constraints>
             <properties>
               <background color="-12829636"/>
@@ -52,7 +52,7 @@
                 <properties>
                   <background color="-12829636"/>
                   <foreground color="-1"/>
-                  <text resource-bundle="lang" key="search"/>
+                  <text resource-bundle="lang" key="app.search"/>
                 </properties>
               </component>
               <scrollpane id="5637f" binding="friendsScrollPane">
@@ -82,7 +82,7 @@
           <grid id="55f5e" binding="addFriendsPane" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <tabbedpane title-resource-bundle="lang" title-key="add_friends"/>
+              <tabbedpane title-resource-bundle="lang" title-key="app.add_friends"/>
             </constraints>
             <properties>
               <background color="-12829636"/>
@@ -137,7 +137,7 @@
           </grid>
           <grid id="54e14" binding="friendRequestsPane" layout-manager="GridBagLayout">
             <constraints>
-              <tabbedpane title-resource-bundle="lang" title-key="friend_requests"/>
+              <tabbedpane title-resource-bundle="lang" title-key="app.friend_requests"/>
             </constraints>
             <properties>
               <background color="-12829636"/>
@@ -155,7 +155,7 @@
         <properties>
           <background color="-12829636"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="go_back"/>
+          <text resource-bundle="lang" key="app.go_back"/>
         </properties>
       </component>
     </children>

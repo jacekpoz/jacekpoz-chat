@@ -12,10 +12,14 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.kosprov.jargon2.api.Jargon2.*;
 
 public class RegisterScreen implements Screen {
+
+    private final static Logger LOGGER = Logger.getLogger(RegisterScreen.class.getName());
 
     private transient final ChatWindow window;
 
@@ -82,20 +86,19 @@ public class RegisterScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof RegisterResult) {
-            System.out.println("RegisterScreen RegisterResult");
             RegisterResult rr = (RegisterResult) s;
             switch (rr.getResult()) {
                 case ACCOUNT_CREATED:
-                    System.out.println("RegisterScreen ACCOUNT_CREATED");
-                    result.setText("Pomyślnie utworzono konto");
+                    LOGGER.log(Level.INFO, "Account successfully created.", rr.get().get(0));
+                    result.setText(window.getLanguageBundle().getString("app.account_created"));
                     break;
                 case USERNAME_TAKEN:
-                    System.out.println("RegisterScreen USERNAME_TAKEN");
-                    result.setText("Istnieje już użytkownik o takim nicku");
+                    LOGGER.log(Level.INFO, "Username taken.");
+                    result.setText(window.getLanguageBundle().getString("app.username_taken"));
                     break;
                 case SQL_EXCEPTION:
-                    System.out.println("RegisterScreen SQL_EXCEPTION");
-                    result.setText("Nie można połączyć się z serwerem");
+                    LOGGER.log(Level.SEVERE, "An SQLException occured while registering.", rr.getEx());
+                    result.setText(window.getLanguageBundle().getString("app.sql_exception"));
                     break;
                 default:
                     throw new IllegalArgumentException();
@@ -110,11 +113,10 @@ public class RegisterScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        ResourceBundle lang = window.getLanguageBundle();
-        nicknameLabel.setText(lang.getString("nickname"));
-        passwordLabel.setText(lang.getString("password"));
-        registerButton.setText(lang.getString("register"));
-        loginButton.setText(lang.getString("go_to_login"));
+        nicknameLabel.setText(window.getLangString("app.nickname"));
+        passwordLabel.setText(window.getLangString("app.password"));
+        registerButton.setText(window.getLangString("app.register"));
+        loginButton.setText(window.getLangString("app.go_to_login"));
     }
 
     {
@@ -139,7 +141,7 @@ public class RegisterScreen implements Screen {
         nicknameLabel = new JLabel();
         nicknameLabel.setBackground(new Color(-12829636));
         nicknameLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(nicknameLabel, this.$$$getMessageFromBundle$$$("lang", "nickname"));
+        this.$$$loadLabelText$$$(nicknameLabel, this.$$$getMessageFromBundle$$$("lang", "app.nickname"));
         registerScreen.add(nicknameLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();
         nicknameField.setBackground(new Color(-12829636));
@@ -148,17 +150,17 @@ public class RegisterScreen implements Screen {
         passwordLabel = new JLabel();
         passwordLabel.setBackground(new Color(-12829636));
         passwordLabel.setForeground(new Color(-1));
-        this.$$$loadLabelText$$$(passwordLabel, this.$$$getMessageFromBundle$$$("lang", "password"));
+        this.$$$loadLabelText$$$(passwordLabel, this.$$$getMessageFromBundle$$$("lang", "app.password"));
         registerScreen.add(passwordLabel, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         registerButton = new JButton();
         registerButton.setBackground(new Color(-12829636));
         registerButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "register"));
+        this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "app.register"));
         registerScreen.add(registerButton, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         loginButton = new JButton();
         loginButton.setBackground(new Color(-12829636));
         loginButton.setForeground(new Color(-1));
-        this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "go_to_login"));
+        this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "app.go_to_login"));
         registerScreen.add(loginButton, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         result = new JLabel();
         result.setBackground(new Color(-12829636));

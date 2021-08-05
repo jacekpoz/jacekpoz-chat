@@ -43,7 +43,7 @@
           <background color="-12829636"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <text resource-bundle="lang" key="send"/>
+          <text resource-bundle="lang" key="app.send"/>
         </properties>
       </component>
       <scrollpane id="24110" binding="messagesScrollPane">
@@ -59,7 +59,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="41d9f" class="com.github.jacekpoz.client.gui.MessageContainer" binding="messages">
+          <component id="41d9f" class="com.github.jacekpoz.client.gui.MessageContainer" binding="messages" custom-create="true">
             <constraints/>
             <properties>
               <background color="-12829636"/>

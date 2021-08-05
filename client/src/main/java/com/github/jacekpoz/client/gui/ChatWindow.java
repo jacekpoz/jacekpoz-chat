@@ -3,6 +3,7 @@ package com.github.jacekpoz.client.gui;
 import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
+import com.github.jacekpoz.client.logging.LogFormatter;
 import com.github.jacekpoz.common.gson.LocalDateTimeAdapter;
 import com.github.jacekpoz.common.gson.SendableAdapter;
 import com.github.jacekpoz.common.sendables.Sendable;
@@ -12,18 +13,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.plaf.nimbus.NimbusLookAndFeel;
-import javax.swing.plaf.synth.SynthLookAndFeel;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.*;
 
 public class ChatWindow extends JFrame {
+
+    private final static Logger ROOT_LOGGER = LogManager.getLogManager().getLogger("");
+    private final static Logger LOGGER = Logger.getLogger(ChatWindow.class.getName());
 
     @Getter
     private PrintWriter out;
@@ -58,10 +65,19 @@ public class ChatWindow extends JFrame {
     @Setter
     private ResourceBundle languageBundle;
 
+    @Getter
+    private String logDirectory;
+
+    @Getter
+    private String currentLogFile;
+
     public ChatWindow(Client c) {
         client = c;
 
         languageBundle = ResourceBundle.getBundle("lang");
+        logDirectory = ".";
+        ROOT_LOGGER.setUseParentHandlers(false);
+        changeLogDirectory(logDirectory);
 
         try {
             out = new PrintWriter(client.getSocket().getOutputStream(), true);
@@ -86,7 +102,6 @@ public class ChatWindow extends JFrame {
 
         screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
 
-        // TODO change this after I figure out the name
         changeLanguage(Locale.US);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -118,8 +133,34 @@ public class ChatWindow extends JFrame {
 
     public void changeLanguage(Locale lang) {
         languageBundle = ResourceBundle.getBundle("lang", lang);
-        setTitle(languageBundle.getString("application.title"));
-        for (Screen s : screens)
+        setTitle(languageBundle.getString("app.title"));
+        for (Screen s : screens) {
             s.changeLanguage();
+            pack();
+        }
+    }
+
+    public void changeLogDirectory(String logDirectory) {
+        this.logDirectory = logDirectory;
+        try {
+            for (Handler h : ROOT_LOGGER.getHandlers()) {
+                ROOT_LOGGER.removeHandler(h);
+                h.flush();
+                h.close();
+            }
+
+            String logFile = logDirectory + "\\jacekpozchat_" + new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
+                    .format(new Date(System.currentTimeMillis())) + ".log";
+            FileHandler fh = new FileHandler(logFile);
+            currentLogFile = logFile;
+            fh.setFormatter(new LogFormatter());
+            ROOT_LOGGER.addHandler(fh);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+        }
+    }
+
+    public String getLangString(String key) {
+        return languageBundle.getString(key);
     }
 }
