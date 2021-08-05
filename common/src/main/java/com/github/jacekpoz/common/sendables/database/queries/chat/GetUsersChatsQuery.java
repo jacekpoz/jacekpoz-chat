@@ -1,6 +1,5 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
-
 public class GetUsersChatsQuery extends GetChatQuery {
 
     public GetUsersChatsQuery(long userID, long callerID) {
@@ -9,5 +8,13 @@ public class GetUsersChatsQuery extends GetChatQuery {
 
     public long getUserID() {
         return getChatID();
+    }
+
+    @Override
+    public String toString() {
+        return "GetUsersChatsQuery{" +
+                "userID=" + getUserID() +
+                ", callerID=" + getCallerID() +
+                '}';
     }
 }

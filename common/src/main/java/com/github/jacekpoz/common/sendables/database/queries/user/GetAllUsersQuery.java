@@ -12,4 +12,12 @@ public class GetAllUsersQuery extends UserQuery {
     public long getUserID() {
         return -1;
     }
+
+    @Override
+    public String toString() {
+        return "GetAllUsersQuery{" +
+                "userID=" + getUserID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

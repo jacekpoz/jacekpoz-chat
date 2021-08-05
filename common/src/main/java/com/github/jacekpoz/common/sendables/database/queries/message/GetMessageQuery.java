@@ -8,4 +8,12 @@ public class GetMessageQuery extends MessageQuery {
         super(messageID, chatID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "GetMessageQuery{" +
+                "messageID=" + getMessageID() +
+                ", chatID=" + getChatID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

@@ -12,4 +12,12 @@ public class DeleteMessageQuery extends MessageQuery {
         this(-1, chatID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "DeleteMessageQuery{" +
+                "messageID=" + getMessageID() +
+                ", chatID=" + getChatID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

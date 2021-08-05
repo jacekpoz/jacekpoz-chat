@@ -8,4 +8,11 @@ public class DeleteUserQuery extends UserQuery {
         super(userID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "DeleteUserQuery{" +
+                "userID=" + getUserID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

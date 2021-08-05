@@ -3,6 +3,7 @@ package com.github.jacekpoz.client.gui.screens;
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
+import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,23 +18,29 @@ public class SettingsScreen implements Screen {
     private JPanel settingsScreen;
     private JComboBox<Locale> languageComboBox;
     private JLabel languageLabel;
+    private JButton goBackButton;
 
     private Locale lang;
 
+    @Setter
+    private Screen lastScreen;
+
     public SettingsScreen(ChatWindow w) {
         window = w;
-        languageComboBox.addItem(Locale.ENGLISH);
+        languageComboBox.addItem(Locale.US);
         languageComboBox.addItem(new Locale("pl", "PL"));
+        languageComboBox.addItem(new Locale("es", "ES"));
 
         lang = Locale.US;
 
         languageComboBox.addItemListener(itemEvent -> updateLanguage());
+
+        goBackButton.addActionListener(e -> window.setScreen(lastScreen));
     }
 
     private void updateLanguage() {
         lang = languageComboBox.getItemAt(languageComboBox.getSelectedIndex());
-        window.setLanguageBundle(ResourceBundle.getBundle("lang", lang));
-        window.changeLanguage();
+        window.changeLanguage(lang);
     }
 
     @Override
@@ -58,7 +65,9 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void changeLanguage() {
-        languageLabel.setText(window.getLanguageBundle().getString("language"));
+        ResourceBundle lang = window.getLanguageBundle();
+        languageLabel.setText(lang.getString("language"));
+        goBackButton.setText(lang.getString("go_back"));
     }
 
     {
@@ -77,12 +86,25 @@ public class SettingsScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         settingsScreen = new JPanel();
-        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        settingsScreen.setBackground(new Color(-12829636));
+        settingsScreen.setForeground(new Color(-1));
         languageLabel = new JLabel();
+        languageLabel.setBackground(new Color(-12829636));
+        languageLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(languageLabel, this.$$$getMessageFromBundle$$$("lang", "language"));
-        settingsScreen.add(languageLabel, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(languageLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageComboBox = new JComboBox();
-        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        languageComboBox.setBackground(new Color(-12829636));
+        languageComboBox.setForeground(new Color(-1));
+        final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
+        languageComboBox.setModel(defaultComboBoxModel1);
+        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        goBackButton = new JButton();
+        goBackButton.setBackground(new Color(-12829636));
+        goBackButton.setForeground(new Color(-1));
+        this.$$$loadButtonText$$$(goBackButton, this.$$$getMessageFromBundle$$$("lang", "go_back"));
+        settingsScreen.add(goBackButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageLabel.setLabelFor(languageComboBox);
     }
 
@@ -133,7 +155,35 @@ public class SettingsScreen implements Screen {
     /**
      * @noinspection ALL
      */
+    private void $$$loadButtonText$$$(AbstractButton component, String text) {
+        StringBuffer result = new StringBuffer();
+        boolean haveMnemonic = false;
+        char mnemonic = '\0';
+        int mnemonicIndex = -1;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '&') {
+                i++;
+                if (i == text.length()) break;
+                if (!haveMnemonic && text.charAt(i) != '&') {
+                    haveMnemonic = true;
+                    mnemonic = text.charAt(i);
+                    mnemonicIndex = result.length();
+                }
+            }
+            result.append(text.charAt(i));
+        }
+        component.setText(result.toString());
+        if (haveMnemonic) {
+            component.setMnemonic(mnemonic);
+            component.setDisplayedMnemonicIndex(mnemonicIndex);
+        }
+    }
+
+    /**
+     * @noinspection ALL
+     */
     public JComponent $$$getRootComponent$$$() {
         return settingsScreen;
     }
+
 }

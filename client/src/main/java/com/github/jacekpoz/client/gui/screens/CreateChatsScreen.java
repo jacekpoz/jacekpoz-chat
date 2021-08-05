@@ -12,12 +12,10 @@ import java.awt.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class CreateChatsScreen implements Screen {
-
-    public static final int ID = 4;
 
     private transient final ChatWindow window;
 
@@ -98,7 +96,13 @@ public class CreateChatsScreen implements Screen {
                 chatName = sb.toString();
             }
 
-            window.send(new InsertChatQuery(chatName, users, getScreenID()));
+            window.send(new InsertChatQuery(
+                    chatName,
+                    users.stream()
+                            .map(User::getId)
+                            .collect(Collectors.toList()),
+                    getScreenID())
+            );
 
             window.setScreen(window.getMessageScreen());
             update();
@@ -132,7 +136,7 @@ public class CreateChatsScreen implements Screen {
 
     @Override
     public long getScreenID() {
-        return ID;
+        return 4;
     }
 
     @Override

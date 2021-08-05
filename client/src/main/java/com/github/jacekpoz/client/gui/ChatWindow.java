@@ -12,11 +12,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.plaf.synth.SynthLookAndFeel;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ChatWindow extends JFrame {
@@ -83,10 +87,9 @@ public class ChatWindow extends JFrame {
         screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
 
         // TODO change this after I figure out the name
-        changeLanguage();
+        changeLanguage(Locale.US);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setDefaultLookAndFeelDecorated(true);
 
         handler.start();
     }
@@ -113,7 +116,8 @@ public class ChatWindow extends JFrame {
         return null;
     }
 
-    public void changeLanguage() {
+    public void changeLanguage(Locale lang) {
+        languageBundle = ResourceBundle.getBundle("lang", lang);
         setTitle(languageBundle.getString("application.title"));
         for (Screen s : screens)
             s.changeLanguage();

@@ -48,20 +48,15 @@ public class InputHandler {
     private void handleSendable(Sendable input) {
         System.out.println(input.getClass().getSimpleName());
         if (input instanceof Message) {
-            System.out.println("m");
             window.getMessageScreen().handleSendable(input);
         } else if (input instanceof User) {
-            System.out.println("u");
             window.getClient().setUser((User) input);
         } else if (input instanceof Chat) {
-            System.out.println("c");
             window.getClient().setChat((Chat) input);
         } else if (input instanceof Result) {
-            System.out.println("r");
             Result<?> r = (Result<?>) input;
             System.out.println(r);
             long screenID = r.getQuery().getCallerID();
-            System.out.println(screenID);
             window.getScreen(screenID).handleSendable(r);
         }
     }

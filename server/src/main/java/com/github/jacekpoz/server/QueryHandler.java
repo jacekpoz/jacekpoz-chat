@@ -70,7 +70,7 @@ public class QueryHandler {
                 cr.add(c);
             }
         } else if (cq instanceof InsertChatQuery icq) {
-            connector.createChat(icq.getChatName(), icq.getMembers());
+            connector.createChat(icq.getChatName(), icq.getMemberIDs());
             cr.setSuccess(true);
         } else {
             throw new UnknownQueryException(cq);
@@ -127,10 +127,13 @@ public class QueryHandler {
                 case SAME_USER, SQL_EXCEPTION -> ur.setSuccess(false);
             }
         } else if (uq instanceof GetFriendsQuery gfq) {
+            System.out.println(gfq);
             ur.add(connector.getFriends(gfq.getUserID()));
         } else if (uq instanceof GetFriendRequestsQuery gfrq) {
+            System.out.println(gfrq);
             ur.add(connector.getFriendRequests(gfrq.getUserID()));
-        } else if (uq instanceof GetAllUsersQuery) {
+        } else if (uq instanceof GetAllUsersQuery gauq) {
+            System.out.println(gauq);
             ur.add(connector.getAllUsers());
         } else {
             throw new UnknownQueryException(uq);

@@ -3,6 +3,7 @@ package com.github.jacekpoz.client.gui;
 import com.github.jacekpoz.common.sendables.Sendable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Locale;
 
 /**
@@ -27,7 +28,7 @@ public interface Screen {
     /**
      * Method called when the GUI needs to be synced with the database.
      * @author jacekpoz
-     * @since  0.0.1
+     * @since  0.1.0
      */
     void update();
 
@@ -36,7 +37,7 @@ public interface Screen {
      *
      * @param  s Sendable to handle
      * @author jacekpoz
-     * @since  0.0.2
+     * @since  0.2.0
      */
     void handleSendable(Sendable s);
 
@@ -45,7 +46,7 @@ public interface Screen {
      *
      * @return screen ID
      * @author jacekpoz
-     * @since  0.0.3
+     * @since  0.3.0
      */
     long getScreenID();
 
@@ -53,8 +54,20 @@ public interface Screen {
      * Changes the language using ChatWindow's ResourceBundle.
      *
      * @author jacekpoz
-     * @since 0.0.4
+     * @since  0.4.0
      */
     void changeLanguage();
+
+    /**
+     *
+     * @author jacekpoz
+     * @since  0.4.0
+     */
+    default void revalidate() {
+        for (Component c : getPanel().getComponents()) {
+            c.revalidate();
+        }
+        getPanel().revalidate();
+    }
 
 }

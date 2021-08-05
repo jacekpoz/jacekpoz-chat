@@ -17,14 +17,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 
 public class MessageScreen implements Screen {
-
-    public static final int ID = 2;
 
     private transient final ChatWindow window;
 
@@ -37,6 +34,7 @@ public class MessageScreen implements Screen {
     private transient JScrollPane messagesScrollPane;
     private transient ChatContainer chats;
     private transient JScrollPane chatsScrollPane;
+    private transient JButton settingsButton;
 
     private List<Chat> usersChats;
     private Map<Long, User> messageAuthors;
@@ -68,6 +66,10 @@ public class MessageScreen implements Screen {
         sendMessageButton.addActionListener(sendMessageAction);
         friendsButton.addActionListener(e -> window.setScreen(window.getFriendsScreen()));
         chatsButton.addActionListener(e -> window.setScreen(window.getCreateChatsScreen()));
+        settingsButton.addActionListener(e -> {
+            window.setScreen(window.getSettingsScreen());
+            window.getSettingsScreen().setLastScreen(this);
+        });
     }
 
     private void sendMessage(Message message) {
@@ -141,7 +143,7 @@ public class MessageScreen implements Screen {
 
     @Override
     public long getScreenID() {
-        return ID;
+        return 2;
     }
 
     @Override
@@ -166,31 +168,32 @@ public class MessageScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         messageScreen = new JPanel();
-        messageScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 4, new Insets(0, 0, 0, 0), -1, -1));
+        messageScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 5, new Insets(0, 0, 0, 0), -1, -1));
         messageScreen.setBackground(new Color(-12829636));
         messageScreen.setForeground(new Color(-1));
         chatsButton = new JButton();
         chatsButton.setBackground(new Color(-12829636));
         chatsButton.setForeground(new Color(-1));
-        chatsButton.setText("C");
-        messageScreen.add(chatsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        chatsButton.setIcon(new ImageIcon(getClass().getResource("/images/create_chat.png")));
+        chatsButton.setText("");
+        messageScreen.add(chatsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         messageField = new JTextField();
         messageField.setBackground(new Color(-12829636));
         messageField.setEditable(true);
         messageField.setEnabled(false);
         messageField.setForeground(new Color(-1));
-        messageScreen.add(messageField, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        messageScreen.add(messageField, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         sendMessageButton = new JButton();
         sendMessageButton.setBackground(new Color(-12829636));
         sendMessageButton.setEnabled(false);
         sendMessageButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(sendMessageButton, this.$$$getMessageFromBundle$$$("lang", "send"));
-        messageScreen.add(sendMessageButton, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        messageScreen.add(sendMessageButton, new com.intellij.uiDesigner.core.GridConstraints(2, 4, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         messagesScrollPane = new JScrollPane();
         messagesScrollPane.setBackground(new Color(-12829636));
         messagesScrollPane.setForeground(new Color(-1));
         messagesScrollPane.setVerticalScrollBarPolicy(22);
-        messageScreen.add(messagesScrollPane, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 2, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 250), null, 0, false));
+        messageScreen.add(messagesScrollPane, new com.intellij.uiDesigner.core.GridConstraints(0, 3, 2, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 250), null, 0, false));
         messages = new MessageContainer();
         messages.setBackground(new Color(-12829636));
         messages.setForeground(new Color(-1));
@@ -199,7 +202,7 @@ public class MessageScreen implements Screen {
         chatsScrollPane.setBackground(new Color(-12829636));
         chatsScrollPane.setForeground(new Color(-1));
         chatsScrollPane.setVerticalScrollBarPolicy(22);
-        messageScreen.add(chatsScrollPane, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 2, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(100, 250), null, 0, false));
+        messageScreen.add(chatsScrollPane, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 2, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(100, 250), null, 0, false));
         chats = new ChatContainer();
         chats.setBackground(new Color(-12829636));
         chats.setForeground(new Color(-1));
@@ -207,8 +210,16 @@ public class MessageScreen implements Screen {
         friendsButton = new JButton();
         friendsButton.setBackground(new Color(-12829636));
         friendsButton.setForeground(new Color(-1));
-        friendsButton.setText("F");
-        messageScreen.add(friendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        friendsButton.setIcon(new ImageIcon(getClass().getResource("/images/friends.png")));
+        friendsButton.setText("");
+        messageScreen.add(friendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsButton = new JButton();
+        settingsButton.setBackground(new Color(-12829636));
+        settingsButton.setForeground(new Color(-1));
+        settingsButton.setHorizontalTextPosition(0);
+        settingsButton.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));
+        settingsButton.setText("");
+        messageScreen.add(settingsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

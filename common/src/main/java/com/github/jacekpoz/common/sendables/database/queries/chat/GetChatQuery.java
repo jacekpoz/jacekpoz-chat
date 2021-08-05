@@ -8,4 +8,11 @@ public class GetChatQuery extends ChatQuery {
         super(chatID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "GetChatQuery{" +
+                "chatID=" + getChatID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

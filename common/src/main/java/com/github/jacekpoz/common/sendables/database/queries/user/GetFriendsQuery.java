@@ -8,4 +8,11 @@ public class GetFriendsQuery extends UserQuery {
         super(userID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "GetFriendsQuery{" +
+                "userID=" + getUserID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }

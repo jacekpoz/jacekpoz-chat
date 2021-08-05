@@ -12,12 +12,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LoginScreen implements Screen {
-
-    public static final int ID = 0;
 
     private transient final ChatWindow window;
 
@@ -29,6 +26,7 @@ public class LoginScreen implements Screen {
     private transient JLabel result;
     private transient JLabel nicknameLabel;
     private transient JLabel passwordLabel;
+    private JButton settingsButton;
 
     public LoginScreen(ChatWindow w) {
         window = w;
@@ -37,6 +35,11 @@ public class LoginScreen implements Screen {
         passwordField.addActionListener(al);
         loginButton.addActionListener(al);
         registerButton.addActionListener(e -> window.setScreen(window.getRegisterScreen()));
+
+        settingsButton.addActionListener(e -> {
+            window.setScreen(window.getSettingsScreen());
+            window.getSettingsScreen().setLastScreen(this);
+        });
     }
 
     private void login(String username, char[] password) {
@@ -97,7 +100,7 @@ public class LoginScreen implements Screen {
 
     @Override
     public long getScreenID() {
-        return ID;
+        return 0;
     }
 
     @Override
@@ -125,44 +128,52 @@ public class LoginScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         loginScreen = new JPanel();
-        loginScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(7, 1, new Insets(0, 0, 0, 0), -1, -1));
+        loginScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(8, 1, new Insets(0, 0, 0, 0), -1, -1));
         loginScreen.setBackground(new Color(-12829636));
-        loginScreen.setForeground(new Color(-12829636));
+        loginScreen.setForeground(new Color(-1));
         nicknameLabel = new JLabel();
         nicknameLabel.setBackground(new Color(-12829636));
         nicknameLabel.setEnabled(true);
         nicknameLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(nicknameLabel, this.$$$getMessageFromBundle$$$("lang", "nickname"));
-        loginScreen.add(nicknameLabel, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginScreen.add(nicknameLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordLabel = new JLabel();
         passwordLabel.setBackground(new Color(-12829636));
         passwordLabel.setEnabled(true);
         passwordLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(passwordLabel, this.$$$getMessageFromBundle$$$("lang", "password"));
-        loginScreen.add(passwordLabel, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginScreen.add(passwordLabel, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordField = new JPasswordField();
         passwordField.setBackground(new Color(-12829636));
         passwordField.setForeground(new Color(-1));
-        loginScreen.add(passwordField, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
+        loginScreen.add(passwordField, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         loginButton = new JButton();
         loginButton.setBackground(new Color(-12829636));
         loginButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "login"));
-        loginScreen.add(loginButton, new com.intellij.uiDesigner.core.GridConstraints(4, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginScreen.add(loginButton, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         registerButton = new JButton();
         registerButton.setBackground(new Color(-12829636));
         registerButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "go_to_register"));
-        loginScreen.add(registerButton, new com.intellij.uiDesigner.core.GridConstraints(5, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        loginScreen.add(registerButton, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();
         nicknameField.setBackground(new Color(-12829636));
         nicknameField.setForeground(new Color(-1));
-        loginScreen.add(nicknameField, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
+        loginScreen.add(nicknameField, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         result = new JLabel();
         result.setBackground(new Color(-12829636));
         result.setForeground(new Color(-1));
         result.setText("");
-        loginScreen.add(result, new com.intellij.uiDesigner.core.GridConstraints(6, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        loginScreen.add(result, new com.intellij.uiDesigner.core.GridConstraints(7, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        settingsButton = new JButton();
+        settingsButton.setBackground(new Color(-12829636));
+        settingsButton.setEnabled(true);
+        settingsButton.setForeground(new Color(-1));
+        settingsButton.setHorizontalAlignment(0);
+        settingsButton.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));
+        settingsButton.setText("");
+        loginScreen.add(settingsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameLabel.setLabelFor(nicknameField);
         passwordLabel.setLabelFor(passwordField);
     }

@@ -23,8 +23,6 @@ import java.util.ResourceBundle;
 
 public class FriendsScreen implements Screen {
 
-    public static final int ID = 3;
-
     private transient final ChatWindow window;
 
     private transient JPanel friendsScreen;
@@ -58,12 +56,10 @@ public class FriendsScreen implements Screen {
                 addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
                 return;
             }
-            List<User> similarUsers = Util.compareUsernames(username, friends);
-            if (similarUsers.isEmpty()) {
-                return;
-            }
+            update();
 
-            friendsList.removeAll();
+            List<User> similarUsers = Util.compareUsernames(username, friends);
+            if (similarUsers.isEmpty()) return;
 
             addUsersToPanel(friendsList, similarUsers, UserPanel.FRIEND);
         };
@@ -74,9 +70,10 @@ public class FriendsScreen implements Screen {
         ActionListener searchNewFriendsAction = e -> {
             String username = searchNewFriends.getText();
             if (username.isEmpty()) return;
-            List<User> similarUsers = Util.compareUsernames(username, allUsers);
+            update();
 
-            newFriendsList.removeAll();
+            List<User> similarUsers = Util.compareUsernames(username, allUsers);
+            System.out.println(similarUsers);
 
             addUsersToPanel(newFriendsList, similarUsers, UserPanel.NOT_FRIEND);
         };
@@ -121,17 +118,25 @@ public class FriendsScreen implements Screen {
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
-            System.out.println("FriendsScreen UserResult");
             UserResult ur = (UserResult) s;
-            if (ur.getQuery() instanceof GetFriendsQuery) friends = ur.get();
-            else if (ur.getQuery() instanceof GetFriendRequestsQuery) friendRequests = ur.get();
-            else if (ur.getQuery() instanceof GetAllUsersQuery) allUsers = ur.get();
+            if (ur.getQuery() instanceof GetFriendsQuery) {
+                friends = ur.get();
+                System.out.println(friends);
+                addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
+            } else if (ur.getQuery() instanceof GetFriendRequestsQuery) {
+                friendRequests = ur.get();
+                System.out.println(friendRequests);
+                addUsersToPanel(friendRequestsPane, friendRequests, UserPanel.REQUEST);
+            } else if (ur.getQuery() instanceof GetAllUsersQuery) {
+                allUsers = ur.get();
+                System.out.println(allUsers);
+            }
         }
     }
 
     @Override
     public long getScreenID() {
-        return ID;
+        return 3;
     }
 
     @Override
@@ -141,7 +146,8 @@ public class FriendsScreen implements Screen {
         pane.setTitleAt(0, lang.getString("friends"));
         pane.setTitleAt(1, lang.getString("add_friends"));
         pane.setTitleAt(2, lang.getString("friend_requests"));
-        searchFriends.setText(lang.getString("search"));
+        searchFriendsButton.setText(lang.getString("search"));
+        searchNewFriendsButton.setText(lang.getString("search"));
     }
 
     {

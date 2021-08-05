@@ -8,4 +8,11 @@ public class DeleteChatQuery extends ChatQuery {
         super(chatID, callerID);
     }
 
+    @Override
+    public String toString() {
+        return "DeleteChatQuery{" +
+                "chatID=" + getChatID() +
+                ", callerID=" + getCallerID() +
+                '}';
+    }
 }
