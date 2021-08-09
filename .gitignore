@@ -4,3 +4,4 @@ target/
 
 # when I run the client in intellij the logs go to the project's directory by default
 *.log
+/target/
