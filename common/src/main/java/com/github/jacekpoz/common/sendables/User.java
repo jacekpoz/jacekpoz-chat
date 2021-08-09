@@ -1,5 +1,7 @@
 package com.github.jacekpoz.common.sendables;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +28,13 @@ public class User implements Serializable, Sendable {
     @Getter
     private final LocalDateTime dateJoined;
 
-    public User(long userID, String userNickname, String userHashedPassword, LocalDateTime date) {
+    @JsonCreator
+    public User(
+            @JsonProperty("userID") long userID,
+            @JsonProperty("username") String userNickname,
+            @JsonProperty("hashedPassword") String userHashedPassword,
+            @JsonProperty("dateJoined") LocalDateTime date
+    ) {
         id = userID;
         nickname = userNickname;
         hashedPassword = userHashedPassword;

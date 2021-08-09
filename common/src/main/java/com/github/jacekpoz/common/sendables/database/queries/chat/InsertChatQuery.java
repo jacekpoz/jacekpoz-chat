@@ -1,7 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
-import com.github.jacekpoz.common.sendables.User;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
 import lombok.Getter;
 
 import java.util.List;
@@ -14,7 +15,12 @@ public class InsertChatQuery extends ChatQuery {
     @Getter
     private final List<Long> memberIDs;
 
-    public InsertChatQuery(String chatName, List<Long> memberIDs, long callerID) {
+    @JsonCreator
+    public InsertChatQuery(
+            @JsonProperty("chatName") String chatName,
+            @JsonProperty("memberIDs") List<Long> memberIDs,
+            @JsonProperty("callerIDs") long callerID
+    ) {
         super(-1, callerID);
         this.chatName = chatName;
         this.memberIDs = memberIDs;

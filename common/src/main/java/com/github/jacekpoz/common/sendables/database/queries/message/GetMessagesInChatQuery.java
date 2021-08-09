@@ -1,10 +1,10 @@
 package com.github.jacekpoz.common.sendables.database.queries.message;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.Constants;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
 import lombok.Getter;
-
-import java.util.Objects;
 
 public class GetMessagesInChatQuery extends MessageQuery {
 
@@ -13,7 +13,13 @@ public class GetMessagesInChatQuery extends MessageQuery {
     @Getter
     private final long limit;
 
-    public GetMessagesInChatQuery(long chatID, long offset, long limit, long callerID) {
+    @JsonCreator
+    public GetMessagesInChatQuery(
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("offset") long offset,
+            @JsonProperty("limit") long limit,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(-1, chatID, callerID);
         this.offset = offset;
         this.limit = limit;

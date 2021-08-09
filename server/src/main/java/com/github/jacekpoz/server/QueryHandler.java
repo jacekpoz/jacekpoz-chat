@@ -4,11 +4,10 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.exceptions.UnknownQueryException;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
-import com.github.jacekpoz.common.sendables.database.EnumResults;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.chat.GetUsersChatsQuery;
 import com.github.jacekpoz.common.sendables.database.queries.chat.InsertChatQuery;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.*;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.*;
 import com.github.jacekpoz.common.sendables.database.queries.message.GetMessagesInChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.message.InsertMessageQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.*;
@@ -38,6 +37,7 @@ public class QueryHandler {
     }
 
     private MessageResult handleMessageQuery(MessageQuery mq) {
+        System.out.println("MessageQuery: " + mq);
         MessageResult mr = new MessageResult(mq);
         if (mq instanceof GetMessagesInChatQuery gmq) {
             List<Message> messages = connector.getMessagesFromChat(gmq.getChatID(), gmq.getOffset(), gmq.getLimit());
@@ -58,6 +58,7 @@ public class QueryHandler {
     }
 
     private ChatResult handleChatQuery(ChatQuery cq) {
+        System.out.println("ChatQuery: " + cq);
         ChatResult cr = new ChatResult(cq);
         if (cq instanceof GetChatQuery gcq) {
             if (gcq instanceof GetUsersChatsQuery gucq) {
@@ -79,6 +80,7 @@ public class QueryHandler {
     }
 
     private UserResult handleUserQuery(UserQuery uq) {
+        System.out.println("UserQuery: " + uq);
         UserResult ur = new UserResult(uq);
         if (uq instanceof GetUserQuery guq) {
             if (guq instanceof LoginQuery lq) {
@@ -111,13 +113,10 @@ public class QueryHandler {
                 case SAME_USER, SQL_EXCEPTION -> ur.setSuccess(false);
             }
         } else if (uq instanceof GetFriendsQuery gfq) {
-            System.out.println(gfq);
             ur.add(connector.getFriends(gfq.getUserID()));
         } else if (uq instanceof GetFriendRequestsQuery gfrq) {
-            System.out.println(gfrq);
             ur.add(connector.getFriendRequests(gfrq.getUserID()));
         } else if (uq instanceof GetAllUsersQuery gauq) {
-            System.out.println(gauq);
             ur.add(connector.getAllUsers());
         } else if (uq instanceof GetUsersInChatQuery guicq) {
             System.out.println(guicq);

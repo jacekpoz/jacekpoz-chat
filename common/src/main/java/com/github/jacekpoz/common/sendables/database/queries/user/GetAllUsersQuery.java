@@ -1,10 +1,15 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 
 public class GetAllUsersQuery extends UserQuery {
 
-    public GetAllUsersQuery(long callerID) {
+    @JsonCreator
+    public GetAllUsersQuery(
+            @JsonProperty("callerID") long callerID
+    ) {
         super(-1, callerID);
     }
 

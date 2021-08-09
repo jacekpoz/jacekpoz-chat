@@ -1,5 +1,7 @@
 package com.github.jacekpoz.common.sendables;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +25,13 @@ public class Chat implements Sendable {
     @Getter
     private final long messageCounter;
 
-    public Chat(long chatID, String chatName, LocalDateTime created, long mCounter) {
+    @JsonCreator
+    public Chat(
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("chatName") String chatName,
+            @JsonProperty("dateCreated") LocalDateTime created,
+            @JsonProperty("messageCounter") long mCounter
+    ) {
         id = chatID;
         name = chatName;
         memberIDs = new ArrayList<>();

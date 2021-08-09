@@ -1,10 +1,16 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
 
 public class DeleteChatQuery extends ChatQuery {
 
-    public DeleteChatQuery(long chatID, long callerID) {
+    @JsonCreator
+    public DeleteChatQuery(
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(chatID, callerID);
     }
 

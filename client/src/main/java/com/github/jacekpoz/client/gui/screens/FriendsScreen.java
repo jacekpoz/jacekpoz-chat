@@ -10,6 +10,8 @@ import com.github.jacekpoz.common.sendables.database.queries.user.GetAllUsersQue
 import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendRequestsQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendsQuery;
 import com.github.jacekpoz.common.sendables.database.results.UserResult;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +78,6 @@ public class FriendsScreen implements Screen {
             update();
 
             List<User> similarUsers = Util.compareUsernames(username, allUsers);
-            System.out.println(similarUsers);
 
             addUsersToPanel(newFriendsList, similarUsers, UserPanel.NOT_FRIEND);
         };
@@ -112,6 +113,7 @@ public class FriendsScreen implements Screen {
         window.send(new GetFriendsQuery(window.getClient().getUser().getId(), getScreenID()));
         window.send(new GetFriendRequestsQuery(window.getClient().getUser().getId(), getScreenID()));
         window.send(new GetAllUsersQuery(getScreenID()));
+        System.out.println("friendsscreen update");
         friendsList.removeAll();
         friendRequestsPane.removeAll();
         addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
@@ -122,17 +124,18 @@ public class FriendsScreen implements Screen {
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
             UserResult ur = (UserResult) s;
+            System.out.println("userresult:" + ur);
             if (ur.getQuery() instanceof GetFriendsQuery) {
                 friends = ur.get();
-                System.out.println(friends);
+                System.out.println("friends: " + friends);
                 addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
             } else if (ur.getQuery() instanceof GetFriendRequestsQuery) {
                 friendRequests = ur.get();
-                System.out.println(friendRequests);
+                System.out.println("friendRequests: " + friendRequests);
                 addUsersToPanel(friendRequestsPane, friendRequests, UserPanel.REQUEST);
             } else if (ur.getQuery() instanceof GetAllUsersQuery) {
                 allUsers = ur.get();
-                System.out.println(allUsers);
+                System.out.println("allUsers: " + allUsers);
             }
         }
     }
@@ -168,56 +171,57 @@ public class FriendsScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         friendsScreen = new JPanel();
-        friendsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        friendsScreen.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         friendsScreen.setBackground(new Color(-12829636));
         friendsScreen.setForeground(new Color(-1));
         pane = new JTabbedPane();
         pane.setBackground(new Color(-12829636));
         pane.setForeground(new Color(-1));
-        friendsScreen.add(pane, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        friendsScreen.add(pane, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
         friendsPane = new JPanel();
-        friendsPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        friendsPane.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         friendsPane.setBackground(new Color(-12829636));
         friendsPane.setForeground(new Color(-1));
         pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.friends"), friendsPane);
         searchFriends = new JTextField();
         searchFriends.setBackground(new Color(-12829636));
         searchFriends.setForeground(new Color(-1));
-        friendsPane.add(searchFriends, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        friendsPane.add(searchFriends, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         searchFriendsButton = new JButton();
         searchFriendsButton.setBackground(new Color(-12829636));
+        searchFriendsButton.setBorderPainted(false);
         searchFriendsButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(searchFriendsButton, this.$$$getMessageFromBundle$$$("lang", "app.search"));
-        friendsPane.add(searchFriendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        friendsPane.add(searchFriendsButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         friendsScrollPane = new JScrollPane();
         friendsScrollPane.setBackground(new Color(-12829636));
         friendsScrollPane.setForeground(new Color(-1));
         friendsScrollPane.setHorizontalScrollBarPolicy(31);
-        friendsPane.add(friendsScrollPane, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        friendsPane.add(friendsScrollPane, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         friendsList = new JPanel();
         friendsList.setLayout(new GridBagLayout());
         friendsList.setBackground(new Color(-12829636));
         friendsList.setForeground(new Color(-1));
         friendsScrollPane.setViewportView(friendsList);
         addFriendsPane = new JPanel();
-        addFriendsPane.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+        addFriendsPane.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
         addFriendsPane.setBackground(new Color(-12829636));
         addFriendsPane.setForeground(new Color(-1));
         pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.add_friends"), addFriendsPane);
         searchNewFriends = new JTextField();
         searchNewFriends.setBackground(new Color(-12829636));
         searchNewFriends.setForeground(new Color(-1));
-        addFriendsPane.add(searchNewFriends, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        addFriendsPane.add(searchNewFriends, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         searchNewFriendsButton = new JButton();
         searchNewFriendsButton.setBackground(new Color(-12829636));
         searchNewFriendsButton.setForeground(new Color(-1));
         searchNewFriendsButton.setText("Szukaj");
-        addFriendsPane.add(searchNewFriendsButton, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        addFriendsPane.add(searchNewFriendsButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         newFriendsScrollPane = new JScrollPane();
         newFriendsScrollPane.setBackground(new Color(-12829636));
         newFriendsScrollPane.setForeground(new Color(-1));
         newFriendsScrollPane.setHorizontalScrollBarPolicy(31);
-        addFriendsPane.add(newFriendsScrollPane, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 2, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        addFriendsPane.add(newFriendsScrollPane, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         newFriendsList = new JPanel();
         newFriendsList.setLayout(new GridBagLayout());
         newFriendsList.setBackground(new Color(-12829636));
@@ -230,9 +234,10 @@ public class FriendsScreen implements Screen {
         pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.friend_requests"), friendRequestsPane);
         backToMessagesButton = new JButton();
         backToMessagesButton.setBackground(new Color(-12829636));
+        backToMessagesButton.setBorderPainted(false);
         backToMessagesButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
-        friendsScreen.add(backToMessagesButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        friendsScreen.add(backToMessagesButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;

@@ -1,8 +1,10 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.Message;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,10 @@ public class MessageResult implements Result<Message> {
     private final List<Message> messages;
     private boolean success;
 
-    public MessageResult(MessageQuery mq) {
+    @JsonCreator
+    public MessageResult(
+            @JsonProperty("query") MessageQuery mq
+    ) {
         query = mq;
         messages = new ArrayList<>();
     }

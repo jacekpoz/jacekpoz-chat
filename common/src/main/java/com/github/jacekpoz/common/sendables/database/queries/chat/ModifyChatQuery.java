@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +14,13 @@ public class ModifyChatQuery extends ChatQuery {
     @Getter
     private final String newValue;
 
-    public ModifyChatQuery(long chatID, String columnToModify, String newValue, long callerID) {
+    @JsonCreator
+    public ModifyChatQuery(
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("columnToModify") String columnToModify,
+            @JsonProperty("newValue") String newValue,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(chatID, callerID);
         this.columnToModify = columnToModify;
         this.newValue = newValue;

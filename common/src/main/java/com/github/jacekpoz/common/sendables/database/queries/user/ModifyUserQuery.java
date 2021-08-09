@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +14,13 @@ public class ModifyUserQuery extends UserQuery {
     @Getter
     private final String newValue;
 
-    public ModifyUserQuery(long userID, String columnToModify, String newValue, long callerID) {
+    @JsonCreator
+    public ModifyUserQuery(
+            @JsonProperty("userID") long userID,
+            @JsonProperty("columnToModify") String columnToModify,
+            @JsonProperty("newValue") String newValue,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(userID, callerID);
         this.columnToModify = columnToModify;
         this.newValue = newValue;

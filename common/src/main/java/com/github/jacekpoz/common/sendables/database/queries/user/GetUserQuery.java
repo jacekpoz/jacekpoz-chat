@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -10,7 +12,12 @@ public class GetUserQuery extends UserQuery {
     @Getter
     private final String username;
 
-    protected GetUserQuery(long userID, String username, long callerID) {
+    @JsonCreator
+    private GetUserQuery(
+            @JsonProperty("userID") long userID,
+            @JsonProperty("username") String username,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(userID, callerID);
         this.username = username;
     }

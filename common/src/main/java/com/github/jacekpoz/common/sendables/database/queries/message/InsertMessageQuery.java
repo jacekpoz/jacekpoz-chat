@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.message;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +14,14 @@ public class InsertMessageQuery extends MessageQuery {
     @Getter
     private final String content;
 
-    public InsertMessageQuery(long messageID, long chatID, long authorID, String content, long callerID) {
+    @JsonCreator
+    public InsertMessageQuery(
+            @JsonProperty("messageID") long messageID,
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("authorID") long authorID,
+            @JsonProperty("content") String content,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(messageID, chatID, callerID);
         this.authorID = authorID;
         this.content = content;

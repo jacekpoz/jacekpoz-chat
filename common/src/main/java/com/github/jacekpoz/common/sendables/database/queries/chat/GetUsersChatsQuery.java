@@ -1,8 +1,15 @@
 package com.github.jacekpoz.common.sendables.database.queries.chat;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class GetUsersChatsQuery extends GetChatQuery {
 
-    public GetUsersChatsQuery(long userID, long callerID) {
+    @JsonCreator
+    public GetUsersChatsQuery(
+            @JsonProperty("userID") long userID,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(userID, callerID);
     }
 

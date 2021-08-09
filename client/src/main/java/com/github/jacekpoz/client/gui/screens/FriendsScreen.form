@@ -51,6 +51,7 @@
                 </constraints>
                 <properties>
                   <background color="-12829636"/>
+                  <borderPainted value="false"/>
                   <foreground color="-1"/>
                   <text resource-bundle="lang" key="app.search"/>
                 </properties>
@@ -150,10 +151,11 @@
       </tabbedpane>
       <component id="5ea1" class="javax.swing.JButton" binding="backToMessagesButton">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.go_back"/>
         </properties>

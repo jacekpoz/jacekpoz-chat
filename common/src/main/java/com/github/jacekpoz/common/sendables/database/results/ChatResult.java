@@ -1,8 +1,10 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.Chat;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.ChatQuery;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,10 @@ public class ChatResult implements Result<Chat> {
     private final List<Chat> chats;
     private boolean success;
 
-    public ChatResult(ChatQuery cq) {
+    @JsonCreator
+    public ChatResult(
+            @JsonProperty("query") ChatQuery cq
+    ) {
         query = cq;
         chats = new ArrayList<>();
     }

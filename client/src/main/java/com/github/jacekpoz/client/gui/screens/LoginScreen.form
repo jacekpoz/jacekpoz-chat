@@ -8,6 +8,7 @@
     <properties>
       <background color="-12829636"/>
       <foreground color="-1"/>
+      <visible value="true"/>
     </properties>
     <border type="none">
       <font/>
@@ -55,6 +56,7 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.login"/>
         </properties>
@@ -65,6 +67,7 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.go_to_register"/>
         </properties>
@@ -94,14 +97,22 @@
       </component>
       <component id="24ee7" class="javax.swing.JButton" binding="settingsButton">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="9" fill="0" indent="0" use-parent-layout="false">
+            <maximum-size width="30" height="30"/>
+          </grid>
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
+          <contentAreaFilled value="true"/>
+          <doubleBuffered value="false"/>
           <enabled value="true"/>
           <foreground color="-1"/>
+          <hideActionText value="false"/>
           <horizontalAlignment value="0"/>
+          <horizontalTextPosition value="0"/>
           <icon value="images/settings.png"/>
+          <opaque value="true"/>
           <text value=""/>
         </properties>
       </component>

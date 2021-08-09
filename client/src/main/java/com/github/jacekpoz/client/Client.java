@@ -20,6 +20,8 @@ public class Client {
     @Getter @Setter
     private User user;
     @Getter @Setter
+    private boolean isLoggedIn;
+    @Getter @Setter
     private Chat chat;
 
     public Client(Socket s) {

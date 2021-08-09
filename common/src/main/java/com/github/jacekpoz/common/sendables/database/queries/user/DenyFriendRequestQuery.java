@@ -1,16 +1,21 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 import lombok.Getter;
-
-import java.util.Objects;
 
 public class DenyFriendRequestQuery extends UserQuery {
 
     @Getter
     private final long friendID;
 
-    public DenyFriendRequestQuery(long senderID, long friendID, long callerID) {
+    @JsonCreator
+    public DenyFriendRequestQuery(
+            @JsonProperty("senderID") long senderID,
+            @JsonProperty("friendID") long friendID,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(senderID, callerID);
         this.friendID = friendID;
     }

@@ -1,7 +1,9 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
-import com.github.jacekpoz.common.sendables.database.EnumResults;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.EnumResults;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +18,21 @@ public class RegisterResult extends UserResult {
     @Setter
     private SQLException ex;
 
-    public RegisterResult(UserQuery uq) {
+    @JsonCreator
+    public RegisterResult(
+            @JsonProperty("query") UserQuery uq
+    ) {
         super(uq);
+    }
+
+    @Override
+    public String toString() {
+        return "UserResult{" +
+                "query=" + getQuery() +
+                ", users=" + get() +
+                ", success=" + success() +
+                ", result=" + result +
+                ", ex=" + ex +
+                '}';
     }
 }

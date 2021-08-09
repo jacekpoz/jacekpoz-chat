@@ -3,9 +3,13 @@ package com.github.jacekpoz.client.gui.screens;
 import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
+import com.github.jacekpoz.common.sendables.database.queries.user.DeleteUserQuery;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import lombok.Setter;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Method;
@@ -31,6 +35,7 @@ public class SettingsScreen implements Screen {
     private JLabel logFilesLabel;
     private JLabel resultLabel;
     private JButton saveLogPathButton;
+    private JButton deleteAccountButton;
 
     private JFileChooser chooser;
 
@@ -73,6 +78,24 @@ public class SettingsScreen implements Screen {
         });
 
         goBackButton.addActionListener(e -> window.setScreen(lastScreen));
+
+        deleteAccountButton.addActionListener(e -> {
+            Object[] options = {window.getLangString("app.yes"), window.getLangString("app.no")};
+            int result = JOptionPane.showOptionDialog(
+                    window,
+                    window.getLangString("app.are_you_sure"),
+                    "",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    null
+            );
+            if (result == JOptionPane.YES_OPTION) {
+                window.send(new DeleteUserQuery(window.getClient().getUser().getId(), getScreenID()));
+                window.logout();
+            }
+        });
     }
 
     private void updateLanguage() {
@@ -91,6 +114,13 @@ public class SettingsScreen implements Screen {
     @Override
     public void update() {
         updateLanguage();
+        if (window.getClient().isLoggedIn()) {
+            deleteAccountButton.setVisible(true);
+            deleteAccountButton.setEnabled(true);
+        } else if (!window.getClient().isLoggedIn()) {
+            deleteAccountButton.setVisible(false);
+            deleteAccountButton.setEnabled(false);
+        }
     }
 
     @Override
@@ -106,11 +136,11 @@ public class SettingsScreen implements Screen {
     @Override
     public void changeLanguage() {
         languageLabel.setText(window.getLangString("app.language"));
-        System.out.println(languageLabel.getText());
         goBackButton.setText(window.getLangString("app.go_back"));
         chooseDirectoryButton.setText(window.getLangString("app.choose_directory"));
         logFilesLabel.setText(window.getLangString("app.log_file_location"));
         saveLogPathButton.setText(window.getLangString("app.save_path"));
+        deleteAccountButton.setText(window.getLangString("app.delete_account"));
     }
 
     {
@@ -129,50 +159,62 @@ public class SettingsScreen implements Screen {
      */
     private void $$$setupUI$$$() {
         settingsScreen = new JPanel();
-        settingsScreen.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(4, 4, new Insets(0, 0, 0, 0), -1, -1));
+        settingsScreen.setLayout(new GridLayoutManager(5, 4, new Insets(0, 0, 0, 0), -1, -1));
         settingsScreen.setBackground(new Color(-12829636));
         settingsScreen.setForeground(new Color(-1));
         languageLabel = new JLabel();
         languageLabel.setBackground(new Color(-12829636));
         languageLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(languageLabel, this.$$$getMessageFromBundle$$$("lang", "app.language"));
-        settingsScreen.add(languageLabel, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(languageLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageComboBox = new JComboBox();
         languageComboBox.setBackground(new Color(-12829636));
         languageComboBox.setForeground(new Color(-1));
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         languageComboBox.setModel(defaultComboBoxModel1);
-        settingsScreen.add(languageComboBox, new com.intellij.uiDesigner.core.GridConstraints(1, 1, 1, 3, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(languageComboBox, new GridConstraints(1, 1, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         goBackButton = new JButton();
         goBackButton.setBackground(new Color(-12829636));
+        goBackButton.setBorderPainted(false);
         goBackButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(goBackButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
-        settingsScreen.add(goBackButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(goBackButton, new GridConstraints(0, 0, 1, 4, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         logFilesLabel = new JLabel();
         logFilesLabel.setBackground(new Color(-12829636));
         logFilesLabel.setForeground(new Color(-1));
         this.$$$loadLabelText$$$(logFilesLabel, this.$$$getMessageFromBundle$$$("lang", "app.log_file_location"));
-        settingsScreen.add(logFilesLabel, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(logFilesLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         logFilesTextField = new JTextField();
         logFilesTextField.setBackground(new Color(-12829636));
         logFilesTextField.setForeground(new Color(-1));
-        settingsScreen.add(logFilesTextField, new com.intellij.uiDesigner.core.GridConstraints(2, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        settingsScreen.add(logFilesTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         chooseDirectoryButton = new JButton();
         chooseDirectoryButton.setBackground(new Color(-12829636));
+        chooseDirectoryButton.setBorderPainted(false);
         chooseDirectoryButton.setForeground(new Color(-1));
         chooseDirectoryButton.setHideActionText(true);
         this.$$$loadButtonText$$$(chooseDirectoryButton, this.$$$getMessageFromBundle$$$("lang", "app.choose_directory"));
-        settingsScreen.add(chooseDirectoryButton, new com.intellij.uiDesigner.core.GridConstraints(2, 2, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(chooseDirectoryButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         resultLabel = new JLabel();
         resultLabel.setBackground(new Color(-12829636));
         resultLabel.setForeground(new Color(-1));
         resultLabel.setText("");
-        settingsScreen.add(resultLabel, new com.intellij.uiDesigner.core.GridConstraints(3, 0, 1, 4, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_WEST, com.intellij.uiDesigner.core.GridConstraints.FILL_NONE, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(resultLabel, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         saveLogPathButton = new JButton();
         saveLogPathButton.setBackground(new Color(-12829636));
+        saveLogPathButton.setBorderPainted(false);
         saveLogPathButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(saveLogPathButton, this.$$$getMessageFromBundle$$$("lang", "app.save_path"));
-        settingsScreen.add(saveLogPathButton, new com.intellij.uiDesigner.core.GridConstraints(2, 3, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(saveLogPathButton, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        deleteAccountButton = new JButton();
+        deleteAccountButton.setBackground(new Color(-4060928));
+        deleteAccountButton.setBorderPainted(false);
+        deleteAccountButton.setEnabled(false);
+        deleteAccountButton.setForeground(new Color(-1));
+        deleteAccountButton.setLabel("");
+        this.$$$loadButtonText$$$(deleteAccountButton, this.$$$getMessageFromBundle$$$("lang", "app.delete_account"));
+        deleteAccountButton.setVisible(false);
+        settingsScreen.add(deleteAccountButton, new GridConstraints(4, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageLabel.setLabelFor(languageComboBox);
         logFilesLabel.setLabelFor(logFilesTextField);
     }

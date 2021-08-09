@@ -1,8 +1,10 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.User;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.UserQuery;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,15 @@ import java.util.Objects;
 public class UserResult implements Result<User> {
 
     private final UserQuery query;
+    @JsonProperty("users")
     private final List<User> users;
+    @JsonProperty("success")
     private boolean success;
 
-    public UserResult(UserQuery uq) {
+    @JsonCreator
+    public UserResult(
+            @JsonProperty("query") UserQuery uq
+    ) {
         query = uq;
         users = new ArrayList<>();
     }

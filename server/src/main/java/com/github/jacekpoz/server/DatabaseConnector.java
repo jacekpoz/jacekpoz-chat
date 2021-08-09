@@ -4,7 +4,7 @@ import com.github.jacekpoz.common.Constants;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.User;
-import com.github.jacekpoz.common.sendables.database.EnumResults;
+import com.github.jacekpoz.common.EnumResults;
 import com.github.jacekpoz.common.sendables.database.queries.user.LoginQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.RegisterQuery;
 import com.github.jacekpoz.common.sendables.database.results.LoginResult;
@@ -617,7 +617,6 @@ public class DatabaseConnector {
         )) {
             getFriendIDs.setLong(1, userID);
             List<User> friends = new ArrayList<>();
-
             ResultSet rs = getFriendIDs.executeQuery();
 
             while (rs.next()) {

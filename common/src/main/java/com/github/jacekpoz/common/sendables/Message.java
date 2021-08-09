@@ -1,5 +1,7 @@
 package com.github.jacekpoz.common.sendables;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +20,14 @@ public class Message implements Sendable {
     @Getter
     private final LocalDateTime dateSent;
 
-    public Message(long mID, long cID, long aID, String text, LocalDateTime send) {
+    @JsonCreator
+    public Message(
+            @JsonProperty("messageID") long mID,
+            @JsonProperty("chatID") long cID,
+            @JsonProperty("authorID") long aID,
+            @JsonProperty("content") String text,
+            @JsonProperty("dateSent") LocalDateTime send
+    ) {
         messageID = mID;
         chatID = cID;
         authorID = aID;

@@ -1,14 +1,13 @@
 package com.github.jacekpoz.client.gui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jacekpoz.client.Client;
 import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
 import com.github.jacekpoz.client.logging.LogFormatter;
-import com.github.jacekpoz.common.gson.LocalDateTimeAdapter;
-import com.github.jacekpoz.common.gson.SendableAdapter;
+import com.github.jacekpoz.common.jackson.JsonObjectMapper;
 import com.github.jacekpoz.common.sendables.Sendable;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,11 +16,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -37,8 +32,6 @@ public class ChatWindow extends JFrame {
     @Getter
     private BufferedReader in;
 
-    @Getter
-    private final Gson gson;
     @Getter
     private final InputHandler handler;
 
@@ -71,6 +64,9 @@ public class ChatWindow extends JFrame {
     @Getter
     private String currentLogFile;
 
+    @Getter
+    private final JsonObjectMapper mapper;
+
     public ChatWindow(Client c) {
         client = c;
 
@@ -86,10 +82,7 @@ public class ChatWindow extends JFrame {
             e.printStackTrace();
         }
 
-        gson = new GsonBuilder()
-                .registerTypeAdapter(Sendable.class, new SendableAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .create();
+        mapper = new JsonObjectMapper();
 
         handler = new InputHandler(this);
 
@@ -120,8 +113,13 @@ public class ChatWindow extends JFrame {
     }
 
     public void send(Sendable s) {
-        String json = gson.toJson(s, Sendable.class);
-        out.println(json);
+        String json;
+        try {
+            json = mapper.writeValueAsString(s);
+            out.println(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     public Screen getScreen(long id) {
@@ -162,5 +160,10 @@ public class ChatWindow extends JFrame {
 
     public String getLangString(String key) {
         return languageBundle.getString(key);
+    }
+
+    public void logout() {
+        client.setUser(null);
+        setScreen(loginScreen);
     }
 }

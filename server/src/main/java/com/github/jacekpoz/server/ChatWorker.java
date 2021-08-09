@@ -1,21 +1,18 @@
 package com.github.jacekpoz.server;
 
-import com.github.jacekpoz.common.gson.LocalDateTimeAdapter;
-import com.github.jacekpoz.common.gson.SendableAdapter;
+import com.github.jacekpoz.common.jackson.JsonObjectMapper;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.Query;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
+import com.github.jacekpoz.common.sendables.database.results.LoginResult;
 import com.github.jacekpoz.common.sendables.database.results.Result;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,7 +32,9 @@ public class ChatWorker extends Thread {
     private final PrintWriter out;
     private final BufferedReader in;
 
-    private final Gson gson;
+    @Getter
+    private final JsonObjectMapper mapper;
+
 
     public ChatWorker(Socket so, Server se) throws IOException {
         super("ChatThread");
@@ -43,10 +42,9 @@ public class ChatWorker extends Thread {
         server = se;
         out = new PrintWriter(clientSocket.getOutputStream(), true);
         in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        gson = new GsonBuilder()
-                .registerTypeAdapter(Sendable.class, new SendableAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .create();
+
+        mapper = new JsonObjectMapper();
+
     }
 
     @Override
@@ -61,16 +59,20 @@ public class ChatWorker extends Thread {
 
             try {
                 while ((inputJSON = in.readLine()) != null) {
-                    Sendable input = gson.fromJson(inputJSON, Sendable.class);
+                    System.out.println("inputJSON: " + inputJSON);
+                    Sendable input = mapper.readValue(inputJSON, Sendable.class);
 
                     if (input instanceof Query) {
                         output = qh.handleQuery((Query<?>) input);
-                        String json = gson.toJson(output, Sendable.class);
+                        if (output instanceof LoginResult lr && output.success())
+                            setCurrentUser(lr.get().get(0));
+                        System.out.println("result: " + output);
+                        String json = mapper.writeValueAsString(output);
+                        System.out.println("result json: " + json);
                         send(json);
                     } else ih.handleInput(input);
                 }
             } catch (SocketException e) {
-                e.printStackTrace();
                 System.out.println("Thread disconnected: " + this);
                 server.getThreads().remove(this);
                 try {
@@ -82,6 +84,8 @@ public class ChatWorker extends Thread {
                 }
 
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         });

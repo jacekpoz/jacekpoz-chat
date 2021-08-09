@@ -1,5 +1,7 @@
 package com.github.jacekpoz.common.sendables.database.queries.user;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 public class GetMessageAuthorQuery extends GetUserQuery {
@@ -7,7 +9,12 @@ public class GetMessageAuthorQuery extends GetUserQuery {
     @Getter
     private final long messageID;
 
-    public GetMessageAuthorQuery(long messageID, long authorID, long callerID) {
+    @JsonCreator
+    public GetMessageAuthorQuery(
+            @JsonProperty("messageID") long messageID,
+            @JsonProperty("authorID") long authorID,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(authorID, callerID);
         this.messageID = messageID;
     }

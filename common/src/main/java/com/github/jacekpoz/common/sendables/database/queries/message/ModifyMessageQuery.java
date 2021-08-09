@@ -1,6 +1,8 @@
 package com.github.jacekpoz.common.sendables.database.queries.message;
 
-import com.github.jacekpoz.common.sendables.database.queries.interfaces.MessageQuery;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
 import lombok.Getter;
 
 import java.util.Objects;
@@ -12,7 +14,14 @@ public class ModifyMessageQuery extends MessageQuery {
     @Getter
     private final String newValue;
 
-    public ModifyMessageQuery(long messageID, long chatID, String columnToModify, String newValue, long callerID) {
+    @JsonCreator
+    public ModifyMessageQuery(
+            @JsonProperty("messageID") long messageID,
+            @JsonProperty("chatID") long chatID,
+            @JsonProperty("columnToModify") String columnToModify,
+            @JsonProperty("newValue") String newValue,
+            @JsonProperty("callerID") long callerID
+    ) {
         super(messageID, chatID, callerID);
         this.columnToModify = columnToModify;
         this.newValue = newValue;

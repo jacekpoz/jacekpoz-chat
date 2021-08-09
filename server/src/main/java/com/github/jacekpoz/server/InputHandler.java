@@ -1,22 +1,20 @@
 package com.github.jacekpoz.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.jacekpoz.common.exceptions.UnknownSendableException;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 
 public class InputHandler {
 
     private final ChatWorker worker;
-    private final Gson gson;
 
     public InputHandler(ChatWorker w) {
         worker = w;
-        gson = new Gson();
     }
 
     public void handleInput(Sendable input) throws IOException {
@@ -36,8 +34,12 @@ public class InputHandler {
     }
 
     private void handleMessage(Message m) {
-        for (ChatWorker ct : worker.getServer().getThreads())
-            if (worker.getCurrentChat().getMemberIDs().contains(ct.getCurrentUser().getId()))
-                ct.send(gson.toJson(m, Sendable.class));
+        try {
+            for (ChatWorker ct : worker.getServer().getThreads())
+                if (worker.getCurrentChat().getMemberIDs().contains(ct.getCurrentUser().getId()))
+                    ct.send(worker.getMapper().writeValueAsString(m));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -9,7 +9,7 @@ import java.util.logging.SimpleFormatter;
 public class LogFormatter extends SimpleFormatter {
     @Override
     public synchronized String format(LogRecord lr) {
-        return String.format("[%1$s] [%2$-7s] %3$s in %4$s.%5$s%n%6$s%n%7$s%n",
+        return String.format("[%1$s] [%2$-7s] %3$s at %4$s.%5$s%n%6$s%n%7$s%n",
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSXXX")
                         .format(new Date(lr.getMillis())),
                 lr.getLevel().getLocalizedName(),
