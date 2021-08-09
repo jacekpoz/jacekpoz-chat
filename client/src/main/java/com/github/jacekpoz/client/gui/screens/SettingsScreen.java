@@ -216,7 +216,7 @@ public class SettingsScreen implements Screen {
         deleteAccountButton.setBorderPainted(false);
         deleteAccountButton.setEnabled(false);
         deleteAccountButton.setForeground(new Color(-1));
-        deleteAccountButton.setLabel("Usuń konto");
+        deleteAccountButton.setLabel("");
         this.$$$loadButtonText$$$(deleteAccountButton, this.$$$getMessageFromBundle$$$("lang", "app.delete_account"));
         deleteAccountButton.setVisible(false);
         settingsScreen.add(deleteAccountButton, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

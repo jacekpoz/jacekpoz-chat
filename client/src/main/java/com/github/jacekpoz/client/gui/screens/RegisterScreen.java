@@ -53,11 +53,7 @@ public class RegisterScreen implements Screen {
     private void register(String username, char[] password) {
 
         if (username.isEmpty() || password.length == 0) {
-            result.setText("Musisz wpisać nick i hasło");
-        }
-
-        if (username.contains(" ")) {
-            result.setText("Nick nie może zawierać spacji");
+            result.setText(window.getLangString("app.input_name_and_password"));
         }
 
         Hasher hasher = jargon2Hasher()
@@ -82,7 +78,9 @@ public class RegisterScreen implements Screen {
 
     @Override
     public void update() {
-
+        result.setText("");
+        nicknameField.setText("");
+        passwordField.setText("");
     }
 
     @Override
@@ -91,7 +89,7 @@ public class RegisterScreen implements Screen {
             RegisterResult rr = (RegisterResult) s;
             switch (rr.getResult()) {
                 case ACCOUNT_CREATED:
-                    LOGGER.log(Level.INFO, "Account successfully created.", rr.get().get(0));
+                    LOGGER.log(Level.INFO, "Account created.", rr.get().get(0));
                     result.setText(window.getLangString("app.account_created"));
                     break;
                 case USERNAME_TAKEN:

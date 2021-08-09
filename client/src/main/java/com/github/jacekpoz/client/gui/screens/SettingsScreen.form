@@ -107,7 +107,7 @@
           <borderPainted value="false"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <label value="Usuń konto"/>
+          <label value=""/>
           <text resource-bundle="lang" key="app.delete_account"/>
           <visible value="false"/>
         </properties>

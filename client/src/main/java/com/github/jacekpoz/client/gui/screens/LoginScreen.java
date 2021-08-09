@@ -51,7 +51,7 @@ public class LoginScreen implements Screen {
     private void login(String username, char[] password) {
 
         if (username.isEmpty() || password.length == 0) {
-            result.setText("Musisz wpisać nick i hasło");
+            result.setText(window.getLangString("app.input_name_and_password"));
             return;
         }
 
@@ -65,6 +65,9 @@ public class LoginScreen implements Screen {
 
     @Override
     public void update() {
+        result.setText("");
+        nicknameField.setText("");
+        passwordField.setText("");
         for (Screen s : window.getScreens())
             if (!(s instanceof LoginScreen))
                 s.update();

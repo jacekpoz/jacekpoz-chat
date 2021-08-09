@@ -18,6 +18,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -42,6 +43,7 @@ public class MessageScreen implements Screen {
     private transient ChatContainer chats;
     private transient JScrollPane chatsScrollPane;
     private transient JButton settingsButton;
+    private JButton logoutButton;
 
     private List<Chat> usersChats;
     private Map<Chat, List<User>> usersInChats;
@@ -80,6 +82,10 @@ public class MessageScreen implements Screen {
         settingsButton.addActionListener(e -> {
             window.setScreen(window.getSettingsScreen());
             window.getSettingsScreen().setLastScreen(this);
+        });
+        logoutButton.addActionListener(e -> {
+            LOGGER.log(Level.INFO, "Logged out", window.getClient().getUser());
+            window.logout();
         });
     }
 
@@ -177,7 +183,7 @@ public class MessageScreen implements Screen {
     private void $$$setupUI$$$() {
         createUIComponents();
         messageScreen = new JPanel();
-        messageScreen.setLayout(new GridLayoutManager(3, 5, new Insets(0, 0, 0, 0), -1, -1));
+        messageScreen.setLayout(new GridLayoutManager(3, 6, new Insets(0, 0, 0, 0), -1, -1));
         messageScreen.setBackground(new Color(-12829636));
         messageScreen.setForeground(new Color(-1));
         chatsButton = new JButton();
@@ -192,19 +198,19 @@ public class MessageScreen implements Screen {
         messageField.setEditable(true);
         messageField.setEnabled(false);
         messageField.setForeground(new Color(-1));
-        messageScreen.add(messageField, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        messageScreen.add(messageField, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         sendMessageButton = new JButton();
         sendMessageButton.setBackground(new Color(-12829636));
         sendMessageButton.setBorderPainted(false);
         sendMessageButton.setEnabled(false);
         sendMessageButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(sendMessageButton, this.$$$getMessageFromBundle$$$("lang", "app.send"));
-        messageScreen.add(sendMessageButton, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        messageScreen.add(sendMessageButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         messagesScrollPane = new JScrollPane();
         messagesScrollPane.setBackground(new Color(-12829636));
         messagesScrollPane.setForeground(new Color(-1));
         messagesScrollPane.setVerticalScrollBarPolicy(22);
-        messageScreen.add(messagesScrollPane, new GridConstraints(0, 3, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 250), null, 0, false));
+        messageScreen.add(messagesScrollPane, new GridConstraints(0, 4, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(500, 250), null, 0, false));
         messages.setBackground(new Color(-12829636));
         messages.setDoubleBuffered(true);
         messages.setForeground(new Color(-1));
@@ -213,7 +219,7 @@ public class MessageScreen implements Screen {
         chatsScrollPane.setBackground(new Color(-12829636));
         chatsScrollPane.setForeground(new Color(-1));
         chatsScrollPane.setVerticalScrollBarPolicy(22);
-        messageScreen.add(chatsScrollPane, new GridConstraints(1, 0, 2, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(100, 250), null, 0, false));
+        messageScreen.add(chatsScrollPane, new GridConstraints(1, 0, 2, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(100, 250), null, 0, false));
         chats = new ChatContainer();
         chats.setBackground(new Color(-12829636));
         chats.setForeground(new Color(-1));
@@ -233,6 +239,13 @@ public class MessageScreen implements Screen {
         settingsButton.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));
         settingsButton.setText("");
         messageScreen.add(settingsButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(35, 31), new Dimension(30, 30), 0, false));
+        logoutButton = new JButton();
+        logoutButton.setBackground(new Color(-12829636));
+        logoutButton.setBorderPainted(false);
+        logoutButton.setForeground(new Color(-1));
+        logoutButton.setIcon(new ImageIcon(getClass().getResource("/images/logout.png")));
+        logoutButton.setText("");
+        messageScreen.add(logoutButton, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, new Dimension(30, 30), 0, false));
     }
 
     private static Method $$$cachedGetBundleMethod$$$ = null;
