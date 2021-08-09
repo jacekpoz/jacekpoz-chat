@@ -356,6 +356,32 @@ public class DatabaseConnector {
         }
     }
 
+    public boolean deleteUser(long userID) {
+        try (PreparedStatement deleteUser = con.prepareStatement(
+                "DELETE FROM " + Constants.USERS_TABLE +
+                    " WHERE user_id =?;"
+        )) {
+            deleteUser.setLong(1, userID);
+            return deleteUser.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void setAutoIncrement(String tableName, long value) {
+        try (PreparedStatement resetAutoIncrement = con.prepareStatement(
+                "ALTER TABLE ?" +
+                    "AUTO_INCREMENT = ?;"
+        )) {
+            resetAutoIncrement.setString(1, tableName);
+            resetAutoIncrement.setLong(2, value);
+            resetAutoIncrement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public User getUser(long id) {
         return getUser0(String.valueOf(id), "user_id");
     }

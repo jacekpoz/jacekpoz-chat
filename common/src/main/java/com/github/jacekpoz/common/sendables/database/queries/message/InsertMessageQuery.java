@@ -3,10 +3,14 @@ package com.github.jacekpoz.common.sendables.database.queries.message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class InsertMessageQuery extends MessageQuery {
 
     @Getter
@@ -27,27 +31,4 @@ public class InsertMessageQuery extends MessageQuery {
         this.content = content;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InsertMessageQuery)) return false;
-        if (!super.equals(o)) return false;
-        InsertMessageQuery that = (InsertMessageQuery) o;
-        return getMessageID() == that.getMessageID() &&
-                getChatID() == that.getChatID() &&
-                authorID == that.authorID &&
-                Objects.equals(content, that.content) &&
-                getAuthorID() == that.getAuthorID();
-    }
-
-    @Override
-    public String toString() {
-        return "InsertMessageQuery{" +
-                "messageID=" + getMessageID() +
-                ", chatID=" + getChatID() +
-                ", authorID=" + authorID +
-                ", content='" + content + '\'' +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

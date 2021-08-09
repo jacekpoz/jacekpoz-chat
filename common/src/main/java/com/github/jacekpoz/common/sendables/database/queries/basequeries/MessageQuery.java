@@ -1,9 +1,12 @@
 package com.github.jacekpoz.common.sendables.database.queries.basequeries;
 
 import com.github.jacekpoz.common.sendables.Message;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
-
+@ToString
+@EqualsAndHashCode
 public abstract class MessageQuery implements Query<Message> {
 
     @Getter
@@ -23,20 +26,4 @@ public abstract class MessageQuery implements Query<Message> {
         return callerID;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MessageQuery that = (MessageQuery) o;
-        return messageID == that.messageID && chatID == that.chatID && callerID == that.callerID;
-    }
-
-    @Override
-    public String toString() {
-        return "MessageQuery{" +
-                "messageID=" + messageID +
-                ", chatID=" + chatID +
-                ", callerID=" + callerID +
-                '}';
-    }
 }

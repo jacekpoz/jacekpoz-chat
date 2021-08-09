@@ -3,10 +3,14 @@ package com.github.jacekpoz.common.sendables.database.queries.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class GetUserQuery extends UserQuery {
 
     @Getter
@@ -30,23 +34,4 @@ public class GetUserQuery extends UserQuery {
         this(-1, username, callerID);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GetUserQuery)) return false;
-        if (!super.equals(o)) return false;
-        GetUserQuery that = (GetUserQuery) o;
-        return getUserID() == that.getUserID() &&
-                Objects.equals(username, that.username) &&
-                getCallerID() == that.getCallerID();
-    }
-
-    @Override
-    public String toString() {
-        return "GetUserQuery{" +
-                "userID=" + getUserID() +
-                ", username='" + username + '\'' +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

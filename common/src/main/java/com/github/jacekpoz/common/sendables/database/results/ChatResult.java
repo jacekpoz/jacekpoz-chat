@@ -5,11 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode
 public class ChatResult implements Result<Chat> {
 
     private final ChatQuery query;
@@ -54,20 +58,4 @@ public class ChatResult implements Result<Chat> {
         return success;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ChatResult that = (ChatResult) o;
-        return success == that.success && Objects.equals(query, that.query) && Objects.equals(chats, that.chats);
-    }
-
-    @Override
-    public String toString() {
-        return "ChatResult{" +
-                "query=" + query +
-                ", chats=" + chats +
-                ", success=" + success +
-                '}';
-    }
 }

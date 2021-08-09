@@ -4,12 +4,12 @@ import com.github.jacekpoz.client.gui.ChatWindow;
 import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.database.queries.user.DeleteUserQuery;
+import com.github.jacekpoz.common.sendables.database.results.UserResult;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import lombok.Setter;
 
 import javax.swing.*;
-import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Method;
@@ -67,13 +67,12 @@ public class SettingsScreen implements Screen {
 
         saveLogPathButton.addActionListener(e -> {
             Path logDirectoryPath = new File(logFilesTextField.getText()).toPath();
-
-
             if (Files.isDirectory(logDirectoryPath)) {
                 LOGGER.log(Level.INFO, "Changed log directory", logDirectoryPath);
                 window.changeLogDirectory(logDirectoryPath.toString());
             } else {
                 resultLabel.setText(window.getLanguageBundle().getString("app.invalid_path"));
+                window.pack();
             }
         });
 
@@ -121,11 +120,17 @@ public class SettingsScreen implements Screen {
             deleteAccountButton.setVisible(false);
             deleteAccountButton.setEnabled(false);
         }
+        window.pack();
     }
 
     @Override
     public void handleSendable(Sendable s) {
-
+        if (s instanceof UserResult) {
+            UserResult ur = (UserResult) s;
+            if (ur.getQuery() instanceof DeleteUserQuery) {
+                LOGGER.log(Level.INFO, "Account deleted", ur.get().get(0));
+            }
+        }
     }
 
     @Override
@@ -199,7 +204,7 @@ public class SettingsScreen implements Screen {
         resultLabel.setBackground(new Color(-12829636));
         resultLabel.setForeground(new Color(-1));
         resultLabel.setText("");
-        settingsScreen.add(resultLabel, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(resultLabel, new GridConstraints(4, 0, 1, 4, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         saveLogPathButton = new JButton();
         saveLogPathButton.setBackground(new Color(-12829636));
         saveLogPathButton.setBorderPainted(false);
@@ -207,14 +212,14 @@ public class SettingsScreen implements Screen {
         this.$$$loadButtonText$$$(saveLogPathButton, this.$$$getMessageFromBundle$$$("lang", "app.save_path"));
         settingsScreen.add(saveLogPathButton, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteAccountButton = new JButton();
-        deleteAccountButton.setBackground(new Color(-4060928));
+        deleteAccountButton.setBackground(new Color(-65536));
         deleteAccountButton.setBorderPainted(false);
         deleteAccountButton.setEnabled(false);
         deleteAccountButton.setForeground(new Color(-1));
-        deleteAccountButton.setLabel("");
+        deleteAccountButton.setLabel("Usuń konto");
         this.$$$loadButtonText$$$(deleteAccountButton, this.$$$getMessageFromBundle$$$("lang", "app.delete_account"));
         deleteAccountButton.setVisible(false);
-        settingsScreen.add(deleteAccountButton, new GridConstraints(4, 1, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        settingsScreen.add(deleteAccountButton, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         languageLabel.setLabelFor(languageComboBox);
         logFilesLabel.setLabelFor(logFilesTextField);
     }

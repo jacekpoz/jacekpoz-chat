@@ -121,6 +121,9 @@ public class QueryHandler {
         } else if (uq instanceof GetUsersInChatQuery guicq) {
             System.out.println(guicq);
             ur.add(connector.getUsersInChat(guicq.getChatID()));
+        } else if (uq instanceof DeleteUserQuery duq) {
+            ur.add(connector.getUser(duq.getUserID()));
+            ur.setSuccess(connector.deleteUser(duq.getUserID()));
         } else {
             throw new UnknownQueryException(uq);
         }

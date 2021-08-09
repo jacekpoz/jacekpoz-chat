@@ -3,10 +3,14 @@ package com.github.jacekpoz.common.sendables.database.queries.user;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class ModifyUserQuery extends UserQuery {
 
     @Getter
@@ -26,25 +30,4 @@ public class ModifyUserQuery extends UserQuery {
         this.newValue = newValue;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ModifyUserQuery)) return false;
-        if (!super.equals(o)) return false;
-        ModifyUserQuery that = (ModifyUserQuery) o;
-        return getUserID() == that.getUserID() &&
-                Objects.equals(columnToModify, that.columnToModify) &&
-                Objects.equals(newValue, that.newValue) &&
-                getCallerID() == that.getCallerID();
-    }
-
-    @Override
-    public String toString() {
-        return "ModifyUserQuery{" +
-                "userID=" + getUserID() +
-                ", columnToModify='" + columnToModify + '\'' +
-                ", newValue='" + newValue + '\'' +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

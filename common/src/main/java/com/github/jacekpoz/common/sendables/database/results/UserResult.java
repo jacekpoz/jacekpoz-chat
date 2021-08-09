@@ -5,11 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.UserQuery;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode
 public class UserResult implements Result<User> {
 
     private final UserQuery query;
@@ -56,20 +60,4 @@ public class UserResult implements Result<User> {
         return success;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserResult that = (UserResult) o;
-        return success == that.success && Objects.equals(query, that.query) && Objects.equals(users, that.users);
-    }
-
-    @Override
-    public String toString() {
-        return "UserResult{" +
-                "query=" + query +
-                ", users=" + users +
-                ", success=" + success +
-                '}';
-    }
 }

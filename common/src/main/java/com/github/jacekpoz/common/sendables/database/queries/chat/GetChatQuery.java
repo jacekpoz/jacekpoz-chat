@@ -3,7 +3,11 @@ package com.github.jacekpoz.common.sendables.database.queries.chat;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class GetChatQuery extends ChatQuery {
 
     @JsonCreator
@@ -14,11 +18,4 @@ public class GetChatQuery extends ChatQuery {
         super(chatID, callerID);
     }
 
-    @Override
-    public String toString() {
-        return "GetChatQuery{" +
-                "chatID=" + getChatID() +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

@@ -2,7 +2,11 @@ package com.github.jacekpoz.common.sendables.database.queries.chat;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class GetUsersChatsQuery extends GetChatQuery {
 
     @JsonCreator
@@ -17,11 +21,4 @@ public class GetUsersChatsQuery extends GetChatQuery {
         return getChatID();
     }
 
-    @Override
-    public String toString() {
-        return "GetUsersChatsQuery{" +
-                "userID=" + getUserID() +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

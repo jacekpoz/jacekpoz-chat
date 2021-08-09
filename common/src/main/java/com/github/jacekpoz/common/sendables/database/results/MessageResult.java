@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.Message;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.MessageQuery;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode
 public class MessageResult implements Result<Message> {
 
     private final MessageQuery query;
@@ -54,20 +57,4 @@ public class MessageResult implements Result<Message> {
         return success;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MessageResult that = (MessageResult) o;
-        return success == that.success && Objects.equals(query, that.query) && Objects.equals(messages, that.messages);
-    }
-
-    @Override
-    public String toString() {
-        return "MessageResult{" +
-                "query=" + query +
-                ", messages=" + messages +
-                ", success=" + success +
-                '}';
-    }
 }

@@ -3,11 +3,15 @@ package com.github.jacekpoz.common.sendables.database.queries.chat;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class InsertChatQuery extends ChatQuery {
 
     @Getter
@@ -26,29 +30,4 @@ public class InsertChatQuery extends ChatQuery {
         this.memberIDs = memberIDs;
     }
 
-    @Override
-    public long getChatID() {
-        return -1;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InsertChatQuery)) return false;
-        if (!super.equals(o)) return false;
-        InsertChatQuery that = (InsertChatQuery) o;
-        return getChatID() == that.getChatID() &&
-                Objects.equals(chatName, that.chatName) &&
-                Objects.equals(memberIDs, that.memberIDs) &&
-                getCallerID() == that.getCallerID();
-    }
-
-    @Override
-    public String toString() {
-        return "InsertChatQuery{" +
-                "chatName='" + chatName + '\'' +
-                ", memberIDs=" + memberIDs +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

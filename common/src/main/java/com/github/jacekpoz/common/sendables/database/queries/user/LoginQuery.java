@@ -2,11 +2,15 @@ package com.github.jacekpoz.common.sendables.database.queries.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.Objects;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class LoginQuery extends GetUserQuery {
 
     @Getter
@@ -22,23 +26,4 @@ public class LoginQuery extends GetUserQuery {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LoginQuery)) return false;
-        if (!super.equals(o)) return false;
-        LoginQuery that = (LoginQuery) o;
-        return Objects.equals(getUsername(), that.getUsername()) &&
-                Arrays.equals(password, that.password) &&
-                getCallerID() == that.getCallerID();
-    }
-
-    @Override
-    public String toString() {
-        return "LoginQuery{" +
-                "username='" + getUsername() + '\'' +
-                ", password=" + Arrays.toString(password) +
-                ", callerID=" + getCallerID() +
-                '}';
-    }
 }

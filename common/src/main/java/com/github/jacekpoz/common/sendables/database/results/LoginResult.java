@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.EnumResults;
 import com.github.jacekpoz.common.sendables.database.queries.user.LoginQuery;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.SQLException;
 
+@ToString
+@EqualsAndHashCode(callSuper = true)
 public class LoginResult extends UserResult {
 
     @Getter
@@ -26,14 +30,4 @@ public class LoginResult extends UserResult {
         super(lq);
     }
 
-    @Override
-    public String toString() {
-        return "LoginResult{" +
-                "query=" + getQuery() +
-                ", users=" + get() +
-                ", success=" + success() +
-                ", result=" + result +
-                ", ex=" + ex +
-                '}';
-    }
 }
