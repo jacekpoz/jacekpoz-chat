@@ -145,6 +145,7 @@ public class RegisterScreen implements Screen {
         registerScreen.add(nicknameLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();
         nicknameField.setBackground(new Color(-12829636));
+        nicknameField.setCaretColor(new Color(-1));
         nicknameField.setForeground(new Color(-1));
         registerScreen.add(nicknameField, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         passwordLabel = new JLabel();
@@ -155,12 +156,14 @@ public class RegisterScreen implements Screen {
         registerButton = new JButton();
         registerButton.setBackground(new Color(-12829636));
         registerButton.setBorderPainted(false);
+        registerButton.setFocusPainted(false);
         registerButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "app.register"));
         registerScreen.add(registerButton, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         loginButton = new JButton();
         loginButton.setBackground(new Color(-12829636));
         loginButton.setBorderPainted(false);
+        loginButton.setFocusPainted(false);
         loginButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "app.go_to_login"));
         registerScreen.add(loginButton, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -171,11 +174,13 @@ public class RegisterScreen implements Screen {
         registerScreen.add(result, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         passwordField = new JPasswordField();
         passwordField.setBackground(new Color(-12829636));
+        passwordField.setCaretColor(new Color(-1));
         passwordField.setForeground(new Color(-1));
         registerScreen.add(passwordField, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         settingsButton = new JButton();
         settingsButton.setBackground(new Color(-12829636));
         settingsButton.setBorderPainted(false);
+        settingsButton.setFocusPainted(false);
         settingsButton.setForeground(new Color(-1));
         settingsButton.setHorizontalTextPosition(0);
         settingsButton.setIcon(new ImageIcon(getClass().getResource("/images/settings.png")));

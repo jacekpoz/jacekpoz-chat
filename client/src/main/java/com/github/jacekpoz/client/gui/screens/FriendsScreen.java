@@ -99,7 +99,7 @@ public class FriendsScreen implements Screen {
         p.removeAll();
         for (User u : users)
             if (window.getClient().getUser().getId() != u.getId())
-                p.add(new UserPanel(window, window.getClient().getUser(), u, type));
+                p.add(new UserPanel(window, p, window.getClient().getUser(), u, type));
         p.revalidate();
     }
 
@@ -190,6 +190,7 @@ public class FriendsScreen implements Screen {
         searchFriendsButton = new JButton();
         searchFriendsButton.setBackground(new Color(-12829636));
         searchFriendsButton.setBorderPainted(false);
+        searchFriendsButton.setFocusPainted(false);
         searchFriendsButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(searchFriendsButton, this.$$$getMessageFromBundle$$$("lang", "app.search"));
         friendsPane.add(searchFriendsButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -214,6 +215,7 @@ public class FriendsScreen implements Screen {
         addFriendsPane.add(searchNewFriends, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         searchNewFriendsButton = new JButton();
         searchNewFriendsButton.setBackground(new Color(-12829636));
+        searchNewFriendsButton.setFocusPainted(false);
         searchNewFriendsButton.setForeground(new Color(-1));
         searchNewFriendsButton.setText("Szukaj");
         addFriendsPane.add(searchNewFriendsButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -235,6 +237,7 @@ public class FriendsScreen implements Screen {
         backToMessagesButton = new JButton();
         backToMessagesButton.setBackground(new Color(-12829636));
         backToMessagesButton.setBorderPainted(false);
+        backToMessagesButton.setFocusPainted(false);
         backToMessagesButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(backToMessagesButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
         friendsScreen.add(backToMessagesButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

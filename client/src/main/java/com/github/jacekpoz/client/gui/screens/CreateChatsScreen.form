@@ -18,6 +18,7 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <opaque value="true"/>
           <rolloverEnabled value="false"/>
@@ -72,6 +73,7 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.add"/>
         </properties>
@@ -84,6 +86,7 @@
           <background color="-12829636"/>
           <borderPainted value="false"/>
           <enabled value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.delete"/>
         </properties>
@@ -96,6 +99,7 @@
           <background color="-12829636"/>
           <borderPainted value="false"/>
           <enabled value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.create_chat"/>
         </properties>

@@ -17,19 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/*
-****************************
-* template for each method *
-****************************
-
-try (Statement st = con.createStatement()) {
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
- */
-
 public class DatabaseConnector {
 
     private final Connection con;
@@ -408,7 +395,7 @@ public class DatabaseConnector {
 
             User returned = new User(id, nickname, hashedPassword, joined.toLocalDateTime());
 
-            List<User> friends = getFriends(id);
+            List<Long> friends = getFriendIDs(id);
             friends.forEach(returned::addFriend);
 
             return returned;
@@ -635,19 +622,19 @@ public class DatabaseConnector {
         }
     }
 
-    public List<User> getFriends(long userID) {
+    public List<Long> getFriendIDs(long userID) {
         try (PreparedStatement getFriendIDs = con.prepareStatement(
                 "SELECT friend_id " +
-                    "FROM " + Constants.FRIENDS_TABLE +
-                    " WHERE user_id = ?;"
+                        "FROM " + Constants.FRIENDS_TABLE +
+                        " WHERE user_id = ?;"
         )) {
             getFriendIDs.setLong(1, userID);
-            List<User> friends = new ArrayList<>();
+            List<Long> friends = new ArrayList<>();
             ResultSet rs = getFriendIDs.executeQuery();
 
             while (rs.next()) {
                 long id = rs.getLong("friend_id");
-                friends.add(getUser(id));
+                friends.add(id);
             }
             rs.close();
 
@@ -656,6 +643,12 @@ public class DatabaseConnector {
             e.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    public List<User> getFriends(long userID) {
+        return getFriendIDs(userID).stream()
+                .map(this::getUser)
+                .collect(Collectors.toList());
     }
 
     public List<User> getFriendRequests(long userID) {

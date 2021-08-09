@@ -9,7 +9,7 @@ import lombok.ToString;
 import java.util.Arrays;
 import java.util.Objects;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class LoginQuery extends GetUserQuery {
 

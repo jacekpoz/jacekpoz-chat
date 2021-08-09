@@ -68,9 +68,10 @@ public class LoginScreen implements Screen {
         result.setText("");
         nicknameField.setText("");
         passwordField.setText("");
-        for (Screen s : window.getScreens())
-            if (!(s instanceof LoginScreen))
-                s.update();
+        if (window.getClient().isLoggedIn())
+            for (Screen s : window.getScreens())
+                if (!(s instanceof LoginScreen))
+                    s.update();
     }
 
     @Override
@@ -154,22 +155,29 @@ public class LoginScreen implements Screen {
         loginScreen.add(passwordLabel, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         passwordField = new JPasswordField();
         passwordField.setBackground(new Color(-12829636));
+        passwordField.setCaretColor(new Color(-1));
         passwordField.setForeground(new Color(-1));
         loginScreen.add(passwordField, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         loginButton = new JButton();
         loginButton.setBackground(new Color(-12829636));
         loginButton.setBorderPainted(false);
+        loginButton.setFocusPainted(false);
         loginButton.setForeground(new Color(-1));
+        loginButton.setInheritsPopupMenu(false);
+        loginButton.setLabel("Zaloguj");
         this.$$$loadButtonText$$$(loginButton, this.$$$getMessageFromBundle$$$("lang", "app.login"));
         loginScreen.add(loginButton, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         registerButton = new JButton();
         registerButton.setBackground(new Color(-12829636));
         registerButton.setBorderPainted(false);
+        registerButton.setFocusPainted(false);
         registerButton.setForeground(new Color(-1));
+        registerButton.setLabel("Rejestracja");
         this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "app.go_to_register"));
         loginScreen.add(registerButton, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();
         nicknameField.setBackground(new Color(-12829636));
+        nicknameField.setCaretColor(new Color(-1));
         nicknameField.setForeground(new Color(-1));
         loginScreen.add(nicknameField, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(100, -1), null, 0, false));
         result = new JLabel();
@@ -183,6 +191,7 @@ public class LoginScreen implements Screen {
         settingsButton.setContentAreaFilled(true);
         settingsButton.setDoubleBuffered(false);
         settingsButton.setEnabled(true);
+        settingsButton.setFocusPainted(false);
         settingsButton.setForeground(new Color(-1));
         settingsButton.setHideActionText(false);
         settingsButton.setHorizontalAlignment(0);

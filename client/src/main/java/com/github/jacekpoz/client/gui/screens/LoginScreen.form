@@ -47,6 +47,7 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <caretColor color="-1"/>
           <foreground color="-1"/>
         </properties>
       </component>
@@ -57,7 +58,10 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
+          <inheritsPopupMenu value="false"/>
+          <label value="Zaloguj"/>
           <text resource-bundle="lang" key="app.login"/>
         </properties>
       </component>
@@ -68,7 +72,9 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
+          <label value="Rejestracja"/>
           <text resource-bundle="lang" key="app.go_to_register"/>
         </properties>
       </component>
@@ -80,6 +86,7 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <caretColor color="-1"/>
           <foreground color="-1"/>
         </properties>
       </component>
@@ -107,6 +114,7 @@
           <contentAreaFilled value="true"/>
           <doubleBuffered value="false"/>
           <enabled value="true"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <hideActionText value="false"/>
           <horizontalAlignment value="0"/>

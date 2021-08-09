@@ -9,7 +9,7 @@ import lombok.ToString;
 
 import java.util.Objects;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class RegisterQuery extends UserQuery {
 

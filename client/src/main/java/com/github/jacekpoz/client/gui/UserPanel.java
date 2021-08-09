@@ -22,21 +22,25 @@ public class UserPanel extends JPanel {
     public static final int REQUEST = 2;
 
     private final ChatWindow window;
+    private final JPanel addedTo;
     @Getter
     private final User clientUser;
     @Getter
     private final User panelUser;
     @Getter @Setter
     private int userPanelType;
+    private JLabel userLabel;
     private JButton button1;
     private JButton button2;
 
-    public UserPanel(ChatWindow w, User u, User pU, int type) {
+    public UserPanel(ChatWindow w, JPanel jp, User u, User pU, int type) {
         window = w;
+        addedTo = jp;
         clientUser = u;
         panelUser = pU;
         userPanelType = type;
-        add(new JLabel(String.valueOf(panelUser)));
+        userLabel = new JLabel(String.valueOf(panelUser));
+        add(userLabel);
         changeType(userPanelType);
     }
 
@@ -118,7 +122,10 @@ public class UserPanel extends JPanel {
     }
 
     private void removeThis() {
-        window.getFriendsScreen().getPanel().remove(this);
-        window.getFriendsScreen().getPanel().revalidate();
+        remove(userLabel);
+        if (button1 != null) remove(button1);
+        if (button2 != null) remove(button2);
+        addedTo.remove(this);
+        addedTo.revalidate();
     }
 }

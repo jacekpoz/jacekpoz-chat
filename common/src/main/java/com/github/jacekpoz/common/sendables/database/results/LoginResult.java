@@ -11,7 +11,7 @@ import lombok.ToString;
 
 import java.sql.SQLException;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class LoginResult extends UserResult {
 

@@ -39,6 +39,7 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.go_back"/>
         </properties>
@@ -72,6 +73,7 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <hideActionText value="true"/>
           <text resource-bundle="lang" key="app.choose_directory"/>
@@ -94,6 +96,7 @@
         <properties>
           <background color="-12829636"/>
           <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
           <text resource-bundle="lang" key="app.save_path"/>
         </properties>
@@ -107,7 +110,7 @@
           <borderPainted value="false"/>
           <enabled value="false"/>
           <foreground color="-1"/>
-          <label value=""/>
+          <label value="Usuń konto"/>
           <text resource-bundle="lang" key="app.delete_account"/>
           <visible value="false"/>
         </properties>

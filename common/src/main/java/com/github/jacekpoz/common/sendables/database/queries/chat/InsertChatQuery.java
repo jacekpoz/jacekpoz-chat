@@ -10,7 +10,7 @@ import lombok.ToString;
 import java.util.List;
 import java.util.Objects;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class InsertChatQuery extends ChatQuery {
 

@@ -5,6 +5,7 @@ import com.github.jacekpoz.client.gui.Screen;
 import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.chat.InsertChatQuery;
+import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendsQuery;
 import com.github.jacekpoz.common.sendables.database.results.UserResult;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -124,6 +125,8 @@ public class CreateChatsScreen implements Screen {
 
     @Override
     public void update() {
+        window.send(new GetFriendsQuery(window.getClient().getUser().getId(), getScreenID()));
+
         friendsListModel.clear();
         addedFriendsListModel.clear();
         chatNameTextField.setText("");
@@ -177,6 +180,7 @@ public class CreateChatsScreen implements Screen {
         backToMessagesButton = new JButton();
         backToMessagesButton.setBackground(new Color(-12829636));
         backToMessagesButton.setBorderPainted(false);
+        backToMessagesButton.setFocusPainted(false);
         backToMessagesButton.setForeground(new Color(-1));
         backToMessagesButton.setOpaque(true);
         backToMessagesButton.setRolloverEnabled(false);
@@ -204,6 +208,7 @@ public class CreateChatsScreen implements Screen {
         addButton = new JButton();
         addButton.setBackground(new Color(-12829636));
         addButton.setBorderPainted(false);
+        addButton.setFocusPainted(false);
         addButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(addButton, this.$$$getMessageFromBundle$$$("lang", "app.add"));
         createChatsScreen.add(addButton, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -211,6 +216,7 @@ public class CreateChatsScreen implements Screen {
         deleteButton.setBackground(new Color(-12829636));
         deleteButton.setBorderPainted(false);
         deleteButton.setEnabled(false);
+        deleteButton.setFocusPainted(false);
         deleteButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(deleteButton, this.$$$getMessageFromBundle$$$("lang", "app.delete"));
         createChatsScreen.add(deleteButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -218,6 +224,7 @@ public class CreateChatsScreen implements Screen {
         createChatButton.setBackground(new Color(-12829636));
         createChatButton.setBorderPainted(false);
         createChatButton.setEnabled(false);
+        createChatButton.setFocusPainted(false);
         createChatButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(createChatButton, this.$$$getMessageFromBundle$$$("lang", "app.create_chat"));
         createChatsScreen.add(createChatButton, new GridConstraints(4, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

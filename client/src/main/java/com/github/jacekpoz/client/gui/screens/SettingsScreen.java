@@ -181,6 +181,7 @@ public class SettingsScreen implements Screen {
         goBackButton = new JButton();
         goBackButton.setBackground(new Color(-12829636));
         goBackButton.setBorderPainted(false);
+        goBackButton.setFocusPainted(false);
         goBackButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(goBackButton, this.$$$getMessageFromBundle$$$("lang", "app.go_back"));
         settingsScreen.add(goBackButton, new GridConstraints(0, 0, 1, 4, GridConstraints.ANCHOR_NORTHWEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -196,6 +197,7 @@ public class SettingsScreen implements Screen {
         chooseDirectoryButton = new JButton();
         chooseDirectoryButton.setBackground(new Color(-12829636));
         chooseDirectoryButton.setBorderPainted(false);
+        chooseDirectoryButton.setFocusPainted(false);
         chooseDirectoryButton.setForeground(new Color(-1));
         chooseDirectoryButton.setHideActionText(true);
         this.$$$loadButtonText$$$(chooseDirectoryButton, this.$$$getMessageFromBundle$$$("lang", "app.choose_directory"));
@@ -208,6 +210,7 @@ public class SettingsScreen implements Screen {
         saveLogPathButton = new JButton();
         saveLogPathButton.setBackground(new Color(-12829636));
         saveLogPathButton.setBorderPainted(false);
+        saveLogPathButton.setFocusPainted(false);
         saveLogPathButton.setForeground(new Color(-1));
         this.$$$loadButtonText$$$(saveLogPathButton, this.$$$getMessageFromBundle$$$("lang", "app.save_path"));
         settingsScreen.add(saveLogPathButton, new GridConstraints(2, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -216,7 +219,7 @@ public class SettingsScreen implements Screen {
         deleteAccountButton.setBorderPainted(false);
         deleteAccountButton.setEnabled(false);
         deleteAccountButton.setForeground(new Color(-1));
-        deleteAccountButton.setLabel("");
+        deleteAccountButton.setLabel("Usuń konto");
         this.$$$loadButtonText$$$(deleteAccountButton, this.$$$getMessageFromBundle$$$("lang", "app.delete_account"));
         deleteAccountButton.setVisible(false);
         settingsScreen.add(deleteAccountButton, new GridConstraints(3, 0, 1, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

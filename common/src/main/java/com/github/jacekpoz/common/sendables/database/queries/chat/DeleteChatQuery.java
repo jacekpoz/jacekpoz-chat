@@ -6,7 +6,7 @@ import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQue
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-@ToString
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class DeleteChatQuery extends ChatQuery {
 

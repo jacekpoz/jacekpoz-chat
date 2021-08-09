@@ -165,5 +165,8 @@ public class ChatWindow extends JFrame {
     public void logout() {
         client.setUser(null);
         setScreen(loginScreen);
+        loginScreen.update();
+        registerScreen.update();
+        settingsScreen.update();
     }
 }
