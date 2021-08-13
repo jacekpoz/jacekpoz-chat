@@ -6,7 +6,7 @@
     <groupId>com.github.jacekpoz</groupId>
     <artifactId>jacekpoz-chat</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
+    <version>0.4.0</version>
     <modules>
         <module>client</module>
         <module>common</module>
@@ -19,8 +19,21 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <dependencies>
-
-    </dependencies>
-
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,20 +1,40 @@
 package com.github.jacekpoz.client.gui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jacekpoz.client.Client;
+import com.github.jacekpoz.client.InputHandler;
 import com.github.jacekpoz.client.gui.screens.*;
+import com.github.jacekpoz.client.logging.LogFormatter;
+import com.github.jacekpoz.common.jackson.JsonObjectMapper;
+import com.github.jacekpoz.common.sendables.Sendable;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.logging.*;
 
 public class ChatWindow extends JFrame {
 
+    private final static Logger ROOT_LOGGER = LogManager.getLogManager().getLogger("");
+    private final static Logger LOGGER = Logger.getLogger(ChatWindow.class.getName());
+
     @Getter
-    private ObjectOutputStream outputStream;
+    private PrintWriter out;
     @Getter
-    private ObjectInputStream inputStream;
+    private BufferedReader in;
+
+    @Getter
+    private final InputHandler handler;
 
     @Getter
     private final Screen[] screens;
@@ -29,33 +49,69 @@ public class ChatWindow extends JFrame {
     private final FriendsScreen friendsScreen;
     @Getter
     private final CreateChatsScreen createChatsScreen;
+    @Getter
+    private final SettingsScreen settingsScreen;
 
     @Getter
     private final Client client;
 
+    @Getter
+    @Setter
+    private ResourceBundle languageBundle;
+
+    @Getter
+    private String logDirectory;
+
+    @Getter
+    private String currentLogFile;
+
+    @Getter
+    private final JsonObjectMapper mapper;
+
+    @Getter
+    @Setter
+    private Screen lastScreen;
+    @Getter
+    @Setter
+    private Screen currentScreen;
+
     public ChatWindow(Client c) {
         client = c;
 
+        languageBundle = ResourceBundle.getBundle("lang");
+        logDirectory = ".";
+        ROOT_LOGGER.setUseParentHandlers(false);
+        changeLogDirectory(logDirectory);
+
         try {
-            outputStream = new ObjectOutputStream(client.getSocket().getOutputStream());
-            inputStream = new ObjectInputStream(client.getSocket().getInputStream());
+            out = new PrintWriter(client.getSocket().getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(client.getSocket().getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mapper = new JsonObjectMapper();
+
+        handler = new InputHandler(this);
 
         messageScreen = new MessageScreen(this);
         loginScreen = new LoginScreen(this);
         registerScreen = new RegisterScreen(this);
         friendsScreen = new FriendsScreen(this);
         createChatsScreen = new CreateChatsScreen(this);
+        settingsScreen = new SettingsScreen(this);
 
-        screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen};
-
-        // TODO change this after I figure out the name
-        setTitle("chat");
+        screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
+        
+        changeLanguage(Locale.US);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setDefaultLookAndFeelDecorated(true);
+        setMinimumSize(new Dimension(800, 600));
+
+        lastScreen = loginScreen;
+        currentScreen = loginScreen;
+
+        handler.start();
     }
 
     public void start() {
@@ -64,7 +120,68 @@ public class ChatWindow extends JFrame {
     }
 
     public void setScreen(Screen screen) {
+        lastScreen = currentScreen;
+        screen.update();
+        screen.updateUI();
         setContentPane(screen.getPanel());
-        pack();
+        currentScreen = screen;
+    }
+
+    public void send(Sendable s) {
+        String json;
+        try {
+            json = mapper.writeValueAsString(s);
+            out.println(json);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Screen getScreen(long id) {
+        for (Screen s : screens)
+            if (s.getScreenID() == id)
+                return s;
+        return null;
+    }
+
+    public void changeLanguage(Locale lang) {
+        languageBundle = ResourceBundle.getBundle("lang", lang);
+        setTitle(languageBundle.getString("app.title"));
+        for (Screen s : screens) {
+            s.changeLanguage();
+        }
+    }
+
+    public void changeLogDirectory(String logDirectory) {
+        this.logDirectory = logDirectory;
+        try {
+            for (Handler h : ROOT_LOGGER.getHandlers()) {
+                ROOT_LOGGER.removeHandler(h);
+                h.flush();
+                h.close();
+            }
+
+            String logFile = logDirectory + "\\jacekpozchat_" + new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
+                    .format(new Date(System.currentTimeMillis())) + ".log";
+            FileHandler fh = new FileHandler(logFile);
+            currentLogFile = logFile;
+            fh.setFormatter(new LogFormatter());
+            ROOT_LOGGER.addHandler(fh);
+        } catch (IOException e) {
+            LOGGER.log(Level.WARNING, "Failed to create log file", e);
+        }
+    }
+
+    public String getLangString(String key) {
+        return languageBundle.getString(key);
+    }
+
+    public void logout() {
+        client.setLoggedIn(false);
+        setScreen(loginScreen);
+        loginScreen.updateUI();
+        registerScreen.updateUI();
+        settingsScreen.updateUI();
+        client.setUser(null);
     }
 }

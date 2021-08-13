@@ -13,12 +13,17 @@
     <children>
       <component id="d07f4" class="javax.swing.JButton" binding="backToMessagesButton">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="3" anchor="9" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
-          <text value="Powrót"/>
+          <opaque value="true"/>
+          <rolloverEnabled value="false"/>
+          <selected value="false"/>
+          <text resource-bundle="lang" key="app.go_back"/>
         </properties>
       </component>
       <scrollpane id="a90" binding="friendsScrollPane">
@@ -67,8 +72,10 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
-          <text value="Dodaj"/>
+          <text resource-bundle="lang" key="app.add"/>
         </properties>
       </component>
       <component id="19b37" class="javax.swing.JButton" binding="deleteButton">
@@ -77,9 +84,11 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
           <enabled value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
-          <text value="Usuń"/>
+          <text resource-bundle="lang" key="app.delete"/>
         </properties>
       </component>
       <component id="fb938" class="javax.swing.JButton" binding="createChatButton">
@@ -88,9 +97,11 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <borderPainted value="false"/>
           <enabled value="false"/>
+          <focusPainted value="false"/>
           <foreground color="-1"/>
-          <text value="Stwórz czat"/>
+          <text resource-bundle="lang" key="app.create_chat"/>
         </properties>
       </component>
       <component id="ed4d6" class="javax.swing.JTextField" binding="chatNameTextField">
@@ -101,6 +112,7 @@
         </constraints>
         <properties>
           <background color="-12829636"/>
+          <caretColor color="-1"/>
           <foreground color="-1"/>
           <text value=""/>
         </properties>
@@ -113,7 +125,7 @@
           <background color="-12829636"/>
           <foreground color="-1"/>
           <labelFor value="ed4d6"/>
-          <text value="Nazwa czatu:"/>
+          <text resource-bundle="lang" key="app.chat_name"/>
         </properties>
       </component>
     </children>

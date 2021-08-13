@@ -1,8 +1,8 @@
 package com.github.jacekpoz.client;
 
 import com.github.jacekpoz.client.gui.ChatWindow;
-import com.github.jacekpoz.common.Chat;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.sendables.Chat;
+import com.github.jacekpoz.common.sendables.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,13 +20,15 @@ public class Client {
     @Getter @Setter
     private User user;
     @Getter @Setter
+    private boolean isLoggedIn;
+    @Getter @Setter
     private Chat chat;
 
     public Client(Socket s) {
         socket = s;
         window = new ChatWindow(this);
-        user = new User(-1, "dupa", "dupa dupa", Timestamp.valueOf(LocalDateTime.MIN));
-        chat = new Chat(-1, "dupa", Timestamp.valueOf(LocalDateTime.MIN), -1);
+        user = new User(-1, "dupa", "dupa dupa", LocalDateTime.MIN);
+        chat = new Chat(-1, "dupa", LocalDateTime.MIN, -1);
     }
 
     public void start() {

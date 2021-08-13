@@ -4,37 +4,61 @@ import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 
 public class MessageContainer extends JPanel {
 
-    @Getter
-    private final List<MessagePanel> messages;
+    private final ChatWindow window;
 
     @Getter
     private final JLabel noMessages;
 
-    public MessageContainer() {
-        BoxLayout bl = new BoxLayout(this, BoxLayout.Y_AXIS);
-        setLayout(bl);
-        messages = new ArrayList<>();
-        noMessages = new JLabel("W tym czacie nie ma jeszcze wiadomości");
+    public MessageContainer(ChatWindow w) {
+        new JPanel();
+        window = w;
+        setBackground(new Color(60, 60, 60));
+        setForeground(Color.WHITE);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        noMessages = new JLabel(window.getLangString("app.no_messages_in_chat"));
+        noMessages.setBackground(new Color(60, 60, 60));
         noMessages.setForeground(Color.WHITE);
+        noMessages.setHorizontalAlignment(SwingConstants.CENTER);
+        add(noMessages);
+        addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                int eventWidth = e.getComponent().getWidth();
+                for (Component c : getComponents()) {
+                    c.setMaximumSize(new Dimension(eventWidth, c.getHeight()));
+                    c.revalidate();
+                    c.repaint();
+                }
+            }
+            @Override
+            public void componentMoved(ComponentEvent e) {}
+            @Override
+            public void componentShown(ComponentEvent e) {}
+
+            @Override
+            public void componentHidden(ComponentEvent e) {}
+        });
     }
 
     public void addMessage(MessagePanel mp) {
-        add(mp);
-        messages.add(mp);
         remove(noMessages);
+        mp.setMaximumSize(new Dimension(getWidth(), mp.getHeight()));
+        if (mp.isCurrentUserAuthor()) mp.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        add(mp);
         revalidate();
+        repaint();
     }
 
     public void removeAllMessages() {
-        messages.clear();
         removeAll();
         revalidate();
+        repaint();
     }
-
 }

@@ -1,5 +1,6 @@
 package com.github.jacekpoz.common;
 
+import com.github.jacekpoz.common.sendables.User;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.StringMetrics;
 
@@ -10,17 +11,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Util {
+/**
+ * A bunch of useful static methods.
+ *
+ * @author  jacekpoz
+ * @version 0.0.5
+ * @since   0.0.1
+ */
+public final class Util {
 
-    private Util() {/*nope*/}
-
-    public static String timestampToString(Timestamp date) {
-        LocalDateTime d = date.toLocalDateTime();
-        return String.format("<html> %02d:%02d:%02d<br>%02d-%02d-%04d</html>",
-                d.getHour(), d.getMinute(), d.getSecond(),
-                d.getDayOfMonth(), d.getMonthValue(), d.getYear());
+    /**
+     * Nope.
+     *
+     * @author  jacekpoz
+     * @since 0.0.1
+     */
+    private Util() {
+        throw new AssertionError("nope");
     }
 
+    /**
+     * Turns a {@code LocalDateTime} into a {@code String} mainly for message tooltips.
+     *
+     * @param  date date to be turned into {@code String}
+     * @return {@code String} made from the date
+     * @author jacekpoz
+     * @since  0.0.2
+     */
+    public static String localDateTimeToString(LocalDateTime date) {
+        return String.format("<html> %02d:%02d:%02d<br>%02d-%02d-%04d</html>",
+                date.getHour(), date.getMinute(), date.getSecond(),
+                date.getDayOfMonth(), date.getMonthValue(), date.getYear());
+    }
+
+    /**
+     * Takes the users' usernames and turns them into a {@code String} mainly used for chat tooltips.
+     *
+     * @param  users username sources
+     * @return condensed usernames
+     * @author jacekpoz
+     * @since  0.0.2
+     */
     public static String userListToString(List<User> users) {
         List<String> nicknames = users.stream()
                 .map(User::getNickname)
@@ -28,6 +59,30 @@ public class Util {
         return usernamesToString(nicknames);
     }
 
+    /**
+     * Turns a list of usernames into a tooltip for a chat.
+     * For a chat with 4 or fewer members it will look like this:
+     * <pre>
+     *     kupsko
+     *     gówno
+     *     dupa
+     *     siki
+     * </pre>
+     * and for a chat with 5 or more members it will look like this:
+     * <pre>
+     *     dupka
+     *     gówno
+     *     siki
+     *     kupa
+     *     ...+n
+     * </pre>
+     * with n being the remaining amount of users in that chat.
+     *
+     * @param  usernames what do you expect this to be
+     * @return if you don't know what this is you should go see a doctor
+     * @author jacekpoz
+     * @since  0.0.3
+     */
     public static String usernamesToString(List<String> usernames) {
         StringBuilder sb = new StringBuilder();
         sb.append("<html>");
@@ -42,31 +97,23 @@ public class Util {
         return sb.toString();
     }
 
-    public static List<User> compareUsernamesFromID(String inputUsername, List<Long> userIDs) {
-        try {
-            DatabaseConnector con = new DatabaseConnector(
-                    "jdbc:mysql://localhost:3306/" + Constants.DB_NAME,
-                    "chat-client", "DB_Password_0123456789"
-            );
-
-            return compareUsernames(inputUsername,
-                    userIDs.stream()
-                            .map(con::getUser)
-                            .collect(Collectors.toList())
-            );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public static List<User> compareUsernames(String inputUsername, List<User> userInfos) {
+    /**
+     * Compares {@code inputUsername} with each username from {@code users} using the Damerau-Levenshtein distance algorithm.
+     * I don't know shit about this algorithm or actually most algorithms so I just went off of trial and error and found that > 0.5 is fine.
+     *
+     * @param  inputUsername username given by the user
+     * @param  users         users that will be filtered out by their username
+     * @return filtered list of users with similar usernames to {@code inputUsername}
+     * @author jacekpoz
+     * @since  0.0.3
+     * @see    <a href="https://en.wikipedia.org/wiki/Damerau%E2%80%93Levenshtein_distance">Damerau-Levenshtein distance</a>
+     */
+    public static List<User> compareUsernames(String inputUsername, List<User> users) {
         StringMetric metric = StringMetrics.damerauLevenshtein();
 
         List<User> similarUsernames = new ArrayList<>();
-        for (User ui : userInfos) {
+        for (User ui : users) {
             float result = metric.compare(inputUsername, ui.getNickname());
-            System.out.println(result);
             if (result > 0.5 || ui.getNickname().startsWith(inputUsername))
                 similarUsernames.add(ui);
         }

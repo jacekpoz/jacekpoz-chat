@@ -1,22 +1,27 @@
 package com.github.jacekpoz.client.gui;
 
-import com.github.jacekpoz.common.Message;
-import com.github.jacekpoz.common.User;
+import com.github.jacekpoz.common.sendables.Message;
+import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.Util;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class MessagePanel extends JPanel {
+public class MessagePanel extends JLabel {
 
-    private final JLabel label;
+    @Getter
+    private final boolean isCurrentUserAuthor;
 
-    public MessagePanel(User author, Message m) {
-        label = new JLabel(author.getNickname() + ": " + m.getContent());
-        label.setToolTipText(Util.timestampToString(m.getSendDate()));
-        label.setForeground(Color.WHITE);
+    public MessagePanel(User currentUser, User author, Message m) {
+        setBorder(BorderFactory.createLineBorder(Color.BLACK, 5));
+        setText("<html>" + author.getNickname() + ": " + m.getContent() + "</html>");
+        setToolTipText(Util.localDateTimeToString(m.getDateSent()));
         setBackground(new Color(60, 60, 60));
-        add(label);
+        setForeground(Color.WHITE);
+        setMaximumSize(new Dimension(100, 25));
+
+        isCurrentUserAuthor = currentUser.equals(author);
     }
 
 }
