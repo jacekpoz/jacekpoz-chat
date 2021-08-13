@@ -1,6 +1,7 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.Query;
@@ -10,7 +11,6 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @ToString
 @EqualsAndHashCode
@@ -30,9 +30,15 @@ public class UserResult implements Result<User> {
         users = new ArrayList<>();
     }
 
+    @JsonGetter("users")
     @Override
     public List<User> get() {
         return users;
+    }
+
+    @Override
+    public User get(int index) {
+        return users.get(index);
     }
 
     @Override

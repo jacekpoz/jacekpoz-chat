@@ -9,6 +9,13 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
+/**
+ * Do I really have to describe this class?
+ *
+ * @author  jacekpoz
+ * @version 0.0.4
+ * @since   0.1.0
+ */
 @ToString
 @EqualsAndHashCode
 public class Message implements Sendable {

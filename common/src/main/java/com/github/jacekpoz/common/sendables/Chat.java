@@ -7,12 +7,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Generic class description.
+ *
+ * @author  jacekpoz
+ * @version 0.0.4
+ * @since   0.1.0
+ */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Chat implements Sendable {
@@ -45,10 +51,6 @@ public class Chat implements Sendable {
         messages = new ArrayList<>();
         dateCreated = created;
         messageCounter = mCounter;
-    }
-
-    public void sortMessages() {
-        messages.sort(Comparator.comparingLong(Message::getMessageID));
     }
 
 }

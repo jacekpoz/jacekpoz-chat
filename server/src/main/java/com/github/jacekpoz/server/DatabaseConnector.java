@@ -12,7 +12,6 @@ import com.github.jacekpoz.common.sendables.database.results.RegisterResult;
 import com.kosprov.jargon2.api.Jargon2;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,7 +115,7 @@ public class DatabaseConnector {
             );
             insertFriend.setLong(1, userID);
             insertFriend.setLong(2, friendID);
-            insertFriend.execute();
+            insertFriend.executeUpdate();
 
             return EnumResults.AddFriend.ADDED_FRIEND;
         } catch (SQLException e) {
@@ -140,7 +139,7 @@ public class DatabaseConnector {
         )) {
             removeFriend.setLong(1, userID);
             removeFriend.setLong(2, friendID);
-            removeFriend.execute();
+            removeFriend.executeUpdate();
 
             return EnumResults.RemoveFriend.REMOVED_FRIEND;
         } catch (SQLException e) {
@@ -149,7 +148,7 @@ public class DatabaseConnector {
         }
     }
 
-    public void addMessage(long messageID, long chatID, long authorID, String content) {
+    public Message addMessage(long messageID, long chatID, long authorID, String content) {
         try (PreparedStatement addMessage = con.prepareStatement(
                 "INSERT INTO " + Constants.MESSAGES_TABLE + "(message_id, chat_id, author_id, content)" +
                     "VALUES (?, ?, ?, ?);"
@@ -158,9 +157,13 @@ public class DatabaseConnector {
             addMessage.setLong(2, chatID);
             addMessage.setLong(3, authorID);
             addMessage.setString(4, content);
-            addMessage.execute();
+            addMessage.executeUpdate();
+            incrementChatMessageCounter(chatID);
+
+            return getMessage(messageID, chatID);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -189,7 +192,7 @@ public class DatabaseConnector {
             );
             insertRequest.setLong(1, senderID);
             insertRequest.setLong(2, friendID);
-            insertRequest.execute();
+            insertRequest.executeUpdate();
 
             return EnumResults.SendFriendRequest.SENT_SUCCESSFULLY;
         } catch (SQLException e) {
@@ -204,8 +207,8 @@ public class DatabaseConnector {
         }
     }
 
-    public void acceptFriendRequest(long senderID, long friendID) {
-        if (senderID == friendID) return;
+    public boolean acceptFriendRequest(long senderID, long friendID) {
+        if (senderID == friendID) return false;
 
         PreparedStatement deleteRequest = null;
         try (PreparedStatement checkRequest = con.prepareStatement(
@@ -219,7 +222,7 @@ public class DatabaseConnector {
             ResultSet rs = checkRequest.executeQuery();
             if (!rs.next()) {
                 rs.close();
-                return;
+                return false;
             }
             rs.close();
 
@@ -229,11 +232,24 @@ public class DatabaseConnector {
             );
             deleteRequest.setLong(1, senderID);
             deleteRequest.setLong(2, friendID);
-            deleteRequest.execute();
 
-            addFriend(senderID, friendID);
+
+            switch (addFriend(senderID, friendID)) {
+                case ADDED_FRIEND -> {
+                    deleteRequest.executeUpdate();
+                    return true;
+                }
+                case ALREADY_FRIEND, SAME_USER -> {
+                    deleteRequest.executeUpdate();
+                    return false;
+                }
+                default -> {
+                    return false;
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         } finally {
             try {
                 if (deleteRequest != null) deleteRequest.close();
@@ -267,7 +283,7 @@ public class DatabaseConnector {
             );
             deleteRequest.setLong(1, senderID);
             deleteRequest.setLong(2, friendID);
-            deleteRequest.execute();
+            deleteRequest.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -282,13 +298,14 @@ public class DatabaseConnector {
 
     public Chat createChat(String name, List<Long> memberIDs) {
         PreparedStatement selectMissingInfo = null;
+        PreparedStatement insertChatMessageCounter = null;
 
         try (PreparedStatement insertChat = con.prepareStatement(
-                "INSERT INTO " + Constants.CHATS_TABLE + " (name)" +
-                    " VALUES (?)"
+                "INSERT INTO " + Constants.CHATS_TABLE + " (name) " +
+                    "VALUES (?);"
         )) {
             insertChat.setString(1, name);
-            insertChat.execute();
+            insertChat.executeUpdate();
 
             selectMissingInfo = con.prepareStatement(
                     "SELECT * " +
@@ -300,6 +317,12 @@ public class DatabaseConnector {
             long chatID = rs.getLong("chat_id");
             Timestamp dateCreated = rs.getTimestamp("date_created");
             rs.close();
+            insertChatMessageCounter = con.prepareStatement(
+                    "INSERT INTO " + Constants.CHATS_MESSAGE_COUNTERS_TABLE + " (chat_id) " +
+                            "VALUES (?);"
+            );
+            insertChatMessageCounter.setLong(1, chatID);
+            insertChatMessageCounter.executeUpdate();
             Chat c = new Chat(chatID, name, dateCreated.toLocalDateTime(), 0);
 
             for (long id : memberIDs) {
@@ -309,7 +332,7 @@ public class DatabaseConnector {
                 );
                 insertMember.setLong(1, chatID);
                 insertMember.setLong(2, id);
-                insertMember.execute();
+                insertMember.executeUpdate();
                 insertMember.close();
                 c.getMemberIDs().add(id);
             }
@@ -317,10 +340,11 @@ public class DatabaseConnector {
             return c;
         } catch (SQLException e) {
             e.printStackTrace();
-            return new Chat(-1, "dupa", LocalDateTime.MIN, -1);
+            return null;
         } finally {
             try {
                 if (selectMissingInfo != null) selectMissingInfo.close();
+                if (insertChatMessageCounter != null) insertChatMessageCounter.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -334,7 +358,7 @@ public class DatabaseConnector {
         )) {
             insertUser.setString(1, username);
             insertUser.setString(2, hash);
-            insertUser.execute();
+            insertUser.executeUpdate();
 
             return getUser(username);
         } catch (SQLException e) {
@@ -349,7 +373,7 @@ public class DatabaseConnector {
                     " WHERE user_id =?;"
         )) {
             deleteUser.setLong(1, userID);
-            return deleteUser.execute();
+            return deleteUser.executeUpdate() == 1;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
@@ -363,7 +387,20 @@ public class DatabaseConnector {
         )) {
             resetAutoIncrement.setString(1, tableName);
             resetAutoIncrement.setLong(2, value);
-            resetAutoIncrement.execute();
+            resetAutoIncrement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void incrementChatMessageCounter(long chatID) {
+        try (PreparedStatement incrementChatMessageCounter = con.prepareStatement(
+                "UPDATE " + Constants.CHATS_MESSAGE_COUNTERS_TABLE +
+                    " SET message_counter = message_counter + 1 " +
+                    "WHERE chat_id = ?;"
+        )) {
+            incrementChatMessageCounter.setLong(1, chatID);
+            incrementChatMessageCounter.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

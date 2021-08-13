@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ public class RegisterScreen implements Screen {
 
         settingsButton.addActionListener(e -> {
             window.setScreen(window.getSettingsScreen());
-            window.getSettingsScreen().setLastScreen(this);
+            window.setLastScreen(this);
         });
     }
 
@@ -54,6 +55,7 @@ public class RegisterScreen implements Screen {
 
         if (username.isEmpty() || password.length == 0) {
             result.setText(window.getLangString("app.input_name_and_password"));
+            return;
         }
 
         Hasher hasher = jargon2Hasher()
@@ -78,6 +80,11 @@ public class RegisterScreen implements Screen {
 
     @Override
     public void update() {
+
+    }
+
+    @Override
+    public void updateUI() {
         result.setText("");
         nicknameField.setText("");
         passwordField.setText("");
@@ -117,6 +124,9 @@ public class RegisterScreen implements Screen {
         passwordLabel.setText(window.getLangString("app.password"));
         registerButton.setText(window.getLangString("app.register"));
         loginButton.setText(window.getLangString("app.go_to_login"));
+
+        loginButton.setMnemonic(loginButton.getText().charAt(0));
+        registerButton.setMnemonic(registerButton.getText().charAt(0));
     }
 
     {

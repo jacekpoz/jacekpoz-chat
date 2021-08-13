@@ -9,16 +9,19 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 public class GetUsersChatsQuery extends GetChatQuery {
 
+    private final long userID;
+
     @JsonCreator
     public GetUsersChatsQuery(
             @JsonProperty("userID") long userID,
             @JsonProperty("callerID") long callerID
     ) {
-        super(userID, callerID);
+        super(-1, callerID);
+        this.userID = userID;
     }
 
     public long getUserID() {
-        return getChatID();
+        return userID;
     }
 
 }

@@ -41,9 +41,6 @@ public class SettingsScreen implements Screen {
 
     private Locale lang;
 
-    @Setter
-    private Screen lastScreen;
-
     public SettingsScreen(ChatWindow w) {
         window = w;
         languageComboBox.addItem(Locale.US);
@@ -76,7 +73,7 @@ public class SettingsScreen implements Screen {
             }
         });
 
-        goBackButton.addActionListener(e -> window.setScreen(lastScreen));
+        goBackButton.addActionListener(e -> window.setScreen(window.getLastScreen()));
 
         deleteAccountButton.addActionListener(e -> {
             Object[] options = {window.getLangString("app.yes"), window.getLangString("app.no")};
@@ -113,6 +110,10 @@ public class SettingsScreen implements Screen {
     @Override
     public void update() {
         updateLanguage();
+    }
+
+    @Override
+    public void updateUI() {
         if (window.getClient().isLoggedIn()) {
             deleteAccountButton.setVisible(true);
             deleteAccountButton.setEnabled(true);
@@ -192,6 +193,7 @@ public class SettingsScreen implements Screen {
         settingsScreen.add(logFilesLabel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         logFilesTextField = new JTextField();
         logFilesTextField.setBackground(new Color(-12829636));
+        logFilesTextField.setCaretColor(new Color(-1));
         logFilesTextField.setForeground(new Color(-1));
         settingsScreen.add(logFilesTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         chooseDirectoryButton = new JButton();

@@ -6,6 +6,7 @@ import com.github.jacekpoz.common.sendables.Sendable;
 import com.github.jacekpoz.common.sendables.User;
 import com.github.jacekpoz.common.sendables.database.queries.chat.InsertChatQuery;
 import com.github.jacekpoz.common.sendables.database.queries.user.GetFriendsQuery;
+import com.github.jacekpoz.common.sendables.database.results.ChatResult;
 import com.github.jacekpoz.common.sendables.database.results.UserResult;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -111,10 +112,6 @@ public class CreateChatsScreen implements Screen {
                     getScreenID())
             );
 
-            LOGGER.log(Level.INFO, "Created chat", chatName);
-
-            window.setScreen(window.getMessageScreen());
-            update();
         });
     }
 
@@ -126,22 +123,35 @@ public class CreateChatsScreen implements Screen {
     @Override
     public void update() {
         window.send(new GetFriendsQuery(window.getClient().getUser().getId(), getScreenID()));
+    }
 
+    @Override
+    public void updateUI() {
         friendsListModel.clear();
         addedFriendsListModel.clear();
         chatNameTextField.setText("");
         for (User u : friends)
             friendsListModel.addElement(u);
-        window.getMessageScreen().update();
+        window.getMessageScreen().updateUI();
     }
 
     @Override
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
             UserResult ur = (UserResult) s;
-            friends = ur.get();
+            if (ur.getQuery() instanceof GetFriendsQuery) friends = ur.get();
+        } else if (s instanceof ChatResult) {
+            ChatResult cr = (ChatResult) s;
+            if (cr.getQuery() instanceof InsertChatQuery) {
+                InsertChatQuery icq = (InsertChatQuery) cr.getQuery();
+                if (cr.success()) {
+                    LOGGER.log(Level.INFO, "Created chat", icq.getChatName());
+                    window.getMessageScreen().addChat(cr.get(0));
+                    window.setScreen(window.getMessageScreen());
+                }
+            }
         }
-        update();
+
     }
 
     @Override
@@ -230,6 +240,7 @@ public class CreateChatsScreen implements Screen {
         createChatsScreen.add(createChatButton, new GridConstraints(4, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         chatNameTextField = new JTextField();
         chatNameTextField.setBackground(new Color(-12829636));
+        chatNameTextField.setCaretColor(new Color(-1));
         chatNameTextField.setForeground(new Color(-1));
         chatNameTextField.setText("");
         createChatsScreen.add(chatNameTextField, new GridConstraints(1, 1, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));

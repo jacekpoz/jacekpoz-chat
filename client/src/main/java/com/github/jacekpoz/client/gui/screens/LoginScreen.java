@@ -12,6 +12,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
@@ -44,7 +45,7 @@ public class LoginScreen implements Screen {
 
         settingsButton.addActionListener(e -> {
             window.setScreen(window.getSettingsScreen());
-            window.getSettingsScreen().setLastScreen(this);
+            window.setLastScreen(this);
         });
     }
 
@@ -65,13 +66,20 @@ public class LoginScreen implements Screen {
 
     @Override
     public void update() {
+        if (window.getClient().isLoggedIn())
+            for (Screen s : window.getScreens())
+                if (!(s instanceof LoginScreen)) {
+                    s.update();
+                    s.updateUI();
+                }
+        updateUI();
+    }
+
+    @Override
+    public void updateUI() {
         result.setText("");
         nicknameField.setText("");
         passwordField.setText("");
-        if (window.getClient().isLoggedIn())
-            for (Screen s : window.getScreens())
-                if (!(s instanceof LoginScreen))
-                    s.update();
     }
 
     @Override
@@ -119,6 +127,9 @@ public class LoginScreen implements Screen {
         passwordLabel.setText(window.getLangString("app.password"));
         loginButton.setText(window.getLangString("app.login"));
         registerButton.setText(window.getLangString("app.go_to_register"));
+
+        loginButton.setMnemonic(loginButton.getText().charAt(0));
+        registerButton.setMnemonic(registerButton.getText().charAt(0));
     }
 
     {
@@ -172,7 +183,7 @@ public class LoginScreen implements Screen {
         registerButton.setBorderPainted(false);
         registerButton.setFocusPainted(false);
         registerButton.setForeground(new Color(-1));
-        registerButton.setLabel("Rejestracja");
+        registerButton.setLabel("");
         this.$$$loadButtonText$$$(registerButton, this.$$$getMessageFromBundle$$$("lang", "app.go_to_register"));
         loginScreen.add(registerButton, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         nicknameField = new JTextField();

@@ -26,9 +26,9 @@ public class InputHandler {
             String inputJSON;
             try {
                 while ((inputJSON = window.getIn().readLine()) != null) {
-                    System.out.println("inputJSON: " + inputJSON);
+//                    System.out.println("inputJSON: " + inputJSON + "\n");
                     Sendable input = window.getMapper().readValue(inputJSON, Sendable.class);
-                    System.out.println("input: " + input);
+//                    System.out.println("input: " + input + "\n");
                     handleSendable(input);
                 }
             } catch (Throwable e) {

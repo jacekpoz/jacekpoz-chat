@@ -113,7 +113,10 @@ public class FriendsScreen implements Screen {
         window.send(new GetFriendsQuery(window.getClient().getUser().getId(), getScreenID()));
         window.send(new GetFriendRequestsQuery(window.getClient().getUser().getId(), getScreenID()));
         window.send(new GetAllUsersQuery(getScreenID()));
-        System.out.println("friendsscreen update");
+    }
+
+    @Override
+    public void updateUI() {
         friendsList.removeAll();
         friendRequestsPane.removeAll();
         addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
@@ -124,19 +127,16 @@ public class FriendsScreen implements Screen {
     public void handleSendable(Sendable s) {
         if (s instanceof UserResult) {
             UserResult ur = (UserResult) s;
-            System.out.println("userresult:" + ur);
             if (ur.getQuery() instanceof GetFriendsQuery) {
                 friends = ur.get();
-                System.out.println("friends: " + friends);
                 addUsersToPanel(friendsList, friends, UserPanel.FRIEND);
             } else if (ur.getQuery() instanceof GetFriendRequestsQuery) {
                 friendRequests = ur.get();
-                System.out.println("friendRequests: " + friendRequests);
                 addUsersToPanel(friendRequestsPane, friendRequests, UserPanel.REQUEST);
             } else if (ur.getQuery() instanceof GetAllUsersQuery) {
                 allUsers = ur.get();
-                System.out.println("allUsers: " + allUsers);
             }
+            updateUI();
         }
     }
 
@@ -185,6 +185,7 @@ public class FriendsScreen implements Screen {
         pane.addTab(this.$$$getMessageFromBundle$$$("lang", "app.friends"), friendsPane);
         searchFriends = new JTextField();
         searchFriends.setBackground(new Color(-12829636));
+        searchFriends.setDisabledTextColor(new Color(-1));
         searchFriends.setForeground(new Color(-1));
         friendsPane.add(searchFriends, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         searchFriendsButton = new JButton();

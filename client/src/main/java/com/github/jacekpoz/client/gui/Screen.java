@@ -11,7 +11,7 @@ import java.util.Locale;
  *
  * @author  jacekpoz
  * @version 0.0.2
- * @since   0.0.1
+ * @since   0.1.0
  */
 
 public interface Screen {
@@ -21,16 +21,25 @@ public interface Screen {
      *
      * @return main JPanel containing everything in the current screen
      * @author jacekpoz
-     * @since  0.0.1
+     * @since  0.1.0
      */
     JPanel getPanel();
 
     /**
-     * Method called when the GUI needs to be synced with the database.
+     * Used mostly to sync with the database.
+     *
      * @author jacekpoz
      * @since  0.1.0
      */
     void update();
+
+    /**
+     * Used to update the UI.
+     *
+     * @author jacekpoz
+     * @since  0.4.3
+     */
+    void updateUI();
 
     /**
      * Method called when a screen needs to handle a certain Sendable.

@@ -15,7 +15,6 @@ import lombok.ToString;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -67,16 +66,17 @@ public class ChatWorker extends Thread {
 
             try {
                 while ((inputJSON = in.readLine()) != null) {
-                    System.out.println("inputJSON: " + inputJSON);
+//                    System.out.println("inputJSON: " + inputJSON + "\n");
                     Sendable input = mapper.readValue(inputJSON, Sendable.class);
+//                    System.out.println("input: " + input + "\n");
 
                     if (input instanceof Query) {
                         output = qh.handleQuery((Query<?>) input);
                         if (output instanceof LoginResult lr && output.success())
                             setCurrentUser(lr.get().get(0));
-                        System.out.println("result: " + output);
+//                        System.out.println("result: " + output + "\n");
                         String json = mapper.writeValueAsString(output);
-                        System.out.println("result json: " + json);
+//                        System.out.println("result json: " + json + "\n");
                         send(json);
                     } else ih.handleInput(input);
                 }

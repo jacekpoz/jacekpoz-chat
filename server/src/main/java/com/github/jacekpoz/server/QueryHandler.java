@@ -37,20 +37,20 @@ public class QueryHandler {
     }
 
     private MessageResult handleMessageQuery(MessageQuery mq) {
-        System.out.println("MessageQuery: " + mq);
         MessageResult mr = new MessageResult(mq);
         if (mq instanceof GetMessagesInChatQuery gmq) {
             List<Message> messages = connector.getMessagesFromChat(gmq.getChatID(), gmq.getOffset(), gmq.getLimit());
             mr.setSuccess(!messages.isEmpty());
             mr.add(messages);
         } else if (mq instanceof InsertMessageQuery imq) {
-            connector.addMessage(
+            Message m = connector.addMessage(
                     imq.getMessageID(),
                     imq.getChatID(),
                     imq.getAuthorID(),
                     imq.getContent()
             );
-            mr.setSuccess(true);
+            mr.setSuccess(m != null);
+            if (mr.success()) mr.add(m);
         } else {
             throw new UnknownQueryException(mq);
         }
@@ -58,21 +58,23 @@ public class QueryHandler {
     }
 
     private ChatResult handleChatQuery(ChatQuery cq) {
-        System.out.println("ChatQuery: " + cq);
         ChatResult cr = new ChatResult(cq);
         if (cq instanceof GetChatQuery gcq) {
             if (gcq instanceof GetUsersChatsQuery gucq) {
-                List<Chat> usersChats = connector.getUsersChats(gucq.getChatID());
+                List<Chat> usersChats = connector.getUsersChats(gucq.getUserID());
                 cr.setSuccess(!usersChats.isEmpty());
                 cr.add(usersChats);
             } else {
                 Chat c = connector.getChat(gcq.getChatID());
                 cr.setSuccess(c != null);
-                cr.add(c);
+                if (cr.success()) cr.add(c);
             }
         } else if (cq instanceof InsertChatQuery icq) {
-            connector.createChat(icq.getChatName(), icq.getMemberIDs());
-            cr.setSuccess(true);
+            Chat c = connector.createChat(icq.getChatName(), icq.getMemberIDs());
+            cr.setSuccess(c != null);
+            if (cr.success()) cr.add(c);
+            System.out.println("icq: " + icq);
+            System.out.println("cr: " + cr);
         } else {
             throw new UnknownQueryException(cq);
         }
@@ -80,7 +82,6 @@ public class QueryHandler {
     }
 
     private UserResult handleUserQuery(UserQuery uq) {
-        System.out.println("UserQuery: " + uq);
         UserResult ur = new UserResult(uq);
         if (uq instanceof GetUserQuery guq) {
             if (guq instanceof LoginQuery lq) {
@@ -104,9 +105,10 @@ public class QueryHandler {
                 case SAME_USER, ALREADY_SENT, ALREADY_FRIENDS, SQL_EXCEPTION -> ur.setSuccess(false);
             }
         } else if (uq instanceof AcceptFriendRequestQuery afrq) {
-            connector.acceptFriendRequest(afrq.getUserID(), afrq.getFriendID());
+            ur.setSuccess(connector.acceptFriendRequest(afrq.getUserID(), afrq.getFriendID()));
         } else if (uq instanceof DenyFriendRequestQuery dfrq) {
             connector.denyFriendRequest(dfrq.getUserID(), dfrq.getFriendID());
+            ur.setSuccess(true);
         } else if (uq instanceof RemoveFriendQuery rfq) {
             switch (connector.removeFriend(rfq.getUserID(), rfq.getFriendID())) {
                 case REMOVED_FRIEND -> ur.setSuccess(true);
@@ -114,13 +116,16 @@ public class QueryHandler {
             }
         } else if (uq instanceof GetFriendsQuery gfq) {
             ur.add(connector.getFriends(gfq.getUserID()));
+            ur.setSuccess(!ur.get().isEmpty());
         } else if (uq instanceof GetFriendRequestsQuery gfrq) {
             ur.add(connector.getFriendRequests(gfrq.getUserID()));
+            ur.setSuccess(!ur.get().isEmpty());
         } else if (uq instanceof GetAllUsersQuery gauq) {
             ur.add(connector.getAllUsers());
+            ur.setSuccess(!ur.get().isEmpty());
         } else if (uq instanceof GetUsersInChatQuery guicq) {
-            System.out.println(guicq);
             ur.add(connector.getUsersInChat(guicq.getChatID()));
+            ur.setSuccess(!ur.get().isEmpty());
         } else if (uq instanceof DeleteUserQuery duq) {
             ur.add(connector.getUser(duq.getUserID()));
             ur.setSuccess(connector.deleteUser(duq.getUserID()));

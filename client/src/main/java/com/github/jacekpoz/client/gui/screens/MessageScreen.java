@@ -18,7 +18,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -40,14 +39,14 @@ public class MessageScreen implements Screen {
     private transient JButton friendsButton;
     private transient MessageContainer messages;
     private transient JScrollPane messagesScrollPane;
-    private transient ChatContainer chats;
+    private transient ChatsContainer chats;
     private transient JScrollPane chatsScrollPane;
     private transient JButton settingsButton;
     private JButton logoutButton;
 
     private List<Chat> usersChats;
     private Map<Chat, List<User>> usersInChats;
-    private Map<Long, User> messageAuthors;
+    private Map<Message, User> messageAuthors;
 
     public MessageScreen(ChatWindow w) {
         window = w;
@@ -68,6 +67,11 @@ public class MessageScreen implements Screen {
                 );
                 c.getMessages().add(m);
                 sendMessage(m);
+                messages.addMessage(new MessagePanel(
+                        window.getClient().getUser(),
+                        window.getClient().getUser(),
+                        m
+                ));
                 LOGGER.log(Level.INFO, "Sent message", m);
                 messageField.setText("");
                 JScrollBar bar = messagesScrollPane.getVerticalScrollBar();
@@ -81,12 +85,20 @@ public class MessageScreen implements Screen {
         chatsButton.addActionListener(e -> window.setScreen(window.getCreateChatsScreen()));
         settingsButton.addActionListener(e -> {
             window.setScreen(window.getSettingsScreen());
-            window.getSettingsScreen().setLastScreen(this);
+            window.setLastScreen(this);
         });
         logoutButton.addActionListener(e -> {
             LOGGER.log(Level.INFO, "Logged out", window.getClient().getUser());
             window.logout();
         });
+    }
+
+    public void addChat(Chat c) {
+        ChatPanel cp = new ChatPanel(this, chats, c);
+        List<User> users = usersInChats.get(c);
+        if (users != null) cp.setToolTipText(Util.userListToString(users));
+        else update();
+        chats.addChat(cp);
     }
 
     private void sendMessage(Message message) {
@@ -105,10 +117,16 @@ public class MessageScreen implements Screen {
         window.send(c);
         messages.removeAllMessages();
         c.getMessages().forEach(message ->
-                messages.addMessage(new MessagePanel(messageAuthors.get(message.getMessageID()), message)));
+                messages.addMessage(new MessagePanel(
+                        window.getClient().getUser(),
+                        messageAuthors.get(message),
+                        message
+                ))
+        );
         messageField.setEnabled(true);
         sendMessageButton.setEnabled(true);
         messages.revalidate();
+        messages.repaint();
     }
 
     @Override
@@ -116,23 +134,38 @@ public class MessageScreen implements Screen {
         return messageScreen;
     }
 
-    @Override
-    public void update() {
-        chats.removeAllChats();
-        usersInChats.forEach((c, lu) -> usersInChats.remove(c, lu));
-
-        window.send(new GetUsersChatsQuery(window.getClient().getUser().getId(), getScreenID()));
+    private void updateUsersChats() {
 
         for (Chat c : usersChats) {
             window.send(new GetUsersInChatQuery(c.getId(), getScreenID()));
             for (Message m : c.getMessages()) {
-                window.send(new GetMessageAuthorQuery(m.getMessageID(), m.getAuthorID(), getScreenID()));
+                window.send(new GetMessageAuthorQuery(
+                        m.getMessageID(),
+                        m.getChatID(),
+                        m.getAuthorID(),
+                        getScreenID()
+                ));
             }
-
-            ChatPanel cp = new ChatPanel(this, chats, c);
-            cp.setToolTipText(Util.userListToString(usersInChats.get(c)));
-            chats.addChat(cp);
         }
+    }
+
+    @Override
+    public void update() {
+        try {
+            usersInChats.forEach((c, lu) -> usersInChats.remove(c, lu));
+        } catch (ConcurrentModificationException ignored) {
+        }
+        if (window.getClient().isLoggedIn()) {
+            window.send(new GetUsersChatsQuery(window.getClient().getUser().getId(), getScreenID()));
+        }
+        updateUsersChats();
+    }
+
+    @Override
+    public void updateUI() {
+        chats.removeAllChats();
+        for (Chat c : usersChats)
+            addChat(c);
     }
 
     @Override
@@ -141,26 +174,40 @@ public class MessageScreen implements Screen {
             ChatResult cr = (ChatResult) s;
             if (cr.getQuery() instanceof GetUsersChatsQuery) {
                 usersChats = cr.get();
+                updateUI();
+                updateUsersChats();
             }
         } else if (s instanceof UserResult) {
             UserResult ur = (UserResult) s;
             if (ur.getQuery() instanceof GetMessageAuthorQuery) {
                 GetMessageAuthorQuery gmaq = (GetMessageAuthorQuery) ur.getQuery();
-                messageAuthors.put(gmaq.getMessageID(), ur.get().get(0));
+                for (Chat c : usersChats)
+                    if (c.getId() == gmaq.getChatID())
+                        for (Message m : c.getMessages())
+                            if (m.getMessageID() == gmaq.getMessageID())
+                                messageAuthors.put(m, ur.get(0));
             } else if (ur.getQuery() instanceof GetUsersInChatQuery) {
                 GetUsersInChatQuery guicq = (GetUsersInChatQuery) ur.getQuery();
                 for (Chat c : usersChats) {
                     if (c.getId() == guicq.getChatID()) {
                         usersInChats.put(c, ur.get());
+                        return;
                     }
                 }
             }
         } else if (s instanceof Message) {
             Message m = (Message) s;
-            SwingUtilities.invokeLater(() ->
-                    messages.addMessage(new MessagePanel(messageAuthors.get(m.getMessageID()), m)));
+            for (User u : usersInChats.get(window.getClient().getChat())) {
+                if (u.getId() == m.getAuthorID()) {
+                    messageAuthors.put(m, u);
+                    messages.addMessage(new MessagePanel(
+                            window.getClient().getUser(),
+                            u,
+                            m
+                    ));
+                }
+            }
         }
-
     }
 
     @Override
@@ -190,7 +237,7 @@ public class MessageScreen implements Screen {
         messageField.setBackground(new Color(-12829636));
         messageField.setCaretColor(new Color(-1));
         messageField.setEditable(true);
-        messageField.setEnabled(true);
+        messageField.setEnabled(false);
         messageField.setForeground(new Color(-1));
         messageScreen.add(messageField, new GridConstraints(2, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(100, 25), new Dimension(150, 25), null, 0, false));
         sendMessageButton = new JButton();
@@ -203,26 +250,27 @@ public class MessageScreen implements Screen {
         messageScreen.add(sendMessageButton, new GridConstraints(2, 5, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_VERTICAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(75, 25), new Dimension(75, 25), 0, false));
         messagesScrollPane = new JScrollPane();
         messagesScrollPane.setBackground(new Color(-12829636));
+        messagesScrollPane.setDoubleBuffered(false);
         messagesScrollPane.setForeground(new Color(-1));
         messagesScrollPane.setVerticalScrollBarPolicy(22);
-        messageScreen.add(messagesScrollPane, new GridConstraints(0, 4, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(250, 100), new Dimension(500, 250), null, 0, false));
+        messageScreen.add(messagesScrollPane, new GridConstraints(0, 4, 2, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        messages.setAutoscrolls(false);
         messages.setBackground(new Color(-12829636));
         messages.setDoubleBuffered(true);
+        messages.setFocusCycleRoot(false);
+        messages.setFocusTraversalPolicyProvider(false);
         messages.setForeground(new Color(-1));
+        messages.setInheritsPopupMenu(false);
         messages.setMaximumSize(new Dimension(-1, -1));
         messages.setMinimumSize(new Dimension(250, 100));
         messages.setPreferredSize(new Dimension(350, 150));
+        messages.setRequestFocusEnabled(true);
         messagesScrollPane.setViewportView(messages);
         chatsScrollPane = new JScrollPane();
         chatsScrollPane.setBackground(new Color(-12829636));
         chatsScrollPane.setForeground(new Color(-1));
         chatsScrollPane.setVerticalScrollBarPolicy(22);
         messageScreen.add(chatsScrollPane, new GridConstraints(1, 0, 2, 4, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(50, 150), new Dimension(100, 250), null, 0, false));
-        chats = new ChatContainer();
-        chats.setBackground(new Color(-12829636));
-        chats.setForeground(new Color(-1));
-        chats.setMinimumSize(new Dimension(50, 150));
-        chats.setPreferredSize(new Dimension(100, 250));
         chatsScrollPane.setViewportView(chats);
         friendsButton = new JButton();
         friendsButton.setBackground(new Color(-12829636));
@@ -233,6 +281,8 @@ public class MessageScreen implements Screen {
         friendsButton.setText("");
         messageScreen.add(friendsButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(30, 30), null, new Dimension(30, 30), 0, false));
         settingsButton = new JButton();
+        settingsButton.setAlignmentX(0.0f);
+        settingsButton.setAlignmentY(0.5f);
         settingsButton.setBackground(new Color(-12829636));
         settingsButton.setBorderPainted(false);
         settingsButton.setFocusPainted(false);

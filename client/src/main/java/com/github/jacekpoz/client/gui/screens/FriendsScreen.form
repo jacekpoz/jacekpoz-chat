@@ -42,6 +42,7 @@
                 </constraints>
                 <properties>
                   <background color="-12829636"/>
+                  <disabledTextColor color="-1"/>
                   <foreground color="-1"/>
                 </properties>
               </component>

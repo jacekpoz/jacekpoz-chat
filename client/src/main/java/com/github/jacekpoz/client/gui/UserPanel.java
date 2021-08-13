@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,8 +40,12 @@ public class UserPanel extends JPanel {
         clientUser = u;
         panelUser = pU;
         userPanelType = type;
-        userLabel = new JLabel(String.valueOf(panelUser));
+        userLabel = new JLabel(panelUser.getNickname() + "(ID=" + panelUser.getId() + ")");
+        userLabel.setBackground(new Color(60, 60, 60));
+        userLabel.setForeground(Color.WHITE);
         add(userLabel);
+        setBackground(new Color(60, 60, 60));
+        setForeground(Color.WHITE);
         changeType(userPanelType);
     }
 
@@ -54,7 +59,7 @@ public class UserPanel extends JPanel {
 
         switch (type) {
             case NOT_FRIEND:
-                button1 = new JButton(new ImageIcon("images/add_friend.png"));
+                button1 = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/add_friend.png"))));
                 button1.addActionListener(a -> {
                     window.send(new SendFriendRequestQuery(
                             clientUser.getId(),
@@ -66,7 +71,7 @@ public class UserPanel extends JPanel {
                 });
                 break;
             case FRIEND:
-                button1 = new JButton(new ImageIcon("images/delete_friend.png"));
+                button1 = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/delete_friend.png"))));
                 button1.addActionListener(a -> {
                     clientUser.removeFriend(panelUser);
                     window.send(new RemoveFriendQuery(
@@ -79,7 +84,7 @@ public class UserPanel extends JPanel {
                 });
                 break;
             case REQUEST:
-                button1 = new JButton(new ImageIcon("images/add_friend.png"));
+                button1 = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/add_friend.png"))));
                 button1.addActionListener(a -> {
                     clientUser.addFriend(panelUser);
                     window.send(new AcceptFriendRequestQuery(
@@ -90,7 +95,7 @@ public class UserPanel extends JPanel {
                     LOGGER.log(Level.INFO, "Accepted friend request", panelUser);
                     removeThis();
                 });
-                button2 = new JButton(new ImageIcon("images/delete_friend.png"));
+                button2 = new JButton(new ImageIcon(Objects.requireNonNull(getClass().getResource("/images/delete_friend.png"))));
                 button2.addActionListener(a -> {
                     window.send(new DenyFriendRequestQuery(
                             panelUser.getId(),
@@ -127,5 +132,6 @@ public class UserPanel extends JPanel {
         if (button2 != null) remove(button2);
         addedTo.remove(this);
         addedTo.revalidate();
+        addedTo.repaint();
     }
 }

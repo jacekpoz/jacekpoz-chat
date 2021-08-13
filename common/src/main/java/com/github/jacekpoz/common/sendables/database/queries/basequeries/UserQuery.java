@@ -5,6 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Base query for doing stuff with users containing fields used in most user queries.
+ *
+ * @author  jacekpoz
+ * @version 0.0.2
+ * @since   0.3.0
+ */
 @ToString
 @EqualsAndHashCode
 public abstract class UserQuery implements Query<User> {

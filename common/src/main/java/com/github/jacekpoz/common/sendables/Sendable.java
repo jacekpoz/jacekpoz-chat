@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  *
  * @author  jacekpoz
  * @version 0.0.1
- * @since   0.0.2
+ * @since   0.2.0
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "@type")
 public interface Sendable {}

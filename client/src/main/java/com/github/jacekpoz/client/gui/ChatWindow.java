@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -67,6 +68,13 @@ public class ChatWindow extends JFrame {
     @Getter
     private final JsonObjectMapper mapper;
 
+    @Getter
+    @Setter
+    private Screen lastScreen;
+    @Getter
+    @Setter
+    private Screen currentScreen;
+
     public ChatWindow(Client c) {
         client = c;
 
@@ -94,10 +102,14 @@ public class ChatWindow extends JFrame {
         settingsScreen = new SettingsScreen(this);
 
         screens = new Screen[] {messageScreen, loginScreen, registerScreen, friendsScreen, createChatsScreen, settingsScreen};
-
+        
         changeLanguage(Locale.US);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(800, 600));
+
+        lastScreen = loginScreen;
+        currentScreen = loginScreen;
 
         handler.start();
     }
@@ -108,8 +120,11 @@ public class ChatWindow extends JFrame {
     }
 
     public void setScreen(Screen screen) {
+        lastScreen = currentScreen;
+        screen.update();
+        screen.updateUI();
         setContentPane(screen.getPanel());
-        pack();
+        currentScreen = screen;
     }
 
     public void send(Sendable s) {
@@ -134,7 +149,6 @@ public class ChatWindow extends JFrame {
         setTitle(languageBundle.getString("app.title"));
         for (Screen s : screens) {
             s.changeLanguage();
-            pack();
         }
     }
 
@@ -163,10 +177,11 @@ public class ChatWindow extends JFrame {
     }
 
     public void logout() {
-        client.setUser(null);
+        client.setLoggedIn(false);
         setScreen(loginScreen);
-        loginScreen.update();
-        registerScreen.update();
-        settingsScreen.update();
+        loginScreen.updateUI();
+        registerScreen.updateUI();
+        settingsScreen.updateUI();
+        client.setUser(null);
     }
 }

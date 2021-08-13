@@ -17,12 +17,11 @@ public class InputHandler {
         worker = w;
     }
 
-    public void handleInput(Sendable input) throws IOException {
-        if (input instanceof User) handleUser((User) input);
-        if (input instanceof Chat) handleChat((Chat) input);
-        if (input instanceof Message) handleMessage((Message) input);
-
-        throw new UnknownSendableException(input);
+    public void handleInput(Sendable input) {
+        if (input instanceof User u) handleUser(u);
+        else if (input instanceof Chat c) handleChat(c);
+        else if (input instanceof Message m) handleMessage(m);
+        else throw new UnknownSendableException(input);
     }
 
     private void handleUser(User u) {

@@ -5,25 +5,28 @@ import com.github.jacekpoz.common.sendables.Chat;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-public class ChatPanel extends JPanel {
+public class ChatPanel extends JButton {
 
     private final JLabel label;
 
-    public ChatPanel(MessageScreen m, ChatContainer parent, Chat c) {
+    public ChatPanel(MessageScreen m, ChatsContainer parent, Chat c) {
+        setMaximumSize(new Dimension(250, 40));
+        setBackground(new Color(60, 60, 60));
+        setForeground(Color.WHITE);
+        setBorderPainted(false);
         label = new JLabel(c.getName());
+        label.setHorizontalAlignment(SwingConstants.LEFT);
+        label.setVerticalAlignment(SwingConstants.CENTER);
+        label.setBackground(new Color(60, 60, 60));
+        label.setForeground(Color.WHITE);
         label.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2, true));
         add(label);
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                m.setChat(c);
-                for (ChatPanel cp : parent.getChats())
-                    cp.deselectChat();
-                selectChat();
-            }
+        addActionListener(e -> {
+            m.setChat(c);
+            for (ChatPanel cp : parent.getChats())
+                cp.deselectChat();
+            selectChat();
         });
     }
 

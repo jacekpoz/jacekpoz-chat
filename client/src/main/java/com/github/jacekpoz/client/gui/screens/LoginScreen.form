@@ -74,7 +74,7 @@
           <borderPainted value="false"/>
           <focusPainted value="false"/>
           <foreground color="-1"/>
-          <label value="Rejestracja"/>
+          <label value=""/>
           <text resource-bundle="lang" key="app.go_to_register"/>
         </properties>
       </component>

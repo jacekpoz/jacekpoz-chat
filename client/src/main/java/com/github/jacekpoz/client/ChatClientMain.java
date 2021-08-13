@@ -21,8 +21,10 @@ public class ChatClientMain {
         String host = args[0];
         int port = Integer.parseInt(args[1]);
 
-        Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-                LOGGER.log(Level.SEVERE, t + "a RuntimeException occured", e));
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            LOGGER.log(Level.SEVERE, "RuntimeException in thread " + t, e);
+            e.printStackTrace();
+        });
 
         try {
             Client c = new Client(new Socket(host, port));

@@ -15,10 +15,12 @@ import java.sql.SQLException;
 @EqualsAndHashCode(callSuper = true)
 public class LoginResult extends UserResult {
 
+    @JsonProperty("result")
     @Getter
     @Setter
     private EnumResults.Login result;
 
+    @JsonProperty("ex")
     @Getter
     @Setter
     private SQLException ex;

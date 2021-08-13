@@ -5,6 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+/**
+ * Base query for doing stuff with chats containing fields used in most chat queries.
+ *
+ * @author  jacekpoz
+ * @version 0.0.2
+ * @since   0.3.0
+ */
 @ToString
 @EqualsAndHashCode
 public abstract class ChatQuery implements Query<Chat> {

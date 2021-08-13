@@ -7,13 +7,17 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+/**
+ * Yup.
+ *
+ * @author  jacekpoz
+ * @version 0.0.4
+ * @since   0.1.0
+ */
 @ToString(onlyExplicitlyIncluded = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User implements Sendable {
@@ -30,7 +34,7 @@ public class User implements Sendable {
     @Setter
     private String hashedPassword;
     @Getter
-    private final List<Long> friendsIds;
+    private final List<Long> friendsIDs;
     @Getter
     private final LocalDateTime dateJoined;
 
@@ -44,24 +48,24 @@ public class User implements Sendable {
         id = userID;
         nickname = userNickname;
         hashedPassword = userHashedPassword;
-        friendsIds = new ArrayList<>();
+        friendsIDs = new ArrayList<>();
         dateJoined = date;
     }
 
     public void addFriend(User u) {
-        if (!friendsIds.contains(u.id)) friendsIds.add(u.id);
+        if (!friendsIDs.contains(u.id)) friendsIDs.add(u.id);
     }
 
     public void addFriend(long id) {
-        if (!friendsIds.contains(id)) friendsIds.add(id);
+        if (!friendsIDs.contains(id)) friendsIDs.add(id);
     }
 
     public void removeFriend(User u) {
-        friendsIds.remove(u.id);
+        friendsIDs.remove(u.id);
     }
 
     public void removeFriend(long id) {
-        friendsIds.remove(id);
+        friendsIDs.remove(id);
     }
 
 }

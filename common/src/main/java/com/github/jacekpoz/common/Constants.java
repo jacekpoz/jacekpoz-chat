@@ -2,7 +2,9 @@ package com.github.jacekpoz.common;
 
 public final class Constants {
 
-    private Constants() {/*nah*/}
+    private Constants() {
+        throw new AssertionError("nah");
+    }
 
     // TODO change this later when I figure out how to load part of the chat and shit
     public static final int DEFAULT_MESSAGES_LIMIT = 999999;

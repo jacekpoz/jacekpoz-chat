@@ -1,6 +1,7 @@
 package com.github.jacekpoz.common.sendables.database.results;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.jacekpoz.common.sendables.Chat;
 import com.github.jacekpoz.common.sendables.database.queries.basequeries.ChatQuery;
@@ -10,14 +11,15 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @ToString
 @EqualsAndHashCode
 public class ChatResult implements Result<Chat> {
 
     private final ChatQuery query;
+    @JsonProperty("chats")
     private final List<Chat> chats;
+    @JsonProperty("success")
     private boolean success;
 
     @JsonCreator
@@ -28,9 +30,15 @@ public class ChatResult implements Result<Chat> {
         chats = new ArrayList<>();
     }
 
+    @JsonGetter("chats")
     @Override
     public List<Chat> get() {
         return chats;
+    }
+
+    @Override
+    public Chat get(int index) {
+        return chats.get(index);
     }
 
     @Override
